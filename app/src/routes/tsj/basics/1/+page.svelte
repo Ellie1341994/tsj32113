@@ -1,6 +1,6 @@
 <svelte:head>
 	<title>Basics Introduction</title>
-	<meta name="basics" content="Basics example set" />
+	<meta name="basics" content="Basics example 1" />
 </svelte:head>
 
 <div class="text-column">
