@@ -2,11 +2,6 @@
 	import { page } from '$app/stores';
 </script>
 
-<svelte:head>
-	<title>Basic Techniques</title>
-	<meta name="Basics" content="Example set of basic techniques regarding ThreeJS" />
-</svelte:head>
-
 <div style="margin: 0%; height: fit-content; width: 100%;">
 	<ul
 		style="list-style-type: none; display: flex; flex-wrap: wrap; flex-direction:row; width: 100%%;"
