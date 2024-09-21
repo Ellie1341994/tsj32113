@@ -1,4 +1,4 @@
-export const lessonThree = ({THREE, canvas}: any) => {
+export default ({THREE, canvas}: any) => {
     const SCENE = new THREE.Scene();
 
     // Axis Helper

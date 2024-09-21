@@ -1,27 +1,21 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { lessonThree } from '$lib/basics/3';
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
-	let canvas: any = null;
+	let canvas: HTMLCanvasElement;
 	let lesson = $page.params.page;
-	console.log($page.params);
-	!/^[1-2]$/.test(lesson) &&
-		onMount(() => {
-			lessonThree({ THREE, canvas });
-		});
+	let lessonLogic: any = null;
+	onMount(async () => {
+		lessonLogic = (await import(`../../../../lib/basics/${lesson}`)).default;
+		console.log(lessonLogic);
+		if (typeof lessonLogic === 'function') {
+			lessonLogic({ THREE, canvas });
+		}
+	});
 </script>
 
-{#if /^1$/.test(lesson)}
-	<div class="text-column">
-		<h1>Just the course introduction</h1>
-		<p>Getting ready for 3D on the Web.</p>
-	</div>
-{:else if /^2$/.test(lesson)}
-	<div class="text-column">
-		<h1>WebGL & ThreeJS</h1>
-		<p>ThreeJS is a library that uses WebGL that allows for faster 3D development on the web!</p>
-	</div>
+{#if typeof lessonLogic === 'string'}
+	{@html lessonLogic}
 {:else}
 	<canvas class="webgl" bind:this={canvas}></canvas>
 {/if}
