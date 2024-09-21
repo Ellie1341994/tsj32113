@@ -4,18 +4,17 @@
 	import * as THREE from 'three';
 	let canvas: HTMLCanvasElement;
 	let lesson = $page.params.page;
-	let lessonLogic: any = null;
+	let lessonCode: any = null;
 	onMount(async () => {
-		lessonLogic = (await import(`../../../../lib/basics/${lesson}`)).default;
-		console.log(lessonLogic);
-		if (typeof lessonLogic === 'function') {
-			lessonLogic({ THREE, canvas });
+		lessonCode = (await import(`../../../../lib/basics/${lesson}`)).default;
+		if (typeof lessonCode === 'function') {
+			lessonCode({ THREE, canvas });
 		}
 	});
 </script>
 
-{#if typeof lessonLogic === 'string'}
-	{@html lessonLogic}
+{#if typeof lessonCode === 'string'}
+	{@html lessonCode}
 {:else}
 	<canvas class="webgl" bind:this={canvas}></canvas>
 {/if}
