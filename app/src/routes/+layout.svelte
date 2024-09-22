@@ -26,10 +26,10 @@
 		flex: 1;
 		display: flex;
 		flex-direction: column;
-		padding: 1rem;
-		width: 100%;
-		max-width: 64rem;
+		padding: 0%;
+		width: 100vw;
 		margin: 0 auto;
+		align-items: center;
 		box-sizing: border-box;
 	}
 

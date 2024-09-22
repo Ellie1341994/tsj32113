@@ -1,5 +1,6 @@
 
-export default ({THREE, OrbitControls, canvas}: any) => {// Sizes
+export default ({THREE, OrbitControls, canvas}: any) => {
+    // Sizes
 
 const SIZES = {
     width: window.innerWidth*0.75,

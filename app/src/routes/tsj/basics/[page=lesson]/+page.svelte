@@ -24,6 +24,6 @@
 	<slot />
 	{@html lessonCode}
 {:else}
-	<h2>{lessonTitles[lesson]}</h2>
-	<canvas style="width: 75vw; height: 75vh;" class="webgl" bind:this={canvas}></canvas>
+	<!-- <h2>{lessonTitles[lesson]}</h2> -->
+	<canvas class="webgl" bind:this={canvas}></canvas>
 {/if}
