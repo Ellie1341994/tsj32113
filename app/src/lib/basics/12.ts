@@ -1,8 +1,6 @@
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
-import GUI from "lil-gui";
 
 // import typefaceFont from 'three/examples/fonts/helvetiker_regular.typeface.json'
 export default ({THREE, OrbitControls, RGBELoader, GUI, gsap, canvas}: any) => {
@@ -100,7 +98,7 @@ controls.enableDamping = true;
  * Font
  */
 const FONT_LOADER = new FontLoader();
-FONT_LOADER.load("/fonts/helvetiker_regular.typeface.json", (font) => {
+FONT_LOADER.load(`../../src/lib/basics/assets/12/fonts/helvetiker_regular.typeface.json`, (font) => {
   // console.log('font loaded');
   let TEXT_GEOMETRY_OPTIONS = {
     font,
