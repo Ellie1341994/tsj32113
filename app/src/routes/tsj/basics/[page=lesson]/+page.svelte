@@ -4,29 +4,14 @@
 	import * as THREE from 'three';
 	import gsap from 'gsap';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
 	import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 	import GUI from 'lil-gui';
+	import { lessonTitles } from '$lib/lessonTitles';
 
 	let canvas: HTMLCanvasElement;
 	let lesson = parseInt($page.params.page);
 	let lessonCode: any = null;
-	const lessonsubtitles = [
-		null,
-		'Introduction to ThreeJs',
-		'What is WebGL and why use Three.js',
-		'First Three.js Project',
-		'Transform Objects',
-		'Animation',
-		'Cameras',
-		'Fullscreen and resizing',
-		'Geometries',
-		'Debug UI',
-		'Textures',
-		'Materials',
-		'3D Text',
-		'Go Live'
-	];
+
 	onMount(async () => {
 		lessonCode = (await import(`../../../../lib/basics/${lesson}.ts`)).default;
 		if (typeof lessonCode === 'function') {
@@ -36,8 +21,9 @@
 </script>
 
 {#if typeof lessonCode === 'string'}
+	<slot />
 	{@html lessonCode}
 {:else}
-	<h2>{lessonsubtitles[lesson]}</h2>
-	<canvas class="webgl" bind:this={canvas}></canvas>
+	<h2>{lessonTitles[lesson]}</h2>
+	<canvas style="width: 75vw; height: 75vh;" class="webgl" bind:this={canvas}></canvas>
 {/if}
