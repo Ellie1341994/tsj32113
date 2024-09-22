@@ -91,6 +91,6 @@
 	}
 
 	a:hover {
-		color: var(--color-theme-1);
+		color: var(--color-theme-3);
 	}
 </style>
