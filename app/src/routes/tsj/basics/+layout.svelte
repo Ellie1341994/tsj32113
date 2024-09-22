@@ -20,12 +20,14 @@
 	>
 		{#each [...Array(13).keys()] as index (index)}
 			{@const lesson = `${index + 1}`}
+			{@const active = lesson === $page.params.page}
 			<li
 				class="lesson-link-container"
 				aria-current={$page.url.pathname === '/tsj/basics' ? 'page' : undefined}
 			>
 				<a
-					class={`lesson-link ${lesson === $page.params.page ? 'current' : ''}`}
+					aria-disabled={!active}
+					class={`lesson-link ${active ? 'current' : ''}`}
 					href="/tsj/basics/{lesson}">{lesson}</a
 				>
 			</li>
@@ -41,31 +43,27 @@
 	li.lesson-link-container {
 		background-color: transparent;
 		flex-wrap: wrap;
-		/* width: 15px; */
-		padding: 15px;
+		width: 35px;
+		padding: 9px;
 		margin: 0%;
-		/* flex: auto;
-		justify-content: center; */
 		text-align: center;
 	}
 	a.lesson-link {
 		font-size: 27px;
-		/* display: block; */
-		/* width: 100%; */
 		text-align: center;
 		color: white;
 		padding: 0vw;
+		text-decoration: none;
 	}
 	li:has(a.lesson-link.current) {
 		/* border-left: 1px solid var(--color-theme-1); */
-		border-bottom: 3px solid var(--color-theme-3);
-		border-top: 3px solid var(--color-theme-3);
-
+		border-bottom: 6px solid var(--color-theme-3);
+		border-top: 6px solid var(--color-theme-3);
 		border-radius: 25%;
+		pointer-events: none;
 	}
 
-	a:hover {
-		text-decoration: none;
-		color: var(--color-theme-1);
+	a:hover:not(.current) {
+		color: var(--color-theme-3);
 	}
 </style>
