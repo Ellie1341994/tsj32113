@@ -30,15 +30,13 @@
 		width: 100vw;
 		margin: 0 auto;
 		align-items: center;
+		justify-content: start;
 		box-sizing: border-box;
 	}
 
 	footer {
 		display: flex;
-		flex-direction: column;
 		justify-content: center;
-		align-items: center;
-		padding: 12px;
 	}
 
 	@media (min-width: 480px) {

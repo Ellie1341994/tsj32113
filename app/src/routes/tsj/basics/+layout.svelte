@@ -13,7 +13,7 @@
 	{/if}
 </svelte:head>
 
-<div style="margin: 0; padding: 0; width: 75%;">
+<div style="margin: 0; padding: 0; width: 75%; justify-self: start;">
 	<ul
 		style="list-style-type: none; display: flex; padding: 0;
   				justify-content: space-evenly; flex-direction:row; width: 100%%;"

@@ -8,13 +8,13 @@
 			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
 		</svg>
 		<ul>
-			<li aria-current={$page.url.pathname === '/' ? 'page' : undefined}>
+			<li aria-current={/\/tsj\/basics/.test($page.url.pathname) ? 'page' : undefined}>
 				<a href="/tsj/basics/">Basic</a>
 			</li>
-			<li aria-current={$page.url.pathname === '/classic_techniques' ? 'page' : undefined}>
+			<li aria-current={/\/tsj\/classic_techniques/.test($page.url.pathname) ? 'page' : undefined}>
 				<a href="/tsj/classic_techniques/">Classic Techniques</a>
 			</li>
-			<li aria-current={$page.url.pathname === '/tsj/advanced_techniques' ? 'page' : undefined}>
+			<li aria-current={/\/tsj\/advanced_techniques/.test($page.url.pathname) ? 'page' : undefined}>
 				<a href="/tsj/advanced_techniques/">Advanced Techniques</a>
 			</li>
 		</ul>
@@ -73,7 +73,7 @@
 		top: 0;
 		left: calc(50% - var(--size));
 		border: var(--size) solid transparent;
-		border-top: var(--size) solid var(--color-theme-1);
+		border-top: var(--size) solid var(--color-theme-3);
 	}
 
 	nav a {
