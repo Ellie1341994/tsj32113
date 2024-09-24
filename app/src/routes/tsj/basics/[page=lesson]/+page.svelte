@@ -21,7 +21,6 @@
 </script>
 
 {#if typeof lessonCode === 'string'}
-	<slot />
 	{@html lessonCode}
 {:else}
 	<!-- <h2>{lessonTitles[lesson]}</h2> -->

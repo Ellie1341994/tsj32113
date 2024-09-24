@@ -66,9 +66,6 @@
 </header>
 
 <style lang="scss">
-	head title {
-		text-transform: capitalize;
-	}
 	header {
 		display: flex;
 		flex-direction: column;

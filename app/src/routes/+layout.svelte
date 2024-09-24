@@ -27,12 +27,13 @@
 		/* flex: 1; */
 		display: flex;
 		flex-direction: column;
-		padding: 0%;
+		/* padding: 0%; */
 		width: 100vw;
+		height: 75vh;
 		/* margin: 0 auto; */
 		align-items: center;
-		justify-content: start;
-		box-sizing: border-box;
+		justify-content: center;
+		/* box-sizing: border-box; */
 	}
 
 	footer {
