@@ -1,25 +1,32 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { lessonGroupIndexes } from '$lib/lessonGroupIndexes';
-	$: currentLessonId = $page.params.page;
-	$: currentLessonGroup = $page.url.pathname.split('/')[2]?.replace(/_/, ' ') as
-		| 'basics'
-		| 'classic techniques'
-		| 'advanced techniques';
+	$: isHomepage = /tsj$/.test($page.url.pathname);
+	$: currentLessonId = isHomepage ? null : $page.params.page || '';
+	$: currentLessonGroup = isHomepage
+		? null
+		: ($page.url.pathname.split('/')[2]?.replace(/_/, ' ') as
+				| 'basics'
+				| 'classic techniques'
+				| 'advanced techniques');
 	$: isBasicPath = /\/tsj\/basics/.test($page.url.pathname);
 	$: isClassicPath = /\/tsj\/classic_techniques/.test($page.url.pathname);
 	$: isAdvancedPath = /\/tsj\/advanced_techniques/.test($page.url.pathname);
-	$: lessonIds = [...Array(67).keys()].slice(
-		lessonGroupIndexes[currentLessonGroup].startLessonIndex,
-		lessonGroupIndexes[currentLessonGroup].endLessonIndex
-	);
+	$: lessonIds = isHomepage
+		? []
+		: [...Array(67).keys()].slice(
+				lessonGroupIndexes[currentLessonGroup!].startLessonIndex,
+				lessonGroupIndexes[currentLessonGroup!].endLessonIndex
+			);
+	// console.log($page.route);
+	$: titleMsg =
+		'T.S.J. ' +
+		`${isHomepage ? '' : lessonGroupIndexes[currentLessonGroup!].shorthand + currentLessonId}`;
 </script>
 
 <svelte:head>
-	<title
-		>TSJ. {currentLessonGroup[0].toUpperCase() + currentLessonGroup.substring(1)}
-		{currentLessonId || ''}</title
-	>
+	<title>{titleMsg}</title>
+	<link rel="icon" href="../../src/lib/icon.svg" type="image/x-icon" />
 	<meta
 		name={`${currentLessonGroup} lesson `}
 		content={`${currentLessonGroup} lesson ${currentLessonId || ''}`}
@@ -46,23 +53,25 @@
 			<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
 		</svg>
 	</nav>
-	<nav class="sub-nav">
-		<ul style="list-style-type: none; display: flex; padding: 0; width: 100%%;">
-			{#each lessonIds as lessonId (lessonId)}
-				{@const active = `${lessonId}` === currentLessonId}
-				<li
-					class="lesson-link-container"
-					aria-current={$page.url.pathname === '/tsj/basics' ? 'page' : undefined}
-				>
-					<a
-						aria-disabled={!active}
-						class={`lesson-link ${active ? 'current' : ''}`}
-						href="/tsj/{currentLessonGroup.replace(/ /, '_')}/{lessonId}">{lessonId}</a
+	{#if currentLessonGroup}
+		<nav class="sub-nav">
+			<ul style="list-style-type: none; display: flex; padding: 0; width: 100%%;">
+				{#each lessonIds as lessonId (lessonId)}
+					{@const active = `${lessonId}` === currentLessonId}
+					<li
+						class="lesson-link-container"
+						aria-current={$page.url.pathname === '/tsj/basics' ? 'page' : undefined}
 					>
-				</li>
-			{/each}
-		</ul>
-	</nav>
+						<a
+							aria-disabled={!active}
+							class={`lesson-link ${active ? 'current' : ''}`}
+							href="/tsj/{currentLessonGroup.replace(/ /, '_')}/{lessonId}">{lessonId}</a
+						>
+					</li>
+				{/each}
+			</ul>
+		</nav>
+	{/if}
 </header>
 
 <style lang="scss">

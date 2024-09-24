@@ -1,10 +1,14 @@
 <script>
 	import Header from './Header.svelte';
 	import '../app.css';
+	import { page } from '$app/stores';
+	$: isRoot = $page.url.pathname === '/';
 </script>
 
 <div class="app">
-	<Header />
+	{#if !isRoot}
+		<Header />
+	{/if}
 
 	<main>
 		<slot />
@@ -14,6 +18,7 @@
 		<p>Creative pratices by <strong>Ellie Broocks</strong></p>
 	</footer>
 </div>
+<slot />
 
 <style>
 	.app {
