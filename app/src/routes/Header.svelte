@@ -1,30 +1,44 @@
-<script>
+<script lang="ts">
 	import { page } from '$app/stores';
+	import { lessonGroupIndexes } from '$lib/lessonGroupIndexes';
+	$: currentLessonId = $page.params.page;
+	$: currentLessonGroup = $page.url.pathname.split('/')[2]?.replace(/_/, ' ') as
+		| 'basics'
+		| 'classic techniques'
+		| 'advanced techniques';
+	$: isBasicPath = /\/tsj\/basics/.test($page.url.pathname);
+	$: isClassicPath = /\/tsj\/classic_techniques/.test($page.url.pathname);
+	$: isAdvancedPath = /\/tsj\/advanced_techniques/.test($page.url.pathname);
+	$: lessonIds = [...Array(67).keys()].slice(
+		lessonGroupIndexes[currentLessonGroup].startLessonIndex,
+		lessonGroupIndexes[currentLessonGroup].endLessonIndex
+	);
 </script>
 
 <svelte:head>
-	{#if /basics$/.test($page.url.pathname)}
-		<title>TSJ. Basic Techniques</title>
-		<meta name="Basics" content="Example set of basic techniques regarding ThreeJS" />
-	{:else}
-		{@const lesson = $page.params.page}
-		<title>TSJ. {lesson}</title>
-		<meta name="Basics lesson {lesson}" content="Lesson {lesson} code" />
-	{/if}
+	<title
+		>TSJ. {currentLessonGroup[0].toUpperCase() + currentLessonGroup.substring(1)}
+		{currentLessonId || ''}</title
+	>
+	<meta
+		name={`${currentLessonGroup} lesson `}
+		content={`${currentLessonGroup} lesson ${currentLessonId || ''}`}
+	/>
 </svelte:head>
+
 <header>
 	<nav class="main-nav">
 		<svg viewBox="0 0 2 3" aria-hidden="true">
 			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
 		</svg>
 		<ul>
-			<li aria-current={/\/tsj\/basics/.test($page.url.pathname) ? 'page' : undefined}>
+			<li aria-current={isBasicPath ? 'page' : undefined}>
 				<a href="/tsj/basics/">Basic</a>
 			</li>
-			<li aria-current={/\/tsj\/classic_techniques/.test($page.url.pathname) ? 'page' : undefined}>
+			<li aria-current={isClassicPath ? 'page' : undefined}>
 				<a href="/tsj/classic_techniques/">Classic Techniques</a>
 			</li>
-			<li aria-current={/\/tsj\/advanced_techniques/.test($page.url.pathname) ? 'page' : undefined}>
+			<li aria-current={isAdvancedPath ? 'page' : undefined}>
 				<a href="/tsj/advanced_techniques/">Advanced Techniques</a>
 			</li>
 		</ul>
@@ -34,9 +48,8 @@
 	</nav>
 	<nav class="sub-nav">
 		<ul style="list-style-type: none; display: flex; padding: 0; width: 100%%;">
-			{#each [...Array(13).keys()] as index (index)}
-				{@const lesson = `${index + 1}`}
-				{@const active = lesson === $page.params.page}
+			{#each lessonIds as lessonId (lessonId)}
+				{@const active = `${lessonId}` === currentLessonId}
 				<li
 					class="lesson-link-container"
 					aria-current={$page.url.pathname === '/tsj/basics' ? 'page' : undefined}
@@ -44,7 +57,7 @@
 					<a
 						aria-disabled={!active}
 						class={`lesson-link ${active ? 'current' : ''}`}
-						href="/tsj/basics/{lesson}">{lesson}</a
+						href="/tsj/{currentLessonGroup.replace(/ /, '_')}/{lessonId}">{lessonId}</a
 					>
 				</li>
 			{/each}
@@ -53,6 +66,9 @@
 </header>
 
 <style lang="scss">
+	head title {
+		text-transform: capitalize;
+	}
 	header {
 		display: flex;
 		flex-direction: column;
