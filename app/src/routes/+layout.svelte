@@ -3,6 +3,7 @@
 	import '../app.css';
 	import { page } from '$app/stores';
 	$: isRoot = $page.url.pathname === '/';
+	console.log('root');
 </script>
 
 <div class="app">
@@ -18,7 +19,6 @@
 		<p>Creative pratices by <strong>Ellie Broocks</strong></p>
 	</footer>
 </div>
-<slot />
 
 <style>
 	.app {
