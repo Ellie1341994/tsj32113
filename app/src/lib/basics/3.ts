@@ -40,4 +40,5 @@ RENDERER.setSize(SIZES.width, SIZES.height);
 // Render
 
 RENDERER.render(SCENE, CAMERA);
+// console.log("renderer info",RENDERER.info)
 }
