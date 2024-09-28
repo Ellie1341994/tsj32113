@@ -4,44 +4,44 @@
 	let canvas: HTMLCanvasElement;
 
 	onMount(() => {
-		const SCENE = new THREE.Scene();
+		const scene = new THREE.Scene();
 		// Objects
 		// const sphereGeometry = new THREE.SphereGeometry(1.5,32,32);
 		const GEOMETRY = new THREE.BoxGeometry(1, 1, 1);
 		const MATERIAL = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 		// Mesh
-		const MESH = new THREE.Mesh(GEOMETRY, MATERIAL);
+		const mesh = new THREE.Mesh(GEOMETRY, MATERIAL);
 		// Aggregate
-		SCENE.add(MESH);
+		scene.add(mesh);
 		// Sizes
 		const SIZES = {
 			width: 800,
 			height: 600
 		};
 		// Camera
-		const CAMERA = new THREE.PerspectiveCamera(75, SIZES.width / SIZES.height);
-		CAMERA.position.z = 3;
+		const camera = new THREE.PerspectiveCamera(75, SIZES.width / SIZES.height);
+		camera.position.z = 3;
 		// Aggregate +
-		SCENE.add(CAMERA);
+		scene.add(camera);
 		// Renderer
-		const RENDERER = new THREE.WebGLRenderer({ canvas });
-		RENDERER.setSize(SIZES.width, SIZES.height);
+		const renderer = new THREE.WebGLRenderer({ canvas });
+		renderer.setSize(SIZES.width, SIZES.height);
 		// Render
-		RENDERER.render(SCENE, CAMERA);
-		console.log('renderer info2', RENDERER.info);
+		renderer.render(scene, camera);
+		console.log('renderer info2', renderer.info);
 		return () => {
-			SCENE.traverse((node) => {
+			scene.traverse((node) => {
 				if (node instanceof THREE.Mesh) {
 					node.geometry?.dispose();
 					node.material?.dispose();
 					console.log(`${node.type} disposed`);
 				}
 			});
-			SCENE.clear();
-			SCENE.removeFromParent();
-			console.log('disposed first project allocated resources', RENDERER.info);
-			RENDERER.clear();
-			RENDERER.dispose();
+			scene.clear();
+			scene.removeFromParent();
+			console.log('disposed first project allocated resources', renderer.info);
+			renderer.clear();
+			renderer.dispose();
 			console.log('Renderer cleared and diposed');
 		};
 	});

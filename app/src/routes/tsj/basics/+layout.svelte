@@ -5,5 +5,6 @@
 </script>
 
 {#key $page.params.page}
-	<span in:fade={{ delay: 1000, duration: 1000 }} out:fade={{ duration: 500 }}><slot /></span>
+	<!-- <span in:fade={{ delay: 1000, duration: 1000 }} out:fade={{ duration: 500 }}><slot /></span> -->
+	<slot />
 {/key}
