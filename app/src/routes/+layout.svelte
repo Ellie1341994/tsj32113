@@ -38,12 +38,13 @@
 		/* margin: 0 auto; */
 		align-items: center;
 		justify-content: center;
-		/* box-sizing: border-box; */
+		box-sizing: border-box;
 	}
 
 	footer {
 		display: flex;
 		justify-content: center;
+		height: 5vh;
 	}
 
 	@media (min-width: 480px) {
