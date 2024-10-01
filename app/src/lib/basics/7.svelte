@@ -107,10 +107,10 @@
 		renderer.setSize(SIZES.width, SIZES.height);
 
 		// OrbitControl
-		const orbitControl = new OrbitControls(camera, canvas);
-		// CONTROL.enabled = false;
-		orbitControl.enableDamping = true;
-		// CONTROL.target.y = -1;
+		const control = new OrbitControls(camera, canvas);
+		// control.enabled = false;
+		control.enableDamping = true;
+		// control.target.y = -1;
 
 		// Object rotation using the mouse
 		// const tick = () => {
@@ -130,7 +130,7 @@
 		let tickId = 0;
 		const tick = () => {
 			group.rotation.x += 0.01;
-			orbitControl.update();
+			control.update();
 			renderer.render(scene, camera);
 			tickId = window.requestAnimationFrame(tick);
 		};
@@ -146,7 +146,7 @@
 			});
 			scene.clear();
 			scene.removeFromParent();
-			orbitControl.dispose();
+			control.dispose();
 			console.log('disposed first project allocated resources', renderer.info);
 			console.log('tickId', tickId);
 			window.cancelAnimationFrame(tickId);
