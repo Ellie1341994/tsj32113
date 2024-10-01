@@ -4,7 +4,7 @@
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 	let canvas: HTMLCanvasElement;
 	onMount(() => {
-		const SIZES = {
+		const sizes = {
 			width: window.innerWidth * 0.75,
 			height: window.innerHeight * 0.75
 		};
@@ -13,13 +13,13 @@
 		const setCanvasSize = () => {
 			console.log('Window size has changed.');
 			// Scene size update
-			(SIZES.width = window.innerWidth * 0.75), (SIZES.height = window.innerHeight * 0.75);
+			(sizes.width = window.innerWidth * 0.75), (sizes.height = window.innerHeight * 0.75);
 			// Camera AR update
-			camera.aspect = SIZES.width / SIZES.height;
+			camera.aspect = sizes.width / sizes.height;
 			camera.updateProjectionMatrix();
 
 			// Renderer
-			renderer.setSize(SIZES.width, SIZES.height);
+			renderer.setSize(sizes.width, sizes.height);
 			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
 		};
 		window.addEventListener('resize', setCanvasSize);
@@ -53,11 +53,11 @@
 		group.rotation.y = 0;
 		// Cubes
 		// CUBE3 written with previous code
-		const GEOMETRY = new THREE.BoxGeometry(1, 1, 1);
-		const MATERIAL = new THREE.MeshBasicMaterial({ color: 0xaf3306 });
+		const geometry = new THREE.BoxGeometry(1, 1, 1);
+		const material = new THREE.MeshBasicMaterial({ color: 0xaf3306 });
 
 		// Mesh
-		const mesh = new THREE.Mesh(GEOMETRY, MATERIAL);
+		const mesh = new THREE.Mesh(geometry, material);
 		mesh.position.x = 1.45;
 		mesh.position.y = 0;
 		mesh.position.z = 0;
@@ -86,7 +86,7 @@
 		scene.add(group);
 
 		// Camera
-		const ASPECT_RATIO = SIZES.width / SIZES.height;
+		const ASPECT_RATIO = sizes.width / sizes.height;
 		const camera = new THREE.PerspectiveCamera(75, ASPECT_RATIO, 1, 100);
 
 		// const camera = new THREE.OrthographicCamera(
@@ -104,7 +104,7 @@
 
 		const renderer = new THREE.WebGLRenderer({ canvas });
 		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
-		renderer.setSize(SIZES.width, SIZES.height);
+		renderer.setSize(sizes.width, sizes.height);
 
 		// OrbitControl
 		const control = new OrbitControls(camera, canvas);

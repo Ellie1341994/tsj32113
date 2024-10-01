@@ -66,12 +66,12 @@
 		// // POSITIONS_ARRAY[4] = 1;
 		// // POSITIONS_ARRAY[6] = 1;
 
-		// const GEOMETRY = new THREE.BufferGeometry();
-		// GEOMETRY.setAttribute("position", POSITIONS_ATTRIBUTE);
+		// const geometry = new THREE.BufferGeometry();
+		// geometry.setAttribute("position", POSITIONS_ATTRIBUTE);
 
-		// const MATERIAL = new THREE.MeshBasicMaterial({color: 0xff6666, wireframe: true})
+		// const material = new THREE.MeshBasicMaterial({color: 0xff6666, wireframe: true})
 
-		// const TRIANGLE = new THREE.Mesh(GEOMETRY, MATERIAL);
+		// const TRIANGLE = new THREE.Mesh(geometry, material);
 		// TRIANGLE.position.y = 2;
 		// group.add(TRIANGLE);
 

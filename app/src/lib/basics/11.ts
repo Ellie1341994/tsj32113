@@ -30,7 +30,7 @@ const debugObject = {color: new THREE.Color(0x888888), segments: {width: 2}, sca
 
 // Sizes
 
-const SIZES = {
+const sizes = {
     width: window.innerWidth * 0.75,
     height: window.innerHeight * 0.75
 }
@@ -39,15 +39,15 @@ const SIZES = {
 window.addEventListener('resize', () => {
     console.log('Window size has changed.')
     // Scene size update
-    SIZES.width = window.innerWidth;
-    SIZES.height = window.innerHeight;
+    sizes.width = window.innerWidth;
+    sizes.height = window.innerHeight;
     // Camera AR update
-    CAMERA.aspect = SIZES.width / SIZES.height;
-    CAMERA.updateProjectionMatrix();
+    camera.aspect = sizes.width / sizes.height;
+    camera.updateProjectionMatrix();
 
     // Renderer
-    RENDERER.setSize(SIZES.width, SIZES.height);
-    RENDERER.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
+    renderer.setSize(sizes.width, sizes.height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
 })
 
 // Full screen support feature
@@ -58,7 +58,7 @@ window.addEventListener('dblclick', () => {
 });
 
 // Scene
-const SCENE = new THREE.Scene();
+const scene = new THREE.Scene();
 
 // Objects
     // const GENERIC_MATERIAL = new THREE.MeshBasicMaterial({
@@ -83,17 +83,17 @@ const SCENE = new THREE.Scene();
         // MeshLambertMaterial
         // const GENERIC_MATERIAL = new THREE.MeshLambertMaterial(); // Actual light processing
         // const AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff,1);
-        // SCENE.add(AMBIENT_LIGHT);
+        // scene.add(AMBIENT_LIGHT);
         // const POINT_LIGHT = new THREE.PointLight(0xffffff,30);
-        // SCENE.add(POINT_LIGHT);
+        // scene.add(POINT_LIGHT);
         // POINT_LIGHT.position.set(0,0, 3);
 
         // MeshPhongMaterial
         // const GENERIC_MATERIAL = new THREE.MeshPhongMaterial(); //  More features for lighting but less performant
         // const AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff,1);
-        // SCENE.add(AMBIENT_LIGHT);
+        // scene.add(AMBIENT_LIGHT);
         // const POINT_LIGHT = new THREE.PointLight(0xffffff,30);
-        // SCENE.add(POINT_LIGHT);
+        // scene.add(POINT_LIGHT);
         // POINT_LIGHT.position.set(1,0, 3);
         // GENERIC_MATERIAL.shininess = 100;
         // GENERIC_MATERIAL.specular = new THREE.Color(0x1188ff);
@@ -101,9 +101,9 @@ const SCENE = new THREE.Scene();
         // MeshToonMaterial
         // const GENERIC_MATERIAL = new THREE.MeshToonMaterial();
         // const AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 1);
-        // SCENE.add(AMBIENT_LIGHT);
+        // scene.add(AMBIENT_LIGHT);
         // const POINT_LIGHT = new THREE.PointLight(0xffffff, 30);
-        // SCENE.add(POINT_LIGHT);
+        // scene.add(POINT_LIGHT);
         // POINT_LIGHT.position.set(3, -1, 3);
         // GRADIENT_TEXTURE.minFilter = THREE.NearestFilter;
         // GRADIENT_TEXTURE.magFilter = THREE.NearestFilter;
@@ -128,9 +128,9 @@ const SCENE = new THREE.Scene();
         // GENERIC_MATERIAL.roughness = 1;
         // GENERIC_MATERIAL.metalness = 1;
         // const AMBIENT_LIGHT = new THREE.AmbientLight(0xffffff, 1);
-        // SCENE.add(AMBIENT_LIGHT);
+        // scene.add(AMBIENT_LIGHT);
         // const POINT_LIGHT = new THREE.PointLight(0xffffff, 30);
-        // SCENE.add(POINT_LIGHT);
+        // scene.add(POINT_LIGHT);
         // POINT_LIGHT.position.set(3, -1, 3);
         // GENERIC_MATERIAL.roughness = 0.1; // values before using aoMap to roughness-metalness maps
         // GENERIC_MATERIAL.metalness = 0.8;
@@ -183,8 +183,8 @@ const SCENE = new THREE.Scene();
         RGBE_LOADER.load(`${lessonAssetsPath}/environmentMap/2k.hdr`, (environmentMap: any) =>
         {
             environmentMap.mapping = THREE.EquirectangularReflectionMapping;
-            SCENE.background = environmentMap;
-            SCENE.environment = environmentMap;
+            scene.background = environmentMap;
+            scene.environment = environmentMap;
         })
 
         // For all Material types 
@@ -212,11 +212,11 @@ const SCENE = new THREE.Scene();
     SPHERE.scale.set(0.5,0.5,0.5)
 
 // Group
-const GROUP = new THREE.Group();
-GROUP.add(RING, PLANE, SPHERE);
+const group = new THREE.Group();
+group.add(RING, PLANE, SPHERE);
 // // Aggregate
-// SCENE.add(PLANE, RING, SPHERE);
-SCENE.add(GROUP);
+// scene.add(PLANE, RING, SPHERE);
+scene.add(group);
 
 // Gui objects
 // const LIMITS = [-25, 25, 1]
@@ -267,33 +267,33 @@ MESH_TWEAKS.add(debugObject, 'spinRing');
 MESH_TWEAKS.add(debugObject, 'spinSphere');
 MESH_TWEAKS.close();
 // Camera
-const ASPECT_RATIO = SIZES.width / SIZES.height
-const CAMERA = new THREE.PerspectiveCamera(75, ASPECT_RATIO, 1, 100);
+const ASPECT_RATIO = sizes.width / sizes.height
+const camera = new THREE.PerspectiveCamera(75, ASPECT_RATIO, 1, 100);
 
-CAMERA.position.set(0, 0, 5);
-CAMERA.lookAt(PLANE.position)
+camera.position.set(0, 0, 5);
+camera.lookAt(PLANE.position)
 // Aggregate +
-SCENE.add(CAMERA);
+scene.add(camera);
 
 // Renderer
 
 
-const RENDERER = new THREE.WebGLRenderer({canvas});
-RENDERER.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
-RENDERER.setSize(SIZES.width, SIZES.height);
+const renderer = new THREE.WebGLRenderer({canvas});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
+renderer.setSize(sizes.width, sizes.height);
 
 // OrbitControl
-const CONTROL = new OrbitControls(CAMERA, canvas);
-CONTROL.enableDamping = true;
+const control = new OrbitControls(camera, canvas);
+control.enableDamping = true;
 
 
 const tick = () => {
     
-    GROUP.rotation.x += 0.01;
-    // GROUP.rotation.y += 0.01;
-    // GROUP.rotation.z += 0.01;
-    CONTROL.update();
-    RENDERER.render(SCENE, CAMERA);
+    group.rotation.x += 0.01;
+    // group.rotation.y += 0.01;
+    // group.rotation.z += 0.01;
+    control.update();
+    renderer.render(scene, camera);
     window.requestAnimationFrame(tick);
 }
 

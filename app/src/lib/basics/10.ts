@@ -51,7 +51,7 @@ const debugObject = {color: 0x9a9996, segments: { width: 2}, scale: 0, spin: () 
 
 // Sizes
 
-const SIZES = {
+const sizes = {
     width: window.innerWidth * 0.75,
     height: window.innerHeight * 0.75
 }
@@ -60,15 +60,15 @@ const SIZES = {
 window.addEventListener('resize', () => {
     console.log('Window size has changed.')
     // Scene size update
-    SIZES.width = window.innerWidth;
-    SIZES.height = window.innerHeight;
+    sizes.width = window.innerWidth;
+    sizes.height = window.innerHeight;
     // Camera AR update
-    CAMERA.aspect = SIZES.width / SIZES.height;
-    CAMERA.updateProjectionMatrix();
+    camera.aspect = sizes.width / sizes.height;
+    camera.updateProjectionMatrix();
 
     // Renderer
-    RENDERER.setSize(SIZES.width, SIZES.height);
-    RENDERER.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
+    renderer.setSize(sizes.width, sizes.height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
 })
 
 // Full screen support feature
@@ -79,7 +79,7 @@ window.addEventListener('dblclick', () => {
 });
 
 // Scene
-const SCENE = new THREE.Scene();
+const scene = new THREE.Scene();
 
 // Objects
     // Rinrg
@@ -98,8 +98,8 @@ const SCENE = new THREE.Scene();
     CUBE1.position.set(1,0,0);
 
 // Aggregate
-SCENE.add(CUBE1);
-SCENE.add(RING1);
+scene.add(CUBE1);
+scene.add(RING1);
 
 // Gui objects
 // const LIMITS = [-25, 25, 1]
@@ -143,31 +143,31 @@ const MESH_TWEAKS = G_U_I.addFolder('Animation Folder');
 MESH_TWEAKS.add(debugObject, 'spin')
 MESH_TWEAKS.close();
 // Camera
-const ASPECT_RATIO = SIZES.width / SIZES.height
-const CAMERA = new THREE.PerspectiveCamera(75, ASPECT_RATIO, 1, 100);
+const ASPECT_RATIO = sizes.width / sizes.height
+const camera = new THREE.PerspectiveCamera(75, ASPECT_RATIO, 1, 100);
 
-CAMERA.position.set(0, 0, 5);
-CAMERA.lookAt(CUBE1.position)
+camera.position.set(0, 0, 5);
+camera.lookAt(CUBE1.position)
 // Aggregate +
-SCENE.add(CAMERA);
+scene.add(camera);
 
 // Renderer
 
 
-const RENDERER = new THREE.WebGLRenderer({canvas});
-RENDERER.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
-RENDERER.setSize(SIZES.width, SIZES.height);
+const renderer = new THREE.WebGLRenderer({canvas});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
+renderer.setSize(sizes.width, sizes.height);
 
 // OrbitControl
-const CONTROL = new OrbitControls(CAMERA, canvas);
-CONTROL.enableDamping = true;
+const control = new OrbitControls(camera, canvas);
+control.enableDamping = true;
 
 
 const tick = () => {
     
-    // GROUP.rotation.x += 0.01;
-    CONTROL.update();
-    RENDERER.render(SCENE, CAMERA);
+    // group.rotation.x += 0.01;
+    control.update();
+    renderer.render(scene, camera);
     window.requestAnimationFrame(tick);
 }
 

@@ -17,11 +17,11 @@
 		group.rotation.y = 0;
 		// Cubes
 		// CUBE3 written with previous code
-		const GEOMETRY = new THREE.BoxGeometry(1, 1, 1);
-		const MATERIAL = new THREE.MeshBasicMaterial({ color: 0xaf0006 });
+		const geometry = new THREE.BoxGeometry(1, 1, 1);
+		const material = new THREE.MeshBasicMaterial({ color: 0xaf0006 });
 
 		// Mesh
-		const mesh = new THREE.Mesh(GEOMETRY, MATERIAL);
+		const mesh = new THREE.Mesh(geometry, material);
 		mesh.position.x = 1.45;
 		mesh.position.y = 0;
 		mesh.position.z = 0;
@@ -58,14 +58,14 @@
 
 		// Sizes
 
-		const SIZES = {
+		const sizes = {
 			width: 800,
 			height: 600
 		};
 
 		// Camera
 
-		const camera = new THREE.PerspectiveCamera(75, SIZES.width / SIZES.height);
+		const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height);
 		camera.position.z = 3;
 
 		// Potentially useful prop.
@@ -76,7 +76,7 @@
 
 		// Renderer
 		const renderer = new THREE.WebGLRenderer({ canvas });
-		renderer.setSize(SIZES.width, SIZES.height);
+		renderer.setSize(sizes.width, sizes.height);
 
 		// Render
 

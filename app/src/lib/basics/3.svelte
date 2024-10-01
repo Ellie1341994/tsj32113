@@ -7,25 +7,25 @@
 		const scene = new THREE.Scene();
 		// Objects
 		// const sphereGeometry = new THREE.SphereGeometry(1.5,32,32);
-		const GEOMETRY = new THREE.BoxGeometry(1, 1, 1);
-		const MATERIAL = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+		const geometry = new THREE.BoxGeometry(1, 1, 1);
+		const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 		// Mesh
-		const mesh = new THREE.Mesh(GEOMETRY, MATERIAL);
+		const mesh = new THREE.Mesh(geometry, material);
 		// Aggregate
 		scene.add(mesh);
 		// Sizes
-		const SIZES = {
+		const sizes = {
 			width: 800,
 			height: 600
 		};
 		// Camera
-		const camera = new THREE.PerspectiveCamera(75, SIZES.width / SIZES.height);
+		const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height);
 		camera.position.z = 3;
 		// Aggregate +
 		scene.add(camera);
 		// Renderer
 		const renderer = new THREE.WebGLRenderer({ canvas });
-		renderer.setSize(SIZES.width, SIZES.height);
+		renderer.setSize(sizes.width, sizes.height);
 		// Render
 		renderer.render(scene, camera);
 		console.log('renderer info2', renderer.info);

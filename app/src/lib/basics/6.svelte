@@ -6,9 +6,9 @@
 	onMount(() => {
 		// Sizes
 
-		const SIZES = {
-			width: 800,
-			height: 600
+		const sizes = {
+			width: Math.min(800, window.innerWidth * 0.75),
+			height: Math.min(800, window.innerHeight * 0.75)
 		};
 
 		/*
@@ -16,8 +16,8 @@
 */
 		const CURSOR = { x: 0, y: 0 };
 		const setCursorCoordinates = (event: any) => {
-			CURSOR.x = event.clientX / SIZES.width - 0.5;
-			CURSOR.y = event.clientY / SIZES.height - 0.5;
+			CURSOR.x = event.clientX / sizes.width - 0.5;
+			CURSOR.y = event.clientY / sizes.height - 0.5;
 			console.log(`x:${CURSOR.x} y:${CURSOR.y}`);
 		};
 		window.addEventListener('mousemove', setCursorCoordinates);
@@ -32,11 +32,11 @@
 		group.rotation.y = 0;
 		// Cubes
 		// CUBE3 written with previous code
-		const GEOMETRY = new THREE.BoxGeometry(1, 1, 1);
-		const MATERIAL = new THREE.MeshBasicMaterial({ color: 0xaf6606 });
+		const geometry = new THREE.BoxGeometry(1, 1, 1);
+		const material = new THREE.MeshBasicMaterial({ color: 0xaf6606 });
 
 		// Mesh
-		const mesh = new THREE.Mesh(GEOMETRY, MATERIAL);
+		const mesh = new THREE.Mesh(geometry, material);
 		mesh.position.x = 1.45;
 		mesh.position.y = 0;
 		mesh.position.z = 0;
@@ -65,7 +65,7 @@
 		scene.add(group);
 
 		// Camera
-		const ASPECT_RATIO = SIZES.width / SIZES.height;
+		const ASPECT_RATIO = sizes.width / sizes.height;
 		const camera = new THREE.PerspectiveCamera(75, ASPECT_RATIO, 1, 100);
 
 		// const camera = new THREE.OrthographicCamera(
@@ -81,12 +81,12 @@
 
 		// Renderer
 		const renderer = new THREE.WebGLRenderer({ canvas });
-		renderer.setSize(SIZES.width, SIZES.height);
+		renderer.setSize(sizes.width, sizes.height);
 
 		// OrbitControl
-		const orbitControl = new OrbitControls(camera, canvas);
-		orbitControl.enableDamping = true;
-		// CONTROL.target.y = -1;
+		const control = new OrbitControls(camera, canvas);
+		control.enableDamping = true;
+		// control.target.y = -1;
 
 		// Object rotation using the mouse
 		// const tick = () => {
@@ -106,7 +106,7 @@
 		const tickId: number = 0;
 		const tick = () => {
 			group.rotation.x += 0.01;
-			orbitControl.update();
+			control.update();
 			renderer.render(scene, camera);
 			window.requestAnimationFrame(tick);
 		};
@@ -122,7 +122,7 @@
 			});
 			scene.clear();
 			scene.removeFromParent();
-			orbitControl.dispose();
+			control.dispose();
 			console.log('disposed first project allocated resources', renderer.info);
 			console.log('tickId', tickId);
 			window.cancelAnimationFrame(tickId);
