@@ -1,7 +1,6 @@
 <script lang="ts">
 	import gsap from 'gsap';
 	import { onMount } from 'svelte';
-
 	import * as THREE from 'three';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 	let canvas: HTMLCanvasElement;
@@ -146,7 +145,6 @@
 			renderer.clear();
 			renderer.dispose();
 			window.removeEventListener('resize', setCanvasSize);
-
 			window.removeEventListener('dbclick', setCanvasSize);
 			console.log('Renderer cleared and diposed');
 		}
@@ -155,6 +153,3 @@
 </script>
 
 <canvas class="webgl" bind:this={canvas}></canvas>
-
-<style>
-</style>
