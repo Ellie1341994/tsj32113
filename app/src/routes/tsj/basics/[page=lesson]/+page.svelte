@@ -1,20 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { getContext, onMount, SvelteComponent } from 'svelte';
-	import * as THREE from 'three';
-	import gsap from 'gsap';
-	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-	import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
-	import GUI from 'lil-gui';
-	import { lessonTitles } from '$lib/lessonTitles';
-	// console.log($page.data);
+	import Icon2 from '$lib/icon2.svelte';
 
 	let lesson = parseInt($page.params.page);
-	let canvas: HTMLCanvasElement;
 </script>
 
 {#await import(`../../../../lib/basics/${lesson}.svelte`)}
-	"Loading lesson " {lesson}
+	<Icon2 />
 {:then Scene}
 	<svelte:component this={Scene.default} />
 {/await}
