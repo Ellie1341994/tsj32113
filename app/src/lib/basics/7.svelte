@@ -153,8 +153,7 @@
 			renderer.clear();
 			renderer.dispose();
 			window.removeEventListener('resize', setCanvasSize);
-
-			window.removeEventListener('dbclick', setCanvasSize);
+			window.removeEventListener('dbclick', fullscreenOnOff);
 			console.log('Renderer cleared and diposed');
 		}
 		return disposeScene;
