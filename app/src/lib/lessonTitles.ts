@@ -1,5 +1,5 @@
 	export const lessonTitles = [
-		null,
+		// null,
 		'Introduction to ThreeJs',
 		'What is WebGL and why use Three.js',
 		'First Three.js Project',
