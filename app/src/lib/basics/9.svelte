@@ -199,7 +199,6 @@
 <style>
 	span.lil-gui-placer {
 		position: absolute;
-		position: absolute;
 		top: 20vh;
 		right: 13.5vw;
 	}
