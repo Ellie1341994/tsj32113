@@ -1,4 +1,5 @@
 <script lang="ts">
+	import gsap from 'gsap';
 	// import { page } from '$app/stores';
 	// BIG NOTE: REMAINING MEMORY ALLOCATED SEEMS TO BE INTERNAT TO THREE.JS
 	// import gsap from 'gsap';
@@ -13,7 +14,7 @@
 	onMount(() => {
 		// Texture
 		const textureLoader = new THREE.TextureLoader();
-		const lessonAssetsPath = '../../src/lib/basics/assets/12/textures';
+		const lessonAssetsPath = '../../src/lib/classic_techniques/assets/15/textures';
 		// const bakedShadows = textureLoader.load("./textures/bakedShadow.jpg");
 		// bakedShadows.colorSpace = THREE.SRGBColorSpace;
 		const simpleShadows = textureLoader.load(`${lessonAssetsPath}/simpleShadow.jpg`);
@@ -26,7 +27,21 @@
 
 		// Scene
 		const scene = new THREE.Scene();
+		const setCanvasSize = () => {
+			// Update camera
+			camera.aspect = sizes.width / sizes.height;
+			camera.updateProjectionMatrix();
 
+			// Update renderer
+			renderer.setSize(sizes.width, sizes.height);
+			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+		};
+		window.addEventListener('resize', setCanvasSize);
+		// Full screen support feature
+		const fullscreenOnOff = () => {
+			document.fullscreenElement ? document.exitFullscreen() : canvas?.requestFullscreen();
+		};
+		window.addEventListener('dblclick', fullscreenOnOff);
 		/**
 		 * Lights
 		 */
@@ -90,6 +105,7 @@
 		 */
 		const material = new THREE.MeshStandardMaterial();
 		material.roughness = 0.7;
+		material.side = THREE.DoubleSide;
 		gui.add(material, 'metalness').min(0).max(1).step(0.001);
 		gui.add(material, 'roughness').min(0).max(1).step(0.001);
 
@@ -121,14 +137,17 @@
 		sphereShadow.rotation.x = -Math.PI * 0.5;
 		sphereShadow.position.y = plane.position.y + 0.01;
 
-		scene.add(sphere, sphereShadow, plane);
-
+		const axesHelper = new THREE.AxesHelper(10);
+		axesHelper.setColors('red', 'blue', 'yellow');
+		scene.add(sphere, sphereShadow, plane, axesHelper);
+		gsap.fromTo(plane.rotation, { z: 0 }, { duration: 9, z: 3, repeat: -1, yoyo: true });
+		gsap.fromTo(axesHelper.rotation, { z: 0 }, { duration: 9, z: 3, repeat: -1, yoyo: true });
 		/**
 		 * Sizes
 		 */
 		const sizes = {
-			width: window.innerWidth,
-			height: window.innerHeight
+			width: window.innerWidth * 0.75,
+			height: window.innerHeight * 0.75
 		};
 
 		window.addEventListener('resize', () => {
@@ -150,14 +169,14 @@
 		 */
 		// Base camera
 		const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
-		camera.position.x = 1;
-		camera.position.y = 1;
-		camera.position.z = 2;
+		camera.position.x = 4;
+		camera.position.y = 2;
+		camera.position.z = 4;
 		scene.add(camera);
 
 		// Controls
-		const controls = new OrbitControls(camera, canvas);
-		controls.enableDamping = true;
+		const control = new OrbitControls(camera, canvas);
+		control.enableDamping = true;
 
 		/**
 		 * Renderer
@@ -174,7 +193,7 @@
 		 * Animate
 		 */
 		const clock = new THREE.Clock();
-
+		let tickId = 0;
 		const tick = () => {
 			const elapsedTime = clock.getElapsedTime();
 			// Update the sphere
@@ -187,16 +206,48 @@
 			sphereShadow.position.z = sphere.position.z;
 			sphereShadow.material.opacity = (1 - sphere.position.y) * 0.3;
 			// Update controls
-			controls.update();
+			control.update();
 
 			// Render
 			renderer.render(scene, camera);
 
 			// Call tick again on the next frame
-			window.requestAnimationFrame(tick);
+			tickId = window.requestAnimationFrame(tick);
 		};
 
 		tick();
+
+		function disposeScene() {
+			let disposeExecutions = 0;
+			function disposeAll(node: any) {
+				if (node instanceof THREE.Mesh) {
+					node.geometry?.dispose();
+					node.material?.dispose();
+					node.material?.alphaMap?.dispose();
+					console.log(`${node.type} disposed`);
+					disposeExecutions++;
+				} else if ((node instanceof THREE.Texture || node.isObject3D) && node.dispose) {
+					node.dispose();
+					disposeExecutions++;
+				}
+			}
+			scene.traverse(disposeAll);
+			scene.clear();
+			scene.removeFromParent();
+			control.dispose();
+			console.log(`disposed first project allocated resources`, renderer.info);
+			gui.destroy();
+			console.log('GUI destroyed');
+			console.log('tickId', tickId);
+			window.cancelAnimationFrame(tickId);
+			window.removeEventListener('resize', setCanvasSize);
+			window.removeEventListener('dbclick', fullscreenOnOff);
+			console.log('Tick disposed');
+			renderer.clear();
+			renderer.dispose();
+			console.log(`Renderer cleared and diposed ${disposeExecutions + 2} times`);
+		}
+		return disposeScene;
 	});
 </script>
 
