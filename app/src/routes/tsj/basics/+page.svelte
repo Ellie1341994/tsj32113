@@ -5,7 +5,7 @@
 <slot />
 <article>
 	<h2>Summary of personal tweaks on basic lessons</h2>
-	{#each lessonTitles as sectionTitle, i (sectionTitle)}
+	{#each lessonTitles.slice(0, 13) as sectionTitle, i (sectionTitle)}
 		<section>
 			<h3>{i + 1} ~ {sectionTitle}</h3>
 			Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium iste voluptatem doloremque

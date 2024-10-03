@@ -1,15 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { fade, fly } from 'svelte/transition';
+	console.log('checking for duplicated execution: basics');
 </script>
 
-<svelte:head>
-	{#if /advanced_techniques$/.test($page.url.pathname)}
-		<title>TSJ. Advanced Techniques</title>
-		<meta name="Basics" content="Example set of basic techniques regarding ThreeJS" />
-	{:else}
-		{@const lesson = $page.params.page}
-		<title>TSJ. {lesson}</title>
-		<meta name="Basics lesson {lesson}" content="Lesson {lesson} code" />
-	{/if}
-</svelte:head>
-<slot />
+{#key $page.params.page}
+	<!-- <span in:fade={{ delay: 1000, duration: 1000 }} out:fade={{ duration: 500 }}><slot /></span> -->
+	<slot />
+{/key}
