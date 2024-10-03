@@ -119,6 +119,7 @@
 		torus.position.x = 1.5;
 
 		const plane = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), material);
+		plane.material.side = THREE.DoubleSide;
 		plane.rotation.x = -Math.PI * 0.5;
 		plane.position.y = -0.65;
 
