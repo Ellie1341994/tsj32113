@@ -7,7 +7,6 @@
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-	import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js';
 	let canvas: HTMLCanvasElement;
 	let lilGuiPlacer: HTMLSpanElement;
 
@@ -23,7 +22,12 @@
 		 * Base
 		 */
 		// Debug
-		const gui = new GUI();
+		const gui = new GUI({
+			// width: 300,
+			title: 'Tweaks Panel',
+			closeFolders: false,
+			container: lilGuiPlacer
+		});
 
 		// Scene
 		const scene = new THREE.Scene();
