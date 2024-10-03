@@ -7,8 +7,8 @@
 		// Sizes
 
 		const sizes = {
-			width: Math.min(800, window.innerWidth * 0.75),
-			height: Math.min(800, window.innerHeight * 0.75)
+			width: window.innerWidth >= 800 ? 800 : window.innerWidth * 0.5,
+			height: window.innerHeight >= 600 ? 600 : window.innerHeight * 0.5
 		};
 
 		/*
