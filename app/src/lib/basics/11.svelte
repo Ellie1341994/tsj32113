@@ -44,7 +44,7 @@
 			segments: { width: 2 },
 			scale: 0,
 			spinPlane: () => {},
-			spinSphere: () => {},
+			planeToBox: () => {},
 			spinRing: () => {}
 		};
 		// Sizes
@@ -242,7 +242,7 @@
 			.add(debugObject, 'scale', 0, 5, 0.1)
 			.name('Scale all')
 			.onChange(() => {
-				PLANE.scale.set(...[3, 3, 3]);
+				PLANE.scale.set(3, 3, 3);
 				PLANE.scale.x = debugObject.scale;
 			});
 
@@ -253,24 +253,30 @@
 		});
 
 		// Adding segment slider and geometry change (a box with segments)
-		debugObject.segments = { width: 2 };
+		debugObject.segments = { width: 1 };
 		gui
 			.add(debugObject.segments, 'width')
 			.min(1)
 			.max(4)
 			.step(1)
 			.name('Width segments')
-			.onFinishChange(() => {
+			.onFinishChange((value: any) => {
 				PLANE.geometry.dispose(); // it frees memory and avoids leaks from previously instanced entities
-				PLANE.geometry = new THREE.BoxGeometry(1, 1, 1, debugObject.segments.width);
+				// debugObject.segments.width = value;
+				PLANE.geometry = new THREE.PlaneGeometry(1, 1, 1, value);
 			});
 
 		debugObject.spinPlane = () => {
 			gsap.to(PLANE.rotation, { y: PLANE.rotation.y + Math.PI * 0.5 });
 		};
-		debugObject.spinSphere = () => {
-			gsap.to(SPHERE.rotation, { y: SPHERE.rotation.y + Math.PI * 0.5 });
+		debugObject.planeToBox = () => {
+			PLANE.geometry.dispose();
+			PLANE.geometry =
+				PLANE.geometry instanceof THREE.PlaneGeometry
+					? new THREE.BoxGeometry(1, 1, 1)
+					: new THREE.PlaneGeometry(1, 1, debugObject.segments.width);
 		};
+
 		debugObject.spinRing = () => {
 			gsap.to(RING.rotation, { y: RING.rotation.y + Math.PI * 0.5 });
 		};
@@ -279,7 +285,7 @@
 		const MESH_TWEAKS = gui.addFolder('Animation Folder');
 		MESH_TWEAKS.add(debugObject, 'spinPlane');
 		MESH_TWEAKS.add(debugObject, 'spinRing');
-		MESH_TWEAKS.add(debugObject, 'spinSphere');
+		MESH_TWEAKS.add(debugObject, 'planeToBox');
 		MESH_TWEAKS.close();
 		// Camera
 		const ASPECT_RATIO = sizes.width / sizes.height;
