@@ -2,7 +2,7 @@
 	import { lessonTitles } from '$lib/lessonTitles';
 </script>
 
-<slot />
+<!-- <slot /> -->
 <article>
 	<h2>Summary of personal tweaks on classic techniques lessons</h2>
 	{#each lessonTitles.slice(13, 20) as sectionTitle, i (sectionTitle)}
