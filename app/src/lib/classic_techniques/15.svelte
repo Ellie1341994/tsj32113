@@ -42,10 +42,10 @@
 		};
 		window.addEventListener('resize', setCanvasSize);
 		// Full screen support feature
-		const fullscreenOnOff = () => {
+		const toggleFullscreen = () => {
 			document.fullscreenElement ? document.exitFullscreen() : canvas?.requestFullscreen();
 		};
-		window.addEventListener('dblclick', fullscreenOnOff);
+		window.addEventListener('dblclick', toggleFullscreen);
 		/**
 		 * Lights
 		 */
@@ -245,7 +245,7 @@
 			console.log('tickId', tickId);
 			window.cancelAnimationFrame(tickId);
 			window.removeEventListener('resize', setCanvasSize);
-			window.removeEventListener('dbclick', fullscreenOnOff);
+			window.removeEventListener('dbclick', toggleFullscreen);
 			console.log('Tick disposed');
 			renderer.clear();
 			renderer.dispose();

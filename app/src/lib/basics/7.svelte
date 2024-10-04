@@ -26,7 +26,7 @@
 
 		// Full screen support feature
 		// Note: Safari may not have current support for this native js features and may need custom code to handle fullscreen support
-		const fullscreenOnOff = () => {
+		const toggleFullscreen = () => {
 			// console.log('Double clicked!');
 			if (document.fullscreenElement) {
 				document.exitFullscreen();
@@ -40,7 +40,7 @@
 			// document.exitFullscreen();
 			// }
 		};
-		window.addEventListener('dblclick', fullscreenOnOff);
+		window.addEventListener('dblclick', toggleFullscreen);
 
 		// Scene
 		const scene = new THREE.Scene();
@@ -153,7 +153,7 @@
 			renderer.clear();
 			renderer.dispose();
 			window.removeEventListener('resize', setCanvasSize);
-			window.removeEventListener('dbclick', fullscreenOnOff);
+			window.removeEventListener('dbclick', toggleFullscreen);
 			console.log('Renderer cleared and diposed');
 		}
 		return disposeScene;

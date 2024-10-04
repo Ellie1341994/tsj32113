@@ -46,10 +46,10 @@
 		window.addEventListener('resize', setCanvasSize);
 
 		// Full screen support feature
-		const fullscreenOnOff = () => {
+		const toggleFullscreen = () => {
 			document.fullscreenElement ? document.exitFullscreen() : canvas?.requestFullscreen();
 		};
-		window.addEventListener('dblclick', fullscreenOnOff);
+		window.addEventListener('dblclick', toggleFullscreen);
 
 		// Scene
 		const scene = new THREE.Scene();

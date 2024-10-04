@@ -30,10 +30,10 @@
 
 		// Full screen support feature
 		// Note: Safari may not have current support for this native js features and may need custom code to handle fullscreen support
-		const fullscreenOnOff = () => {
+		const toggleFullscreen = () => {
 			document.fullscreenElement ? document.exitFullscreen() : canvas?.requestFullscreen();
 		};
-		window.addEventListener('dblclick', fullscreenOnOff);
+		window.addEventListener('dblclick', toggleFullscreen);
 
 		// Scene
 		const scene = new THREE.Scene();
