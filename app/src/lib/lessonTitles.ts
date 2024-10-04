@@ -12,5 +12,11 @@
 		'Textures',
 		'Materials',
 		'3D Text',
-		'Go Live'
+		'Go Live',
+		'Lights',
+		'Shadows',
+		'Haunted House',
+		'Particles',
+		'Galaxy Generator',
+		'Scroll based animation',
 	];
