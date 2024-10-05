@@ -1,16 +1,17 @@
 <script>
 	import { lessonTitles } from '$lib/lessonTitles';
+	import { DIFFERENCES } from '$lib/static/lessons/content/differences';
 </script>
 
 <!-- <slot /> -->
 <article>
-	<h2>Summary of personal tweaks on classic techniques lessons</h2>
+	<h2>Personal takes on lessons</h2>
 	{#each lessonTitles.slice(13, 20) as sectionTitle, i (sectionTitle)}
 		<section>
 			<h3>{i + 14} ~ {sectionTitle}</h3>
-			Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium iste voluptatem doloremque
-			quia praesentium maxime, officia recusandae incidunt, dolore eveniet, quas iusto expedita! Cum
-			ad molestiae rem qui velit culpa.
+			{#each Object.values(DIFFERENCES[sectionTitle] || {}) as DIF (DIF)}
+				<ul><ol>{DIF || 'Test'}</ol></ul>
+			{/each}
 		</section>
 	{/each}
 </article>
