@@ -19,3 +19,9 @@ const lesson16 = lessonTitles[13]
         4: "Custom door texture",
         5: "Custom grave sizes and placement",
     }
+    const lesson17 = lessonTitles[17]
+    DIFFERENCES[lesson16] = {
+        1: "Wave Animated on X axes and mantained the rotation ", 
+        2: "Yellow colored",
+        3: "Tweaks panel",
+    }

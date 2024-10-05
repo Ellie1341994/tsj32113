@@ -26,6 +26,7 @@
 		// Textures
 		const TEXTURE_LOADER = new THREE.TextureLoader();
 		const PARTICLE_TEXTURE = TEXTURE_LOADER.load(`${ASSETS_BASE_PATH}/particles/2.png`);
+
 		// Particles
 		const sphericParticles = new THREE.Points(
 			new THREE.SphereGeometry(1, 32, 32),
@@ -37,7 +38,7 @@
 
 		// Custom Particles
 		const bfG = new THREE.BufferGeometry();
-		const particleAmount = 5000;
+		const particleAmount = 25000;
 		const dimensions = 3;
 		const verticesSize = particleAmount * dimensions;
 		const vertices = new Float32Array(verticesSize).map(() => (Math.random() - 0.5) * 10);
@@ -60,17 +61,24 @@
 		// depthTest positional issue example with cube
 		const cube = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshBasicMaterial());
 		cube.visible = false;
-		visibilityFolder.add(cube, 'visible').name(cube.type + ' Cube');
-
 		customParticles.material.depthWrite = false;
-
+		// Blending
+		customParticles.material.blending = THREE.AdditiveBlending;
+		// Color
+		const colorVertices = new Float32Array(verticesSize).map(() => Math.random());
+		customParticles.geometry.setAttribute(
+			'color',
+			new THREE.BufferAttribute(colorVertices, dimensions)
+		);
+		customParticles.material.vertexColors = true;
+		visibilityFolder.add(cube, 'visible').name(cube.type + ' Cube');
 		customParticles.material.alphaMap = PARTICLE_TEXTURE;
 		// Scene
 		const scene = new THREE.Scene();
 		scene.add(cube, sphericParticles, customParticles);
 		// Cam
 		const camera = new THREE.PerspectiveCamera(75, ASPECT_RATIO);
-		camera.position.z = 3;
+		camera.position.z = 13;
 		const control = new OrbitControls(camera, canvas);
 		// Feature: Fullscreen
 		// Size fix on toggle off
@@ -95,16 +103,68 @@
 		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 		// Play
-		const timer = new Timer();
+		// const timer = new Timer();
 		let tickId: number;
+		const clock = new THREE.Clock();
 		function tick() {
-			timer.update();
+			// Particle animation
+			const elapsedTime = clock.getElapsedTime();
+			customParticles.rotation.z = elapsedTime * 0.03;
+			for (let i = 0; i < particleAmount; i++) {
+				const i3 = i * dimensions;
+				const xCoord = i3;
+				const yCoord = i3 + 1;
+				const zCoord = i3 + 2;
+				const currentX = customParticles.geometry.attributes.position.array[xCoord];
+				const currentY = customParticles.geometry.attributes.position.array[yCoord];
+				const currentZ = customParticles.geometry.attributes.position.array[zCoord];
+				customParticles.geometry.attributes.position.array[xCoord] = Math.sin(
+					elapsedTime + currentY
+				);
+				// customParticles.geometry.attributes.position.array[yCoord] = Math.cos(elapsedTime);
+				// customParticles.geometry.attributes.position.array[zCoord] = Math.cos(elapsedTime);
+
+				// console.log(`i:${i} y:${yCoord}`);
+			}
+			customParticles.geometry.attributes.position.needsUpdate = true;
+			// timer.update();
 			// const elapsedTime = timer.getElapsed();
 			control.update();
 			renderer.render(scene, camera);
 			tickId = window.requestAnimationFrame(tick);
 		}
 		tick();
+		function disposeScene() {
+			function disposeAll(node: any) {
+				bfG.dispose();
+				PARTICLE_TEXTURE.dispose();
+				if (node instanceof THREE.Mesh) {
+					node.geometry?.dispose();
+					if (node.material) {
+						node.material.alphaMap?.dispose(), node.material?.dispose();
+					}
+					console.log(`${node.type} disposed`);
+				} else if ((node instanceof THREE.Texture || node.isObject3D) && node.dispose) {
+					node.dispose();
+				}
+			}
+			scene.traverse(disposeAll);
+			scene.clear();
+			scene.removeFromParent();
+			control.dispose();
+			console.log(`disposed first project allocated resources`, renderer.info);
+			gui.destroy();
+			console.log(`GUI destroyed`);
+			console.log(`tickId`, tickId);
+			window.cancelAnimationFrame(tickId);
+			window.removeEventListener(`resize`, setCanvasSize);
+			window.removeEventListener(`dbclick`, toggleFullscreen);
+			console.log(`Tick disposed`);
+			renderer.clear();
+			renderer.dispose();
+			console.log(`Renderer cleared and`);
+		}
+		return disposeScene;
 	});
 </script>
 
