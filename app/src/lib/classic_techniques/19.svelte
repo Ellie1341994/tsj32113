@@ -43,10 +43,10 @@
 		});
 		gui.hide();
 		// Hide UI
-		const levitateGravesByKeyPress = (event: any) => {
+		const hideGui = (event: any) => {
 			event.key === ' ' && gui.hide();
 		};
-		window.addEventListener('keydown', levitateGravesByKeyPress);
+		window.addEventListener('keydown', hideGui);
 		// Textures
 		const textureLoader = new THREE.TextureLoader();
 		const gradientTexture = textureLoader.load(`${ASSETS_BASE_PATH}/gradients/3.jpg`);
@@ -64,16 +64,16 @@
 		const torus = new THREE.Mesh(new THREE.TorusGeometry(1, 0.4, 16, 60), toonMaterial);
 		const cone = new THREE.Mesh(new THREE.ConeGeometry(1, 2, 32), toonMaterial);
 		const knot = new THREE.Mesh(new THREE.TorusKnotGeometry(0.8, 0.35, 100, 16), toonMaterial);
-		torus.position.y = -meshDistance * 0;
+		torus.position.y = -meshDistance * 2;
 		cone.position.y = -meshDistance * 1;
-		knot.position.y = -meshDistance * 2;
+		knot.position.y = -meshDistance * 0;
 
 		torus.position.x = 2;
 		cone.position.x = -2;
 		knot.position.x = 2;
-		const meshes = [torus, cone, knot];
+		const meshes = [knot, cone, torus];
 		// Particles
-		const particlesAmount = 777;
+		const particlesAmount = 9999;
 		const dimensions = 3;
 		const vertices = new Float32Array(particlesAmount * dimensions);
 		for (let i = 0; i < particlesAmount; i++) {
@@ -87,7 +87,7 @@
 		const pMaterial = new THREE.PointsMaterial({
 			color: parameters.materialColor,
 			sizeAttenuation: true,
-			size: 0.09
+			size: 0.03
 		});
 		const particles = new THREE.Points(pGeometry, pMaterial);
 		// particles.position.set(0, 1, -3);
@@ -103,7 +103,7 @@
 		directionalLight.position.set(1, 1, 0);
 		// Scene
 		const scene = new THREE.Scene();
-		scene.add(torus, cone, knot, directionalLight, particles);
+		scene.add(knot, cone, torus, directionalLight, particles);
 		// Camera
 		const camera = new THREE.PerspectiveCamera(75, ASPECT_RATIO, 0.1, 100);
 		camera.position.z = 3;
@@ -173,12 +173,41 @@
 		}
 		tick();
 		// Resources Management
+		function disposeScene() {
+			function disposeAll(node: any) {
+				pGeometry?.dispose();
+				gradientTexture.dispose();
+				if (node instanceof THREE.Mesh) {
+					node.geometry?.dispose();
+					node.material?.dispose();
+					console.log(`${node.type} disposed`);
+				} else if ((node instanceof THREE.Texture || node.isObject3D) && node.dispose) {
+					node.dispose();
+				}
+			}
+			scene.traverse(disposeAll);
+			scene.clear();
+			scene.removeFromParent();
+			console.log(`disposed first project allocated resources`, renderer.info);
+			gui.destroy();
+			console.log(`GUI destroyed`);
+			console.log(`tickId`, tickId);
+			window.cancelAnimationFrame(tickId);
+			window.removeEventListener(`resize`, setCanvasSize);
+			window.removeEventListener(`dbclick`, toggleFullscreen);
+			window.removeEventListener(`keydown`, hideGui);
+			console.log(`Tick disposed`);
+			renderer.clear();
+			renderer.dispose();
+			console.log(`Renderer cleared and`);
+		}
+		return disposeScene;
 	});
 </script>
 
 <canvas class="webgl" bind:this={canvas}></canvas>
 <span class="scroll-container" bind:this={scrollContainer}>
-	{#each ['torus', 'cone', 'knot'] as TITLE, i (TITLE)}
+	{#each ['knot', 'cone', 'torus'] as TITLE, i (TITLE)}
 		{#if (i + 1) % 2}
 			<h2>{TITLE}<sub>GEOMETRY</sub></h2>
 		{:else}
