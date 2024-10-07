@@ -8,7 +8,7 @@
 	<h2>Personal takes on lessons</h2>
 	{#each lessonTitles.slice(13, 20) as sectionTitle, i (sectionTitle)}
 		<section>
-			<h3>{i + 14} ~ {sectionTitle}</h3>
+			<h3>{i + 14} <i style="font-size: 27px;">~</i> {sectionTitle}</h3>
 			{#each Object.values(DIFFERENCES[sectionTitle] || {}) as DIF (DIF)}
 				<ul><ol>{DIF || 'Test'}</ol></ul>
 			{/each}
