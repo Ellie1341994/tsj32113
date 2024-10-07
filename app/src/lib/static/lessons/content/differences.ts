@@ -31,3 +31,8 @@ DIFFERENCES[lesson18] = {
         1: "Points animated on Y axis", 
         2: "Higher spin for a fuller galaxy",
 }
+const lesson19 = lessonTitles[18]
+DIFFERENCES[lesson19] = {
+        1: "Custom Section titles", 
+        2: "Custom non-window scroll",
+}
