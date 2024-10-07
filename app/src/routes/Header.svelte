@@ -62,11 +62,21 @@
 						class="lesson-link-container"
 						aria-current={$page.url.pathname === '/tsj/basics' ? 'page' : undefined}
 					>
-						<a
-							aria-disabled={!active}
-							class={`lesson-link ${active ? 'current' : ''}`}
-							href="/tsj/{currentLessonGroup.replace(/ /, '_')}/{lessonId}">{lessonId}</a
-						>
+						{#if lessonId % 2}
+							<a
+								aria-disabled={!active}
+								class={`lesson-link ${active ? 'current' : ''}`}
+								href="/tsj/{currentLessonGroup.replace(/ /, '_')}/{lessonId}"
+								><sup>{lessonId}</sup></a
+							>
+						{:else}
+							<a
+								aria-disabled={!active}
+								class={`lesson-link ${active ? 'current' : ''}`}
+								href="/tsj/{currentLessonGroup.replace(/ /, '_')}/{lessonId}"
+								><sub>{lessonId}</sub></a
+							>
+						{/if}
 					</li>
 				{/each}
 			</ul>
@@ -85,6 +95,7 @@
 		margin: 0;
 	}
 	nav.sub-nav {
+		height: 100%;
 		li.lesson-link-container {
 			background-color: transparent;
 			flex-wrap: wrap;
