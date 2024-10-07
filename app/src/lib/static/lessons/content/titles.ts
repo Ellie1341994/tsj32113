@@ -1,4 +1,4 @@
-export default [
+export default  [
     // null,
     'Introduction to ThreeJs',
     'What is WebGL and why use Three.js',
@@ -19,4 +19,11 @@ export default [
     'Particles',
     'Galaxy Generator',
     'Scroll based animation',
+    'Physics',
+    'Imported models',
+    'Raycaster and Mouse Events',
+    'Custom models with Blender',
+    'Environment map',
+    'Realistic render',
+    'Code structuring for bigger projects'
 ];
