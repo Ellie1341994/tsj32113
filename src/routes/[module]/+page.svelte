@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { differences } from '../../../lib/lesson/content/differences';
+	import { differences } from '../../lib/lesson/content/differences';
 	import information from '$lib/lesson/content/info';
 	import Icon2 from '$lib/icon2.svelte';
 	const module = $page.params.module as keyof typeof information;

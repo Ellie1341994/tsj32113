@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import Icon2 from '$lib/icon2.svelte';
-	import { submodules } from '../../../../lib/lesson/content/info';
+	import { submodules } from '../../../lib/lesson/content/info';
 	let titlePlacer: HTMLSpanElement;
 	$: lesson = parseInt($page.params.lesson);
 	$: module = $page.params.module;
 </script>
 
-{#await import(`../../../../lib/${module}/${lesson}.svelte`)}
+{#await import(`../../../lib/${module}/${lesson}.svelte`)}
 	<Icon2 />
 {:then Scene}
 	{@const title = submodules[lesson]}

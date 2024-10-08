@@ -1,19 +1,13 @@
 <script>
 	import Header from './Header.svelte';
 	import '../app.css';
-	import { page } from '$app/stores';
-	$: isRoot = $page.url.pathname === '/';
-	console.log('root');
 </script>
 
 <div class="app">
-	{#if !isRoot}
-		<Header />
-	{/if}
-
-	<main>
-		<slot />
-	</main>
+	<!-- <Header /> -->
+	<!-- <main> -->
+	<!-- </main> -->
+	<slot />
 
 	<footer>
 		<p>Creative pratices by <strong>Ellie Broocks</strong></p>
@@ -26,19 +20,6 @@
 		flex-direction: column;
 		justify-content: space-between;
 		height: 100vh;
-	}
-
-	main {
-		/* flex: 1; */
-		display: flex;
-		flex-direction: column;
-		/* padding: 0%; */
-		width: 100vw;
-		height: 75vh;
-		/* margin: 0 auto; */
-		align-items: center;
-		justify-content: center;
-		box-sizing: border-box;
 	}
 
 	footer {
