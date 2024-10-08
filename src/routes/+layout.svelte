@@ -3,6 +3,7 @@
 	import '../app.css';
 	import { page } from '$app/stores';
 	$: isRoot = $page.url.pathname === '/';
+	export const prerender = true;
 	console.log('root');
 </script>
 
