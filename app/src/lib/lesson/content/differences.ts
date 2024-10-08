@@ -1,5 +1,5 @@
-import titles from './titles'
 export const differences: any = {}
+
 differences["basics"] = [
   
     ];
@@ -35,3 +35,15 @@ differences["classic_techniques"] = [
         "Custom non-window scroll"
     ]
 ]
+
+differences["advanced_techniques"] = [
+  
+];
+
+differences["shaders"] = [
+  
+];
+
+differences["extra"] = [
+  
+];

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { differences } from '../../../lib/lesson/content/differences';
-	import tsj from '$lib/lesson/content/titles';
-	const module = $page.params.module as keyof typeof tsj;
-	const titles = tsj[module];
+	import information from '$lib/lesson/content/info';
+	const module = $page.params.module as keyof typeof information;
+	const titles = information[module];
 
 	// const offsetParams = {
 	// 	basics: 0,
@@ -19,7 +19,10 @@
 
 <slot />
 <article>
-	<h2>Summary of personal tweaks on basic lessons{module}</h2>
+	<h2>
+		{[...module].map((c, i) => (i === 0 ? c.toUpperCase() : c === '_' ? ' ' : c)).join('')} personal
+		tweaks
+	</h2>
 	{#each titles as title, i (title)}
 		<section>
 			<h3>{i + 1} ~ {title}</h3>

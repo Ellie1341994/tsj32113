@@ -1,4 +1,4 @@
- export default {   
+ export const information = {   
     "basics": [ 
         "Introduction to ThreeJs",
         "What is WebGL and why use Three.js",
@@ -15,11 +15,7 @@
         "Go Live"
     ],
     "classic_techniques": [
-        "Lights", [
-            "Lights Color palette", 
-            "Animated Point Light", 
-            "Custom Camera position"
-        ],
+        "Lights",
         "Shadows", 
         "Haunted House", 
         "Particles", 
@@ -36,3 +32,8 @@
         "Code structuring for bigger projects"
     ]
 }
+
+export const modules = Object.keys(information)
+export const submodules = Object.values(information).flat()
+
+export default information

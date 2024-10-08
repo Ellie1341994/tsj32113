@@ -1,21 +1,16 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import Icon2 from '$lib/icon2.svelte';
-	import tsj from '../../../../lib/lesson/content/titles';
+	import { submodules } from '../../../../lib/lesson/content/info';
 	let titlePlacer: HTMLSpanElement;
 	$: lesson = parseInt($page.params.lesson);
-	$: module = $page.params.module as keyof typeof tsj;
-	// console.log('tjs', tsj);
-	// console.log(`${module}`, tsj[module]);
-	// console.log($page.params);
-
-	// console.log(module);
+	$: module = $page.params.module;
 </script>
 
 {#await import(`../../../../lib/${module}/${lesson}.svelte`)}
 	<Icon2 />
 {:then Scene}
-	{@const title = Object.keys(tsj[module])[lesson]}
+	{@const title = submodules[lesson]}
 	<svelte:component this={Scene.default} />
 	<span
 		bind:this={titlePlacer}
