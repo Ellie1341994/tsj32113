@@ -2,21 +2,25 @@
 	import { page } from '$app/stores';
 	import { differences } from '../../../lib/lesson/content/differences';
 	import information from '$lib/lesson/content/info';
+	import Icon2 from '$lib/icon2.svelte';
 	const module = $page.params.module as keyof typeof information;
 	const subtitles = information[module];
 </script>
 
 <slot />
 <article>
-	<h1 style="text-transform: capitalize;">personal tweaks</h1>
-	{#each subtitles as subtitle, i (subtitles)}
+	<h2 style="text-transform: capitalize;">personal tweaks</h2>
+	{#each subtitles as subtitle, i (i)}
+		{@const tweaks = differences[module][i] || []}
 		<section>
 			<h3>{i + 1} ~ {subtitle}</h3>
-			<ul>
-				{#each differences[module][i] as tweak (tweak)}
+			<ul style={!tweaks.length ? 'display: flex; justify-content: space-evenly;' : ''}>
+				{#each tweaks as tweak, i2 (i2 + i)}
 					<li style="list-style-type: '★'; padding: 1%;">{tweak}</li>
 				{:else}
-					Empty
+					<Icon2 width={39} height={39} style={`transform: rotate(${(i + 1) * 0.25}turn)`} />
+					<Icon2 width={39} height={39} style={`transform: rotate(${(i + 2) * 0.25}turn)`} />
+					<Icon2 width={39} height={39} style={`transform: rotate(${(i + 3) * 0.25}turn)`} />
 				{/each}
 			</ul>
 		</section>

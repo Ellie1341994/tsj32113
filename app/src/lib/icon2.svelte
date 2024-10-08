@@ -1,25 +1,13 @@
-<!-- <script lang="ts">
-	import gsap from 'gsap';
-	gsap.registerPlugin(MotionPathPlugin);
-	import { onMount } from 'svelte';
-	let cloverPath: any;
-	let cloverSvg: SVGElement;
-	onMount(() => {
-		gsap.to(cloverSvg, {
-			motionPath: {
-				path: cloverPath
-			},
-
-			transformOrigin: '50% 50%',
-			duration: 5
-		});
-		// gsap.fromTo(cloverSvg.style, { width: 0 }, { width: 800, repeat: -1, duration: 3 });
-	});
-</script> -->
+<script lang="ts">
+	export let width: number = 800;
+	export let height: number = 800;
+	export let style: string = '';
+</script>
 
 <svg
-	height="800px"
-	width="800px"
+	height={`${height}px`}
+	width={`${width}px`}
+	{style}
 	version="1.1"
 	id="Layer_1"
 	xmlns="http://www.w3.org/2000/svg"
