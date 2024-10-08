@@ -3,34 +3,22 @@
 	import { differences } from '../../../lib/lesson/content/differences';
 	import information from '$lib/lesson/content/info';
 	const module = $page.params.module as keyof typeof information;
-	const titles = information[module];
-
-	// const offsetParams = {
-	// 	basics: 0,
-	// 	classic_techniques: 13,
-	// 	advanced_techniques: 20
-	// 	// ['', 27],
-	// 	// ['', 44],
-	// 	// ['', 48],
-	// 	// ['', 52]
-	// };
-	console.log(titles);
+	const subtitles = information[module];
 </script>
 
 <slot />
 <article>
-	<h2>
-		{[...module].map((c, i) => (i === 0 ? c.toUpperCase() : c === '_' ? ' ' : c)).join('')} personal
-		tweaks
-	</h2>
-	{#each titles as title, i (title)}
+	<h1 style="text-transform: capitalize;">personal tweaks</h1>
+	{#each subtitles as subtitle, i (subtitles)}
 		<section>
-			<h3>{i + 1} ~ {title}</h3>
-			{#each differences[module] as tweak (tweak)}
-				<p>{tweak}</p>
-			{:else}
-				Empty
-			{/each}
+			<h3>{i + 1} ~ {subtitle}</h3>
+			<ul>
+				{#each differences[module][i] as tweak (tweak)}
+					<li style="list-style-type: '★'; padding: 1%;">{tweak}</li>
+				{:else}
+					Empty
+				{/each}
+			</ul>
 		</section>
 	{/each}
 </article>

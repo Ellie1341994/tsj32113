@@ -11,9 +11,9 @@ differences["classic_techniques"] = [
     "Custom Camera position"
     ],
     [
-        "Animated plane on z axis", 
-        "Custom color axes helper",
-        "Custom camera position"
+    "Animated plane on z axis", 
+    "Custom color axes helper",
+    "Custom camera position"
     ],
     [
     "Roof Animated and pyramid-shaped", 
@@ -22,17 +22,17 @@ differences["classic_techniques"] = [
     "Custom door texture",
     "Custom grave sizes and placement"],
     [
-        "Wave Animated on X axes and mantained the rotation ", 
-        "Yellow colored",
-        "Tweaks panel"
+    "Wave Animated on X axes and mantained the rotation ", 
+    "Yellow colored",
+    "Tweaks panel"
     ],
     [
-        "Points animated on Y axis", 
-        "Higher spin for a fuller galaxy"
+    "Points animated on Y axis", 
+    "Higher spin for a fuller galaxy"
     ],
     [
-        "Custom Section titles", 
-        "Custom non-window scroll"
+    "Custom Section titles", 
+    "Custom non-window scroll"
     ]
 ]
 
