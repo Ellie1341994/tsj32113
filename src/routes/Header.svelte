@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { base } from '$app/paths';
 	import { page } from '$app/stores';
 	import { lessonGroupIndexes } from '$lib/lessonGroupIndexes';
 	$: isHomepage = /tsj$/.test($page.url.pathname);
@@ -40,13 +41,15 @@
 		</svg>
 		<ul>
 			<li aria-current={isBasicPath ? 'page' : undefined}>
-				<a href="/tsj/basics/">Basic</a>
+				<a href={`${base}/tsj/basics/`}>Basic</a>
 			</li>
 			<li aria-current={isClassicPath ? 'page' : undefined}>
-				<a href="/tsj/classic_techniques/">Classic Techniques</a>
+				<a href={`${base}/tsj/classic_techniques/`}>Classic Techniques</a>
 			</li>
 			<li aria-current={isAdvancedPath ? 'page' : undefined}>
-				<a href="/tsj/advanced_techniques/">Advanced Techniques</a>
+				<a class="disabled-link" aria-disabled="true" href={`${base}/tsj/advanced_techniques/`}
+					>Advanced Techniques</a
+				>
 			</li>
 		</ul>
 		<svg viewBox="0 0 2 3" aria-hidden="true">
@@ -85,6 +88,11 @@
 </header>
 
 <style lang="scss">
+	.disabled-link {
+		pointer-events: none;
+		cursor: not-allowed; /* optional */
+	}
+
 	header {
 		display: flex;
 		flex-direction: column;
