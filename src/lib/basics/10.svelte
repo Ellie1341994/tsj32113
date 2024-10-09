@@ -28,7 +28,7 @@
 		// LOADING_MANAGER.onError = () => {};
 
 		const TEXTURE_LOADER = new THREE.TextureLoader(LOADING_MANAGER);
-		const lessonAssetsPath = '../../src/lib/basics/assets/10';
+		const lessonAssetsPath = '/assets/basics/10';
 		const IMG_TEXTURE = false ? 'checkerboard-1024x1024.png' : 'minecraft.png';
 		const COLOR_TEXTURE = TEXTURE_LOADER.load(`${lessonAssetsPath}/textures/${IMG_TEXTURE}`);
 		// COLOR_TEXTURE.minFilter = THREE.NearestFilter;

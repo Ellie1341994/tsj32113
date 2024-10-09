@@ -7,8 +7,6 @@
 	import { onMount, tick } from 'svelte';
 	import * as THREE from 'three';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-	import { Sky } from 'three/addons/objects/Sky.js';
-	import { Timer } from 'three/addons/misc/Timer.js';
 	let canvas: HTMLCanvasElement;
 	let lilGuiPlacer: HTMLSpanElement;
 	onMount(() => {
@@ -16,7 +14,7 @@
 
 		const sizes = { width: window.innerWidth * 0.75, height: window.innerHeight * 0.75 };
 		const ASPECT_RATIO = sizes.width / sizes.height;
-		const ASSETS_BASE_PATH = `../../src/lib/classic_techniques/assets/17/textures`;
+		const ASSETS_BASE_PATH = '/assets/classic/17/textures';
 		const gui = new GUI({
 			container: lilGuiPlacer,
 			width: 300,
@@ -32,9 +30,10 @@
 			new THREE.SphereGeometry(1, 32, 32),
 			new THREE.PointsMaterial({ color: 0xff3456, size: 0.02, sizeAttenuation: true })
 		);
+
 		const visibilityFolder = gui.addFolder('Visibility');
+		sphericParticles.visible = new Date().getHours() % 2 !== 0;
 		visibilityFolder.add(sphericParticles, 'visible').name(sphericParticles.type + ' Sphere');
-		sphericParticles.visible = false;
 
 		// Custom Particles
 		const bfG = new THREE.BufferGeometry();

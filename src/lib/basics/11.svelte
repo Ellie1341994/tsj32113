@@ -11,7 +11,7 @@
 	onMount(() => {
 		// const LOADING_MANAGER = new THREE.LoadingManager();
 		// const TEXTURE_LOADER = new THREE.TextureLoader(LOADING_MANAGER);
-		const lessonAssetsPath = '../../../../src/lib/basics/assets/11/textures';
+		const lessonAssetsPath = '/assets/basics/11/textures';
 		// const COLOR_TEXTURE = TEXTURE_LOADER.load(`${lessonAssetsPath}/door/color.jpg`);
 		// const MATCAP_TEXTURE = TEXTURE_LOADER.load(`${lessonAssetsPath}/matcaps/1.png`);
 		// const ALPHA_TEXTURE = TEXTURE_LOADER.load(`${lessonAssetsPath}/door/alpha.jpg`);

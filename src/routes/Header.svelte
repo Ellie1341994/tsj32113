@@ -8,7 +8,7 @@
 		.map((c, i) => (c === '_' ? ' ' : i === 0 ? c.toUpperCase() : c))
 		.join('');
 
-	let { startLessonIndex, endLessonIndex } = lessonGroupIndexes[module];
+	let { startLessonIndex, endLessonIndex } = lessonGroupIndexes[module] || {};
 
 	let lessonIds = module && [...Array(67).keys()].slice(startLessonIndex, endLessonIndex);
 	console.log(`si${startLessonIndex} ei${endLessonIndex} mod${module}`, lessonGroupIndexes[module]);

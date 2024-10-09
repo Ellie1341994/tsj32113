@@ -13,7 +13,7 @@
 	let lilGuiPlacer: HTMLSpanElement;
 
 	onMount(() => {
-		const lessonAssetsPath = `../../src/lib/classic_techniques/assets/16/`;
+		const lessonAssetsPath = '/assets/classic/16';
 		// import { gsap } from "gsap/index.js";
 
 		/**
@@ -56,18 +56,18 @@
 		const textureLoader = new THREE.TextureLoader();
 
 		// Floor texture
-		const floorAlphaTexture = textureLoader.load(`${lessonAssetsPath}floor/alpha.webp`);
+		const floorAlphaTexture = textureLoader.load(`${lessonAssetsPath}/floor/alpha.webp`);
 		const floorColorTexture = textureLoader.load(
-			`${lessonAssetsPath}floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_diff_1k.webp`
+			`${lessonAssetsPath}/floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_diff_1k.webp`
 		);
 		const floorARMTexture = textureLoader.load(
-			`${lessonAssetsPath}floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_arm_1k.webp`
+			`${lessonAssetsPath}/floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_arm_1k.webp`
 		);
 		const floorNormalTexture = textureLoader.load(
-			`${lessonAssetsPath}floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_nor_gl_1k.webp`
+			`${lessonAssetsPath}/floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_nor_gl_1k.webp`
 		);
 		const floorDisplacementTexture = textureLoader.load(
-			`${lessonAssetsPath}floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_disp_1k.webp`
+			`${lessonAssetsPath}/floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_disp_1k.webp`
 		);
 		floorColorTexture.repeat.set(8, 8);
 		floorARMTexture.repeat.set(8, 8);
@@ -87,26 +87,26 @@
 		floorColorTexture.colorSpace = THREE.SRGBColorSpace;
 		// Walls texture
 		const wallColorTexture = textureLoader.load(
-			`${lessonAssetsPath}wall/castle_brick_broken_06_1k/castle_brick_broken_06_diff_1k.webp`
+			`${lessonAssetsPath}/wall/castle_brick_broken_06_1k/castle_brick_broken_06_diff_1k.webp`
 		);
 		const wallARMTexture = textureLoader.load(
-			`${lessonAssetsPath}wall/castle_brick_broken_06_1k/castle_brick_broken_06_arm_1k.webp`
+			`${lessonAssetsPath}/wall/castle_brick_broken_06_1k/castle_brick_broken_06_arm_1k.webp`
 		);
 		const wallNormalTexture = textureLoader.load(
-			`${lessonAssetsPath}wall/castle_brick_broken_06_1k/castle_brick_broken_06_nor_gl_1k.webp`
+			`${lessonAssetsPath}/wall/castle_brick_broken_06_1k/castle_brick_broken_06_nor_gl_1k.webp`
 		);
 
 		wallColorTexture.colorSpace = THREE.SRGBColorSpace;
 
 		// Roof texture
 		const roofColorTexture = textureLoader.load(
-			`${lessonAssetsPath}roof/roof_slates_02_1k/roof_slates_02_diff_1k.webp`
+			`${lessonAssetsPath}/roof/roof_slates_02_1k/roof_slates_02_diff_1k.webp`
 		);
 		const roofARMTexture = textureLoader.load(
-			`${lessonAssetsPath}roof/roof_slates_02_1k/roof_slates_02_arm_1k.webp`
+			`${lessonAssetsPath}/roof/roof_slates_02_1k/roof_slates_02_arm_1k.webp`
 		);
 		const roofNormalTexture = textureLoader.load(
-			`${lessonAssetsPath}roof/roof_slates_02_1k/roof_slates_02_nor_gl_1k.webp`
+			`${lessonAssetsPath}/roof/roof_slates_02_1k/roof_slates_02_nor_gl_1k.webp`
 		);
 
 		roofColorTexture.repeat.set(3, 1);
@@ -120,13 +120,13 @@
 		roofColorTexture.colorSpace = THREE.SRGBColorSpace;
 		// Bush texture
 		const bushColorTexture = textureLoader.load(
-			`${lessonAssetsPath}bush/leaves_forest_ground_1k/leaves_forest_ground_diff_1k.webp`
+			`${lessonAssetsPath}/bush/leaves_forest_ground_1k/leaves_forest_ground_diff_1k.webp`
 		);
 		const bushARMTexture = textureLoader.load(
-			`${lessonAssetsPath}bush/leaves_forest_ground_1k/leaves_forest_ground_arm_1k.webp`
+			`${lessonAssetsPath}/bush/leaves_forest_ground_1k/leaves_forest_ground_arm_1k.webp`
 		);
 		const bushNormalTexture = textureLoader.load(
-			`${lessonAssetsPath}bush/leaves_forest_ground_1k/leaves_forest_ground_nor_gl_1k.webp`
+			`${lessonAssetsPath}/bush/leaves_forest_ground_1k/leaves_forest_ground_nor_gl_1k.webp`
 		);
 
 		bushColorTexture.repeat.set(2, 1);
@@ -140,13 +140,13 @@
 		bushColorTexture.colorSpace = THREE.SRGBColorSpace;
 		// Grave texture
 		const graveColorTexture = textureLoader.load(
-			`${lessonAssetsPath}grave/plastered_stone_wall_1k/plastered_stone_wall_diff_1k.webp`
+			`${lessonAssetsPath}/grave/plastered_stone_wall_1k/plastered_stone_wall_diff_1k.webp`
 		);
 		const graveARMTexture = textureLoader.load(
-			`${lessonAssetsPath}grave/plastered_stone_wall_1k/plastered_stone_wall_arm_1k.webp`
+			`${lessonAssetsPath}/grave/plastered_stone_wall_1k/plastered_stone_wall_arm_1k.webp`
 		);
 		const graveNormalTexture = textureLoader.load(
-			`${lessonAssetsPath}grave/plastered_stone_wall_1k/plastered_stone_wall_nor_gl_1k.webp`
+			`${lessonAssetsPath}/grave/plastered_stone_wall_1k/plastered_stone_wall_nor_gl_1k.webp`
 		);
 
 		graveColorTexture.colorSpace = THREE.SRGBColorSpace;
@@ -167,23 +167,23 @@
 
 		// Door Texture
 		const doorColorTexture = textureLoader.load(
-			`${lessonAssetsPath}door/wooden-door-texture/color.webp`
+			`${lessonAssetsPath}/door/wooden-door-texture/color.webp`
 		);
 		// const doorAlphaTexture = textureLoader.load("./door/wooden-door-texture/.webp");
 		const doorAmbientOcclusionTexture = textureLoader.load(
-			`${lessonAssetsPath}door/wooden-door-texture/ao.webp`
+			`${lessonAssetsPath}/door/wooden-door-texture/ao.webp`
 		);
 		const doorDisplacementTexture = textureLoader.load(
-			`${lessonAssetsPath}door/wooden-door-texture/displacement.webp`
+			`${lessonAssetsPath}/door/wooden-door-texture/displacement.webp`
 		);
 		const doorNormalTexture = textureLoader.load(
-			`${lessonAssetsPath}door/wooden-door-texture/normal_gl.webp`
+			`${lessonAssetsPath}/door/wooden-door-texture/normal_gl.webp`
 		);
 		const doorMetalnessTexture = textureLoader.load(
-			`${lessonAssetsPath}door/wooden-door-texture/albedo_roughness_metallic_arm.webp`
+			`${lessonAssetsPath}/door/wooden-door-texture/albedo_roughness_metallic_arm.webp`
 		);
 		const doorRoughnessTexture = textureLoader.load(
-			`${lessonAssetsPath}door/wooden-door-texture/roughness.webp`
+			`${lessonAssetsPath}/door/wooden-door-texture/roughness.webp`
 		);
 
 		doorColorTexture.colorSpace = THREE.SRGBColorSpace;

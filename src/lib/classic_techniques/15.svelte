@@ -13,7 +13,7 @@
 	onMount(() => {
 		// Texture
 		const textureLoader = new THREE.TextureLoader();
-		const lessonAssetsPath = '../../src/lib/classic_techniques/assets/15/textures';
+		const lessonAssetsPath = '/assets/classic/15/textures';
 		// const bakedShadows = textureLoader.load("./textures/bakedShadow.jpg");
 		// bakedShadows.colorSpace = THREE.SRGBColorSpace;
 		const simpleShadows = textureLoader.load(`${lessonAssetsPath}/simpleShadow.jpg`);

@@ -12,7 +12,7 @@
 	let scrollContainer: HTMLSpanElement;
 	onMount(() => {
 		// Constants
-		const ASSETS_BASE_PATH = `../../src/lib/classic_techniques/assets/19/textures`;
+		const ASSETS_BASE_PATH = '/assets/classic/19/textures';
 		const sizes = { width: window.innerWidth * 0.75, height: innerHeight * 0.75 };
 		const ASPECT_RATIO = sizes.width / sizes.height;
 		const parameters = { materialColor: '#994f7a' };

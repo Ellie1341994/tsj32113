@@ -12,11 +12,11 @@
 	let canvas: HTMLCanvasElement;
 	let lilGuiPlacer: HTMLSpanElement;
 	onMount(() => {
-		const lessonAssetsPath = '../../src/lib/basics/assets/12/textures';
+		const lessonAssetsPath = '/assets/basics/12';
 		const LOADING_MANAGER = new THREE.LoadingManager();
 		const TEXTURE_LOADER = new THREE.TextureLoader(LOADING_MANAGER);
-		const MATCAP_TEXTURE = TEXTURE_LOADER.load(`${lessonAssetsPath}/matcaps/2.png`);
-		const MATCAP_TEXTURE_ALT = TEXTURE_LOADER.load(`${lessonAssetsPath}/matcaps/2.png`);
+		const MATCAP_TEXTURE = TEXTURE_LOADER.load(`${lessonAssetsPath}/textures/matcaps/2.png`);
+		const MATCAP_TEXTURE_ALT = TEXTURE_LOADER.load(`${lessonAssetsPath}/textures/matcaps/2.png`);
 		MATCAP_TEXTURE.colorSpace = THREE.SRGBColorSpace;
 		MATCAP_TEXTURE_ALT.colorSpace = THREE.SRGBColorSpace;
 
@@ -112,50 +112,45 @@
 		 * Font
 		 */
 		const FONT_LOADER = new FontLoader();
-		FONT_LOADER.load(
-			`../../src/lib/basics/assets/12/fonts/helvetiker_regular.typeface.json`,
-			(font) => {
-				// console.log('font loaded');
-				let TEXT_GEOMETRY_OPTIONS = {
-					font,
-					size: 2,
-					depth: 0,
-					curveSegments: 12,
-					bevelEnabled: true,
-					bevelThickness: 0.73,
-					bevelSize: 0.1,
-					bevelOffset: 0,
-					bevelSegments: 9
-				};
-				let TEXT_GEOMETRY: any = new TextGeometry('Ellie Broocks', TEXT_GEOMETRY_OPTIONS);
+		FONT_LOADER.load(`${lessonAssetsPath}/fonts/helvetiker_regular.typeface.json`, (font) => {
+			// console.log('font loaded');
+			let TEXT_GEOMETRY_OPTIONS = {
+				font,
+				size: 2,
+				depth: 0,
+				curveSegments: 12,
+				bevelEnabled: true,
+				bevelThickness: 0.73,
+				bevelSize: 0.1,
+				bevelOffset: 0,
+				bevelSegments: 9
+			};
+			let TEXT_GEOMETRY: any = new TextGeometry('Ellie Broocks', TEXT_GEOMETRY_OPTIONS);
+			TEXT_GEOMETRY.computeBoundingBox();
+			TEXT_GEOMETRY.translate(
+				-(TEXT_GEOMETRY.boundingBox.max.x - TEXT_GEOMETRY_OPTIONS.bevelSize) * 0.5,
+				-(TEXT_GEOMETRY.boundingBox.max.y - TEXT_GEOMETRY_OPTIONS.bevelSize) * 0.5,
+				-(TEXT_GEOMETRY.boundingBox.max.z - TEXT_GEOMETRY_OPTIONS.bevelThickness) * 0.5
+			);
+			const TEXT_MATERIAL = new THREE.MeshMatcapMaterial({
+				matcap: MATCAP_TEXTURE
+			});
+			let TEXT = new THREE.Mesh(TEXT_GEOMETRY, TEXT_MATERIAL);
+			TEXT.position.set(0, 0, 0);
+			scene.add(TEXT);
+			gui.add(TEXT_GEOMETRY.parameters.options, 'bevelSize', 0, 1, 0.01).onChange((value: any) => {
+				TEXT_GEOMETRY_OPTIONS.bevelSize = value;
+				TEXT.geometry.dispose();
+				TEXT_GEOMETRY = new TextGeometry('Ellie Broocks', TEXT_GEOMETRY_OPTIONS);
 				TEXT_GEOMETRY.computeBoundingBox();
 				TEXT_GEOMETRY.translate(
 					-(TEXT_GEOMETRY.boundingBox.max.x - TEXT_GEOMETRY_OPTIONS.bevelSize) * 0.5,
 					-(TEXT_GEOMETRY.boundingBox.max.y - TEXT_GEOMETRY_OPTIONS.bevelSize) * 0.5,
 					-(TEXT_GEOMETRY.boundingBox.max.z - TEXT_GEOMETRY_OPTIONS.bevelThickness) * 0.5
 				);
-				const TEXT_MATERIAL = new THREE.MeshMatcapMaterial({
-					matcap: MATCAP_TEXTURE
-				});
-				let TEXT = new THREE.Mesh(TEXT_GEOMETRY, TEXT_MATERIAL);
-				TEXT.position.set(0, 0, 0);
-				scene.add(TEXT);
-				gui
-					.add(TEXT_GEOMETRY.parameters.options, 'bevelSize', 0, 1, 0.01)
-					.onChange((value: any) => {
-						TEXT_GEOMETRY_OPTIONS.bevelSize = value;
-						TEXT.geometry.dispose();
-						TEXT_GEOMETRY = new TextGeometry('Ellie Broocks', TEXT_GEOMETRY_OPTIONS);
-						TEXT_GEOMETRY.computeBoundingBox();
-						TEXT_GEOMETRY.translate(
-							-(TEXT_GEOMETRY.boundingBox.max.x - TEXT_GEOMETRY_OPTIONS.bevelSize) * 0.5,
-							-(TEXT_GEOMETRY.boundingBox.max.y - TEXT_GEOMETRY_OPTIONS.bevelSize) * 0.5,
-							-(TEXT_GEOMETRY.boundingBox.max.z - TEXT_GEOMETRY_OPTIONS.bevelThickness) * 0.5
-						);
-						TEXT.geometry = TEXT_GEOMETRY;
-					});
-			}
-		);
+				TEXT.geometry = TEXT_GEOMETRY;
+			});
+		});
 		/**
 		 * Renderer
 		 */
