@@ -4,9 +4,6 @@
 </script>
 
 <div class="app">
-	<!-- <Header /> -->
-	<!-- <main> -->
-	<!-- </main> -->
 	<slot />
 
 	<footer>
@@ -25,7 +22,8 @@
 	footer {
 		display: flex;
 		justify-content: center;
-		height: 5vh;
+		align-items: center;
+		height: 10vh;
 	}
 
 	@media (min-width: 480px) {

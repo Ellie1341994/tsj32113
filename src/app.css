@@ -105,7 +105,7 @@ button:focus:not(:focus-visible) {
 	}
 }
 canvas {
-	border: 1vw solid var(--color-theme-4);
+	border: 1vh solid var(--color-theme-4);
 	box-shadow: 5px 5px 5px black;
 	box-sizing: border-box;
 	padding: 0;

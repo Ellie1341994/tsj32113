@@ -32,10 +32,16 @@
 				<a href="/basics/">Basic</a>
 			</li>
 			<li aria-current={/classic_techniques/.test(module) ? 'page' : undefined}>
-				<a href="/classic_techniques/">Classic Techniques</a>
+				<a href="/classic_techniques/">Classic</a>
 			</li>
 			<li aria-current={/advanced_techniques/.test(module) ? 'page' : undefined}>
-				<a href="/advanced_techniques/">Advanced Techniques</a>
+				<a href="/advanced_techniques/">Advanced</a>
+			</li>
+			<li aria-current={/shaders/.test(module) ? 'page' : undefined}>
+				<a href="/shaders/">Shaders</a>
+			</li>
+			<li aria-current={/extra/.test(module) ? 'page' : undefined}>
+				<a href="/extra/">Extra</a>
 			</li>
 		</ul>
 		<svg viewBox="0 0 2 3" aria-hidden="true">
@@ -47,18 +53,22 @@
 			<ul style="list-style-type: none; display: flex; padding: 0; width: 100%%;">
 				{#each lessonIds as lessonId (lessonId)}
 					{@const active = lessonId === lesson}
-					<li class="lesson-link-container" aria-current={module ? 'page' : undefined}>
+					<li class="lesson-link-container" aria-current={lesson === lessonId ? 'page' : undefined}>
 						{#if lessonId % 2}
 							<a
 								aria-disabled={!active}
 								class={`lesson-link ${active ? 'current' : ''}`}
-								href="/{module.replace(/ /, '_')}/{lessonId}"><sup>{lessonId}</sup></a
+								href="/{module.replace(/ /, '_')}/{lessonId}"
 							>
+								<sup>{lessonId}</sup>
+							</a>
 						{:else}
 							<a
 								aria-disabled={!active}
+								href="/{module.replace(/ /, '_')}/{lessonId}"
 								class={`lesson-link ${active ? 'current' : ''}`}
-								href="/{module.replace(/ /, '_')}/{lessonId}"><sub>{lessonId}</sub></a
+							>
+								<sub>{lessonId}</sub></a
 							>
 						{/if}
 					</li>
@@ -70,21 +80,38 @@
 
 <style lang="scss">
 	header {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: space-between;
-		height: 20vh;
+		// display: flex;
+		// flex: none;
+		// flex-direction: column;
+		// align-items: center;
+		// justify-content: space-between;
+		height: 15vh;
 		padding: 0;
-		margin: 0;
 	}
 	nav.sub-nav {
-		height: 100%;
+		height: 10vh;
+		// overflow: scroll;
+		// width: 100%;
+		flex: none;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 0;
+		margin: 0vh 0vh;
+		ul {
+			margin: 0;
+			padding: 0;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		// box-sizing: content-box;
 		li.lesson-link-container {
 			background-color: transparent;
 			flex-wrap: wrap;
 			width: 35px;
-			padding: 9px;
+			padding: 1vh;
+			// height: 75%;
 			margin: 0%;
 			text-align: center;
 		}
@@ -92,7 +119,7 @@
 			font-size: 27px;
 			text-align: center;
 			color: white;
-			padding: 0vw;
+			padding: 1vh 0;
 			text-decoration: none;
 		}
 		li:has(a.lesson-link.current) {
@@ -110,12 +137,19 @@
 
 	nav.main-nav {
 		display: flex;
+		flex: none;
 		justify-content: center;
-		--background: rgba(255, 255, 255, 0.7);
+		height: 5vh;
+		width: 100%;
+		--background: rgba(235, 235, 235, 1);
+		margin: 0;
+		padding: 0;
 		svg {
-			width: 2em;
-			height: 3em;
-			display: block;
+			// width: auto;
+			height: 5vh;
+			// margin: 0;
+			// padding: 0 0 0 1rem;
+			// display: flex;
 		}
 
 		path {
@@ -126,18 +160,21 @@
 			position: relative;
 			padding: 0;
 			margin: 0;
-			height: 3em;
+			height: 5vh;
 			display: flex;
 			justify-content: center;
 			align-items: center;
 			list-style: none;
 			background: var(--background);
 			background-size: contain;
+			z-index: 1;
 		}
 
 		li {
 			position: relative;
 			height: 100%;
+			margin: 0;
+			padding: 0 0 0 1rem;
 		}
 
 		li[aria-current='page']::before {
@@ -146,6 +183,8 @@
 			width: 0;
 			height: 0;
 			position: absolute;
+			margin: 0;
+			padding: 0;
 			top: 0;
 			left: calc(50% - var(--size));
 			border: var(--size) solid transparent;
@@ -155,14 +194,18 @@
 			display: flex;
 			height: 100%;
 			align-items: center;
-			padding: 0 0.5rem;
+			// padding-right: 3rem;
 			color: var(--color-text);
 			font-weight: 700;
 			font-size: 0.8rem;
 			text-transform: uppercase;
 			letter-spacing: 0.1em;
 			text-decoration: none;
+
 			transition: color 0.2s linear;
+			&.disabled {
+				pointer-events: none;
+			}
 		}
 		a:hover {
 			color: var(--color-theme-3);
