@@ -9,16 +9,26 @@
 	// import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 	let canvas: HTMLCanvasElement;
 	let lilGuiPlacer: HTMLSpanElement;
-	let scrollContainer: HTMLSpanElement;
+	interface HTMLSpanElementExtended extends HTMLSpanElement {
+		scrollTopMax?: number;
+	}
+	let scrollContainer: HTMLSpanElementExtended;
 	onMount(() => {
 		// Constants
 		const ASSETS_BASE_PATH = '/assets/classic/19/textures';
 		const sizes = { width: window.innerWidth * 0.75, height: innerHeight * 0.75 };
 		const ASPECT_RATIO = sizes.width / sizes.height;
-		const parameters = { materialColor: '#994f7a' };
+		const parameters = { materialColor: '#994f7a', autoScroll: true, scrollOffset: -2 };
 		const meshDistance = 6;
 		// Features
 		// Feature: Fullscreen
+		let cursor = { x: 0, y: 0, ratioX: 0, ratioY: 0 };
+		window.addEventListener('mousemove', (event) => {
+			cursor.x = event.clientX;
+			cursor.y = event.clientY;
+			cursor.ratioX = event.clientX / sizes.width - 0.5;
+			cursor.ratioY = event.clientY / sizes.height - 0.5;
+		});
 		// Size fix on toggle off
 		const setCanvasSize = () => {
 			// Update camera
@@ -31,20 +41,31 @@
 		window.addEventListener(`resize`, setCanvasSize);
 		// Full screen support
 		const toggleFullscreen = () => {
-			document.fullscreenElement ? document.exitFullscreen() : canvas?.requestFullscreen();
+			const withinCanvasArea =
+				window.innerHeight * 0.15 <= cursor.y &&
+				cursor.y <= window.innerHeight * 0.75 &&
+				window.innerWidth * 0.125 <= cursor.x &&
+				cursor.x <= window.innerWidth * 0.875;
+			console.log(`WH${window.innerHeight * 0.15} cursor.y ${cursor.y}`);
+			if (document.fullscreenElement) {
+				document.exitFullscreen();
+			} else if (withinCanvasArea) {
+				canvas?.requestFullscreen();
+			}
 		};
 		window.addEventListener(`dblclick`, toggleFullscreen);
 		// GUI
 		const gui = new GUI({
-			title: 'Tweaks panel',
+			title: 'Tweaks panel | Press SPACE to hide',
 			container: lilGuiPlacer,
 			width: 300,
 			closeFolders: true
 		});
-		gui.hide();
+		gui.add(parameters, 'autoScroll').name('Scroll animation');
+		// gui.hide();
 		// Hide UI
 		const hideGui = (event: any) => {
-			event.key === ' ' && gui.hide();
+			event.key === ' ' && gui.show(gui._hidden);
 		};
 		window.addEventListener('keydown', hideGui);
 		// Textures
@@ -72,6 +93,10 @@
 		cone.position.x = -2;
 		knot.position.x = 2;
 		const meshes = [knot, cone, torus];
+		// Textures
+		const TEXTURE_LOADER = new THREE.TextureLoader();
+		const PARTICLE_TEXTURE = TEXTURE_LOADER.load(`/assets/classic/17/textures/particles/9.png`);
+
 		// Particles
 		const particlesAmount = 9999;
 		const dimensions = 3;
@@ -87,7 +112,10 @@
 		const pMaterial = new THREE.PointsMaterial({
 			color: parameters.materialColor,
 			sizeAttenuation: true,
-			size: 0.03
+			size: 0.1,
+			transparent: true,
+			alphaMap: PARTICLE_TEXTURE,
+			depthWrite: false
 		});
 		const particles = new THREE.Points(pGeometry, pMaterial);
 		// particles.position.set(0, 1, -3);
@@ -125,15 +153,14 @@
 		const lerpingFactor = 5;
 		const parallaxAmplitude = 0.5;
 		let tickId = 0;
-		let scrollY = window.scrollY;
+		let scrollY = scrollContainer.scrollTop;
 		let currentView = 0;
 		const updateScrollY = () => {
 			scrollY = scrollContainer.scrollTop;
-			// console.log('tst1', scrollY);
-			// console.log(scrollY / sizes.height);
 			const newView = Math.round(scrollY / sizes.height);
 			if (currentView !== newView) {
 				currentView = newView;
+				// spin animation
 				gsap.to(meshes[currentView].rotation, {
 					duration: 1.5,
 					ease: 'power2.inOut',
@@ -146,15 +173,21 @@
 		};
 		scrollContainer.addEventListener('scroll', updateScrollY);
 		// Parallax
-		let cursor = { x: 0, y: 0 };
-		window.addEventListener('mousemove', (event) => {
-			cursor.x = event.clientX / sizes.width - 0.5;
-			cursor.y = event.clientY / sizes.height - 0.5;
-		});
+		gui.add(parameters, 'scrollOffset', -9, -1).step(-1).name('S. Animation speed');
+		const pause = 0;
 		function tick() {
 			// control.update();
 			const elapsedTime = clock.getElapsedTime();
 			const deltaTime = elapsedTime - previousTime;
+			const scrollDown = scrollContainer.scrollTop <= 0;
+			const scrollUp = scrollContainer.scrollTop >= scrollContainer.scrollTopMax!;
+			// console.log(
+			// 	`SU ${scrollUp} SD ${scrollDown} S ${scrollContainer.scrollTop} O ${-scrollOffset}`
+			// );
+			if (scrollUp || scrollDown) {
+				parameters.scrollOffset = -parameters.scrollOffset;
+			}
+			scrollContainer.scrollTop += parameters.autoScroll ? parameters.scrollOffset : pause;
 			previousTime = elapsedTime;
 			for (const mesh of meshes) {
 				mesh.rotation.x += deltaTime * 0.1;
@@ -163,8 +196,8 @@
 
 			camera.position.y = (-scrollY / sizes.height) * meshDistance;
 
-			const parallaxX = cursor.x * parallaxAmplitude;
-			const parallaxY = -cursor.y * parallaxAmplitude;
+			const parallaxX = cursor.ratioX * parallaxAmplitude;
+			const parallaxY = -cursor.ratioY * parallaxAmplitude;
 			// "easing - smoothing -lerping"
 			cameraGroup.position.x += (parallaxX - cameraGroup.position.x) * lerpingFactor * deltaTime;
 			cameraGroup.position.y += (parallaxY - cameraGroup.position.y) * lerpingFactor * deltaTime;
@@ -180,11 +213,13 @@
 				if (node instanceof THREE.Mesh) {
 					node.geometry?.dispose();
 					node.material?.dispose();
+					node.material?.alphaMap?.dispose();
 					console.log(`${node.type} disposed`);
 				} else if ((node instanceof THREE.Texture || node.isObject3D) && node.dispose) {
 					node.dispose();
 				}
 			}
+			PARTICLE_TEXTURE.dispose();
 			scene.traverse(disposeAll);
 			scene.clear();
 			scene.removeFromParent();
@@ -220,8 +255,8 @@
 <style lang="scss">
 	span.lil-gui-placer {
 		position: absolute;
-		top: 20vh;
-		right: 13.5vw;
+		top: 15vh;
+		right: 12.5vw;
 		z-index: 2;
 	}
 	canvas {
