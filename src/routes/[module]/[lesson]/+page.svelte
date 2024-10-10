@@ -20,11 +20,11 @@
 		span.lesson-title-placer {
 			position: absolute;
 			&.big-canvas {
-				top: 15.5vh;
+				top: 15vh;
 				left: 12.5vw;
 			}
 			&.small-canvas {
-				top: calc(20vh + 75vh / 2 - 300px);
+				top: calc(52vh - 300px);
 				left: calc(50vw - 400px);
 			}
 			background-color: var(--color-theme-4);
