@@ -103,7 +103,7 @@
 
 		// Lights
 		const directionalLight = new THREE.DirectionalLight('#ffffff', 3);
-		const directionalLigherHelper = new THREE.DirectionalLightHelper(directionalLight);
+		// const directionalLigherHelper = new THREE.DirectionalLightHelper(directionalLight);
 		directionalLight.castShadow = true;
 		directionalLight.shadow.mapSize.set(1024, 1024);
 		directionalLight.shadow.camera.far = 25;
@@ -182,10 +182,17 @@
 		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 		renderer.setSize(parameters.sizes.width, parameters.sizes.height);
-		renderer.render(scene, camera);
+		// renderer.render(scene, camera);
 		// Utils
-		const sphereRefs: { mesh: THREE.Mesh; body: any }[] = [];
-		const boxRefs: { mesh: THREE.Mesh; body: any }[] = [];
+		type SMesh = THREE.Mesh<
+			THREE.SphereGeometry,
+			THREE.MeshStandardMaterial,
+			THREE.Object3DEventMap
+		>;
+		type BMesh = THREE.Mesh<THREE.BoxGeometry, THREE.MeshStandardMaterial, THREE.Object3DEventMap>;
+		const sphereRefs: { mesh: SMesh; body: any }[] = [];
+		const boxRefs: { mesh: BMesh; body: any }[] = [];
+
 		// createSphere mesh args
 		const sphereGeometry = new THREE.SphereGeometry(1, 20, 20);
 		const sphereMaterial = new THREE.MeshStandardMaterial({
@@ -207,8 +214,8 @@
 			const shape = new CANNON.Sphere(radius);
 			const body = new CANNON.Body({
 				mass: 1,
-				// position: new CANNON.Vec3(0, position.y, 0),
 				shape
+				// position: new CANNON.Vec3(0, position.y, 0),
 				// material: defaultMaterial
 			});
 			body.position.copy(position as CANNON.Vec3);
@@ -220,11 +227,10 @@
 		}
 
 		createSphere(1.5, { x: 0, y: 1.5 * 5, z: 0 });
-
 		createSphere(1.5, { x: 0, y: 1.5 * 3, z: 0 });
 		createSphere(1.5, { x: 0, y: 1.5, z: 0 });
 
-		// createSphere mesh args
+		// createBox mesh args
 		const boxGeometry = new THREE.BoxGeometry(2, 2);
 		const boxMaterial = new THREE.MeshStandardMaterial({
 			color: parameters.color,
@@ -232,7 +238,7 @@
 			roughness: 0.4,
 			envMap: environmentMapTexture
 		});
-		// createSphere body args
+		// createBox body args
 		function createBox(size: number, position: { x: number; y: number; z: number }) {
 			// Three.js Mesh
 			const mesh = new THREE.Mesh(boxGeometry, boxMaterial);
@@ -289,29 +295,39 @@
 
 		tick();
 		// Dispose
+		// There's still 1 texture from envMap that couldn't get disposed as no access seem to work
 		function disposeScene() {
+			let disposedNumber = 0;
+			console.log(
+				`Scene disposal start G:${renderer.info.memory.geometries} T:${renderer.info.memory.textures}`
+			);
 			function disposeAll(node: any) {
-				if (node instanceof THREE.Mesh) {
-					node.geometry?.dispose();
-					node.material?.dispose();
+				if (node.isMesh) {
 					node.material?.envMap?.dispose();
-					console.log(`${node.type} disposed`);
-				} else if ((node instanceof THREE.Texture || node.isObject3D) && node.dispose) {
+					node.material?.dispose();
+					console.log(node.material);
+					node.geometry?.dispose();
+					console.log(`Disposed ${node.type} G:${node.geometry.type} M:${node.material.type} `);
+					disposedNumber += 2;
+				} else if (node.isLight) {
 					node.dispose();
+					console.log(`Disposed ${node.type}`);
+					disposedNumber += 1;
 				}
 			}
 			scene.traverse(disposeAll);
+			console.log(`Disposed method execution times on traversing ${disposedNumber}`);
 			scene.clear();
 			scene.removeFromParent();
-			console.log(`disposed first project allocated resources`, renderer.info);
 			gui.destroy();
 			console.log(`GUI destroyed`);
 			console.log(`tickId`, tickId);
 			window.cancelAnimationFrame(tickId);
-			console.log(`Tick disposed`);
-			renderer.clear();
+			console.log(`Tick removed`);
+			console.log('Scene disposal end', renderer.info);
 			renderer.dispose();
-			console.log(`Renderer cleared and`);
+			renderer.clear();
+			console.log(`Renderer cleared and diposed`);
 		}
 		return disposeScene;
 	});
