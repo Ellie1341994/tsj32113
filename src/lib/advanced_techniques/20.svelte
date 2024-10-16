@@ -68,6 +68,7 @@
 			`${ASSETS_PATH}/textures/environmentMaps/0/pz.png`,
 			`${ASSETS_PATH}/textures/environmentMaps/0/nz.png`
 		]);
+
 		// Meshes
 		// const cube = new THREE.Mesh(
 		// 	new THREE.BoxGeometry(1, 1),
@@ -166,8 +167,8 @@
 			// sphere,
 			plane,
 			ambientLight,
-			directionalLight,
-			directionalLigherHelper
+			directionalLight
+			// directionalLigherHelper
 			// new THREE.AxesHelper(100)
 		);
 		// Camera
@@ -288,6 +289,31 @@
 
 		tick();
 		// Dispose
+		function disposeScene() {
+			function disposeAll(node: any) {
+				if (node instanceof THREE.Mesh) {
+					node.geometry?.dispose();
+					node.material?.dispose();
+					node.material?.envMap?.dispose();
+					console.log(`${node.type} disposed`);
+				} else if ((node instanceof THREE.Texture || node.isObject3D) && node.dispose) {
+					node.dispose();
+				}
+			}
+			scene.traverse(disposeAll);
+			scene.clear();
+			scene.removeFromParent();
+			console.log(`disposed first project allocated resources`, renderer.info);
+			gui.destroy();
+			console.log(`GUI destroyed`);
+			console.log(`tickId`, tickId);
+			window.cancelAnimationFrame(tickId);
+			console.log(`Tick disposed`);
+			renderer.clear();
+			renderer.dispose();
+			console.log(`Renderer cleared and`);
+		}
+		return disposeScene;
 	});
 </script>
 
