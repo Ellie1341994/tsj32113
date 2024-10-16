@@ -1,7 +1,6 @@
 <script lang="ts">
 	import gsap from 'gsap';
 	// import { page } from `$app/stores`;
-	// BIG NOTE: REMAINING MEMORY ALLOCATED SEEMS TO BE INTERNAT TO THREE.JS
 	// import gsap from `gsap`;
 	import GUI from 'lil-gui';
 	import { onMount } from 'svelte';
@@ -297,6 +296,7 @@
 		// Dispose
 		// There's still 1 texture from envMap that couldn't get disposed as no access seem to work
 		function disposeScene() {
+			parameters.reset(); // remove all collide eventListeners
 			let disposedNumber = 0;
 			console.log(
 				`Scene disposal start G:${renderer.info.memory.geometries} T:${renderer.info.memory.textures}`
