@@ -23,8 +23,8 @@
 		// Models
 		const dracoLoader = new DRACOLoader();
 		// dracoLoader.setDecoderPath('/assets/advanced/21/workers/draco/');
-		dracoLoader.setDecoderPath('/assets/advanced/21/workers/draco/');
-		dracoLoader.setDecoderPath('../../node_modules/three/examples/jsm/libs/draco/');
+		// dracoLoader.setDecoderPath('/assets/advanced/21/workers/draco/');
+		// dracoLoader.setDecoderPath('../../node_modules/three/examples/jsm/libs/draco/');
 		gltfLoader.setDRACOLoader(dracoLoader);
 		let mixer: any = null;
 		let actions: any = null;
@@ -71,7 +71,7 @@
 		const directionalLight = new THREE.DirectionalLight('#ffffff', 3);
 		directionalLight.shadow.mapSize.set(1024, 1024);
 		directionalLight.position.set(3, 3, 6);
-		const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight);
+		// const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight);
 		// Scene
 		const scene = new THREE.Scene();
 		scene.add(platform, ambientLight, directionalLight);
@@ -124,6 +124,42 @@
 			tickId = window.requestAnimationFrame(tick);
 		}
 		tick();
+		// Dispose
+		function disposeScene() {
+			function disposeAll(node: any) {
+				if (node.isMesh || node instanceof THREE.Mesh) {
+					// node.material?.envMap?.dispose();
+					if (node.type === 'SkinnedMesh') {
+						console.log(node);
+						node.material?.map?.dispose();
+					}
+					node.material?.dispose();
+					console.log(node.material);
+					node.geometry?.dispose();
+					console.log(`Disposed ${node.type} G:${node.geometry.type} M:${node.material.type} `);
+				} else if (node.isLight || node instanceof THREE.Light) {
+					node.dispose();
+					console.log(`Disposed ${node.type}`);
+				} else if (node.isTexture || node instanceof THREE.Texture) {
+					node.dispose();
+					console.log(`Disposed ${node.type}`);
+				}
+			}
+			scene.traverse(disposeAll);
+			// mixer?.dispose();
+			scene.clear();
+			scene.removeFromParent();
+			control.dispose();
+			console.log(`disposed first project allocated resources`, renderer.info);
+			console.log(`GUI destroyed`);
+			console.log(`tickId`, tickId);
+			window.cancelAnimationFrame(tickId);
+			console.log(`Tick disposed`);
+			renderer.clear();
+			renderer.dispose();
+			console.log(`Renderer cleared and`);
+		}
+		return disposeScene;
 	});
 </script>
 
