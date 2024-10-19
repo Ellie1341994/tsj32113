@@ -1,11 +1,9 @@
 <script>
-	import Header from './Header.svelte';
 	import '../app.css';
 </script>
 
 <div class="app">
 	<slot />
-
 	<footer>
 		<p>Creative pratices by <strong>Ellie Broocks</strong></p>
 	</footer>

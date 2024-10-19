@@ -1,6 +1,6 @@
 <div>
 	<h1>
-		<a class="disabled-link" href="/">challenges</a>
+		<a class="" href="/challenges">challenges</a>
 	</h1>
 	<h1><a href="/basics">projects</a></h1>
 </div>
@@ -18,9 +18,9 @@
 				text-decoration: none;
 				text-transform: uppercase;
 				color: var(--color-theme-3);
-				.disabled-link {
-					pointer-events: none;
-				}
+				// .disabled-link {
+				// 	pointer-events: none;
+				// }
 				&:hover:not(.disabled-link) {
 					text-shadow: #70577a 3px 4px 5px;
 				}
