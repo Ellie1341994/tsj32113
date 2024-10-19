@@ -5,7 +5,7 @@
 <div class="app">
 	<slot />
 	<footer>
-		<p>Creative pratices by <strong>Ellie Broocks</strong></p>
+		<p>Creative practices by <strong>Ellie Broocks</strong></p>
 	</footer>
 </div>
 
