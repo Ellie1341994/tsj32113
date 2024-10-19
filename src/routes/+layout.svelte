@@ -5,7 +5,12 @@
 <div class="app">
 	<slot />
 	<footer>
-		<p>Creative practices by <strong>Ellie Broocks</strong></p>
+		<p>
+			Creative practices by <strong
+				><a style="color: black;" href="https://x.com/0E11ie" target="_blank">Ellie Broocks</a
+				></strong
+			>
+		</p>
 	</footer>
 </div>
 

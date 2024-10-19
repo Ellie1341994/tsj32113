@@ -1,8 +1,6 @@
-<script></script>
+<main><h1><a href="/challenges/halloween">Halloween challenge</a></h1></main>
 
-<main><a href="/challenges/halloween">Halloween challenge</a></main>
-
-<style>
+<style lang="scss">
 	main {
 		display: flex;
 		justify-content: center;
@@ -10,5 +8,13 @@
 		width: 90vw;
 		height: 90vh;
 		margin: 0 auto;
+		h1 {
+			font-size: 45px;
+			a {
+				font-weight: bold;
+				color: var(--color-theme-3);
+				text-shadow: 2px 2px 4px gray;
+			}
+		}
 	}
 </style>
