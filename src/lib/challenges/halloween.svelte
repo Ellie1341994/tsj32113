@@ -3,14 +3,13 @@
 	import * as THREE from 'three';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 	import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-	import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
-	import { mix } from 'three/webgpu';
 	let canvas: HTMLCanvasElement;
 	onMount(() => {
 		// Utils
 		let pumpkinReady = false;
 		let ankouReady = false;
 		const parameters = {
+			movement: { forward: 0, backwards: 0, leftwards: 0, rightwards: 0, rotation: 0 },
 			width: window.innerWidth * 0.9,
 			height: window.innerHeight * 0.9,
 			color: '#999999',
@@ -57,6 +56,7 @@
 				ankouAnimations = gltfAnoku.animations;
 				mixer = new THREE.AnimationMixer(gltfAnoku.scene);
 				console.log('ankouAnimations', ankouAnimations);
+				gltfAnoku.scene.rotation.y = Math.PI * 0.5;
 				scene.add(gltfAnoku.scene);
 				ankouReady = true;
 				// console.log(gltfAnoku);
@@ -73,8 +73,13 @@
 			(gltfPumpkin) => {
 				gltfPumpkin.scene.scale.set(0.5, 0.5, 0.5);
 				gltfPumpkin.scene.position.y = 2.55;
-				scene.add(gltfPumpkin.scene);
+				console.log('pumpkin', gltfPumpkin);
+				// @ts-ignore
+				gltfPumpkin.scene.children[0].material.color.set('#aa7777');
+				gltfPumpkin.scene.rotation.y = Math.PI * 0.5;
 
+				// gltfPumpkin.scene.children[0].material = new THREE.MeshToonMaterial({ color: '#994f7a' });
+				// scene.add(gltfPumpkin.scene);
 				pumpkinReady = true;
 			},
 			() => {
@@ -119,17 +124,62 @@
 		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 		// Play
+		let northEastDiagonal: any = {};
+		addEventListener('keydown', (event) => {
+			northEastDiagonal[event.key] = true;
+			switch (event.key) {
+				case 'w':
+					// @ts-ignore
+					parameters.movement.forward += 0.1;
+					break;
+				case 's':
+					// @ts-ignoredd
+					parameters.movement.forward -= 0.1;
+					break;
+				case 'a':
+					// @ts-ignore
+					parameters.movement.rightwards += 0.1;
+					break;
+				case 'd':
+					// @ts-ignoredd
+					parameters.movement.rightwards -= 0.1;
+					break;
+			}
+			if (northEastDiagonal.w && northEastDiagonal.d) {
+				northEastDiagonal.w = false;
+				northEastDiagonal.d = false;
+				parameters.movement.rotation += 0.1;
+				// alert('works');
+			}
+		});
+
 		const clock = new THREE.Clock();
 		let tickId = 0;
 		let previousElapsedTime = clock.getElapsedTime();
+		// scene.add(new THREE.AxesHelper(100));
 		function tick() {
 			const elapsedTime = clock.getElapsedTime();
 			const deltaTime = elapsedTime - previousElapsedTime;
 			previousElapsedTime = elapsedTime;
 			control.update();
 			let sceneReady = pumpkinReady && ankouReady;
-
+			// console.log(parameters.movement);
 			if (sceneReady) {
+				// platformA.position.set(parameters.movement.forward, 0, parameters.movement.rightwards);
+				let m1 = scene.children[4];
+				// let m2 = scene.children[5];
+				m1.position.set(
+					parameters.movement.forward,
+					scene.children[4].position.y,
+					parameters.movement.rightwards
+				);
+				// m2.position.set(
+				// 	parameters.movement.forward,
+				// 	scene.children[5].position.y,
+				// 	parameters.movement.rightwards
+				// );
+				m1.rotation.y = parameters.movement.rotation;
+				// m2.rotation.y = parameters.movement.rotation;
 				// Control
 				let horseWalk = mixer.clipAction(ankouAnimations[2]);
 				horseWalk?.play();
@@ -137,11 +187,12 @@
 				cartMove.play();
 				// console.log(`A:${action} M:`, mixer);
 				mixer.update(deltaTime);
+				renderer.render(scene, camera);
 			}
-			renderer.render(scene, camera);
 			tickId = window.requestAnimationFrame(tick);
 		}
 		tick();
+
 		// Dispose
 		function disposeScene() {
 			function disposeAll(node: any) {
