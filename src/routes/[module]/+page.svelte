@@ -14,13 +14,17 @@
 		{@const tweaks = differences[module][i] || []}
 		<section>
 			<h3>{i + 1} ~ {subtitle}</h3>
-			<ul style={!tweaks.length ? 'display: flex; justify-content: space-evenly;' : ''}>
+			<ul style={!tweaks.length ? 'display: flex; justify-content: start;' : ''}>
 				{#each tweaks as tweak, i2 (i2 + i)}
 					<li style="list-style-type: '★'; padding: 1%;">{tweak}</li>
 				{:else}
-					<Icon2 width={39} height={39} style={`transform: rotate(${(i + 1) * 0.25}turn)`} />
-					<Icon2 width={39} height={39} style={`transform: rotate(${(i + 2) * 0.25}turn)`} />
-					<Icon2 width={39} height={39} style={`transform: rotate(${(i + 3) * 0.25}turn)`} />
+					<li style="list-style-type: '★'; padding: 1%;">
+						<strong>Soon... </strong><Icon2
+							width={18}
+							height={18}
+							style={`transform: rotate(${(i + 3) * 0.25}turn)`}
+						/>
+					</li>
 				{/each}
 			</ul>
 		</section>
