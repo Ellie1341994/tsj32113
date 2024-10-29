@@ -19,6 +19,7 @@
 			><Icon2
 				leafColors={{ bottom: '#994f7a', top: '#D876B6', left: '#BB5992', right: '#A75484' }}
 				colored={true}
+				style={`transform: rotate(${new Date().getHours() * 0.25}turn)`}
 				{height}
 				{width}
 			/></a
