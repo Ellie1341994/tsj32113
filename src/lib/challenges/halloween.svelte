@@ -3,12 +3,14 @@
 	import * as THREE from 'three';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 	import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+	import { cloneUniformsGroups } from 'three/src/renderers/shaders/UniformsUtils.js';
 	let canvas: HTMLCanvasElement;
 	onMount(() => {
 		// Utils
 		let pumpkinReady = false;
 		let ankouReady = false;
 		const parameters = {
+			cursor: { x: 0, y: 0 },
 			movement: { forward: 0, backwards: 0, leftwards: 0, rightwards: 0, rotation: 0 },
 			width: window.innerWidth * 0.9,
 			height: window.innerHeight * 0.9,
@@ -32,71 +34,68 @@
 		let mixer: any = null;
 		// Loaders
 		const gltfLoader = new GLTFLoader();
-		gltfLoader.load(
-			parameters.modelsURL.cart,
-			(gltfAnoku) => {
-				let recursivelyFindHead = (obj: any) => {
-					if (obj?.children) {
-						const i = obj.children.findIndex(({ name }: any) => {
-							return name === 'head';
-						});
-						if (i >= 0) {
-							obj.children[i].scale.set(0.001, 0.001, 0.001);
-							console.log('head removed');
-						} else {
-							recursivelyFindHead(obj.children);
-						}
-					} else if (Array.isArray(obj)) {
-						obj.forEach((c) => {
-							recursivelyFindHead(c);
-						});
-					}
-				};
-				recursivelyFindHead(gltfAnoku.scene);
-				ankouAnimations = gltfAnoku.animations;
-				mixer = new THREE.AnimationMixer(gltfAnoku.scene);
-				console.log('ankouAnimations', ankouAnimations);
-				gltfAnoku.scene.rotation.y = Math.PI * 0.5;
-				scene.add(gltfAnoku.scene);
-				ankouReady = true;
-				// console.log(gltfAnoku);
-			},
-			() => {
-				// console.log('loading');
-			},
-			() => {
-				console.log('load error');
-			}
-		);
-		gltfLoader.load(
-			parameters.modelsURL.pumpkin,
-			(gltfPumpkin) => {
-				gltfPumpkin.scene.scale.set(0.5, 0.5, 0.5);
-				gltfPumpkin.scene.position.y = 2.55;
-				console.log('pumpkin', gltfPumpkin);
+		gltfLoader.load(parameters.modelsURL.cart, (gltfAnoku) => {
+			gltfAnoku.scene.traverse((node) => {
 				// @ts-ignore
-				gltfPumpkin.scene.children[0].material.color.set('#aa7777');
-				gltfPumpkin.scene.rotation.y = Math.PI * 0.5;
-
-				// gltfPumpkin.scene.children[0].material = new THREE.MeshToonMaterial({ color: '#994f7a' });
-				// scene.add(gltfPumpkin.scene);
-				pumpkinReady = true;
-			},
-			() => {
-				// console.log('loading');
-			},
-			() => {
-				console.log('load error');
-			}
-		);
+				if (node.isMesh) {
+					node.castShadow = true;
+					node.receiveShadow = true;
+				}
+			});
+			let recursivelyFindHead = (obj: any) => {
+				if (obj?.children) {
+					const i = obj.children.findIndex(({ name }: any) => {
+						return name === 'head';
+					});
+					if (i >= 0) {
+						obj.children[i].scale.set(0.001, 0.001, 0.001);
+						console.log('head removed');
+					} else {
+						recursivelyFindHead(obj.children);
+					}
+				} else if (Array.isArray(obj)) {
+					obj.forEach((c) => {
+						recursivelyFindHead(c);
+					});
+				}
+			};
+			recursivelyFindHead(gltfAnoku.scene);
+			ankouAnimations = gltfAnoku.animations;
+			mixer = new THREE.AnimationMixer(gltfAnoku.scene);
+			console.log('ankouScene', gltfAnoku.scene);
+			gltfAnoku.scene.rotation.y = Math.PI * 0.5;
+			scene.add(gltfAnoku.scene);
+			ankouReady = true;
+			// console.log(gltfAnoku);
+		});
+		gltfLoader.load(parameters.modelsURL.pumpkin, (gltfPumpkin) => {
+			gltfPumpkin.scene.scale.set(0.5, 0.5, 0.5);
+			gltfPumpkin.scene.position.y = 2.55;
+			console.log('pumpkin', gltfPumpkin);
+			// @ts-ignore
+			// gltfPumpkin.scene.children[0].material.color.set('#aa7777');
+			gltfPumpkin.scene.rotation.y = Math.PI * 0.5;
+			// @ts-ignore
+			gltfPumpkin.scene.children[0].material = new THREE.MeshStandardMaterial({
+				color: '#ff4600',
+				metalness: 0.9,
+				roughness: 0.6
+			});
+			scene.add(gltfPumpkin.scene);
+			pumpkinReady = true;
+		});
+		addEventListener('mousemove', (event) => {
+			parameters.cursor.x = event.clientX;
+			parameters.cursor.y = event.clientY;
+		});
 		// Meshes
 		const platformA = new THREE.Mesh(
 			new THREE.BoxGeometry(10, 0.1, 10),
-			new THREE.MeshStandardMaterial({ color: parameters.color, wireframe: true })
+			new THREE.MeshStandardMaterial({ color: parameters.color, wireframe: false, visible: true })
 		);
 		const platformB = new THREE.Mesh(
 			new THREE.BoxGeometry(10, 0.1, 10),
-			new THREE.MeshStandardMaterial({ color: parameters.color, wireframe: true })
+			new THREE.MeshStandardMaterial({ color: parameters.color, wireframe: false, visible: true })
 		);
 		platformA.receiveShadow = true;
 		platformB.receiveShadow = true;
@@ -104,55 +103,29 @@
 		// Light
 		const ambientLight = new THREE.AmbientLight('#aaaaaa');
 		ambientLight.castShadow = true;
-		const directionalLight = new THREE.DirectionalLight('#ffffff', 3);
+		const directionalLight = new THREE.DirectionalLight('#ffffff', 6);
+		directionalLight.castShadow = true;
 		directionalLight.shadow.mapSize.set(1024, 1024);
 		directionalLight.position.set(3, 3, 6);
 		// const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight);
 		// Scene
 		const scene = new THREE.Scene();
+
 		scene.add(platformA, platformB, ambientLight, directionalLight);
 		scene.rotation.y = -Math.PI * 0.25;
 		// Camera
 		const camera = new THREE.PerspectiveCamera(75, parameters.aspectRatio);
-		camera.position.set(0, 3, 10);
+		camera.position.set(3, 6, 9);
 		const control = new OrbitControls(camera, canvas);
 		control.enableDamping = true;
 
 		// Renderer
 		const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+		renderer.shadowMap.enabled = true;
 		renderer.setSize(parameters.width, parameters.height);
 		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 		// Play
-		let northEastDiagonal: any = {};
-		addEventListener('keydown', (event) => {
-			northEastDiagonal[event.key] = true;
-			switch (event.key) {
-				case 'w':
-					// @ts-ignore
-					parameters.movement.forward += 0.1;
-					break;
-				case 's':
-					// @ts-ignoredd
-					parameters.movement.forward -= 0.1;
-					break;
-				case 'a':
-					// @ts-ignore
-					parameters.movement.rightwards += 0.1;
-					break;
-				case 'd':
-					// @ts-ignoredd
-					parameters.movement.rightwards -= 0.1;
-					break;
-			}
-			if (northEastDiagonal.w && northEastDiagonal.d) {
-				northEastDiagonal.w = false;
-				northEastDiagonal.d = false;
-				parameters.movement.rotation += 0.1;
-				// alert('works');
-			}
-		});
-
 		const clock = new THREE.Clock();
 		let tickId = 0;
 		let previousElapsedTime = clock.getElapsedTime();
@@ -165,21 +138,13 @@
 			let sceneReady = pumpkinReady && ankouReady;
 			// console.log(parameters.movement);
 			if (sceneReady) {
-				// platformA.position.set(parameters.movement.forward, 0, parameters.movement.rightwards);
 				let m1 = scene.children[4];
-				// let m2 = scene.children[5];
 				m1.position.set(
 					parameters.movement.forward,
 					scene.children[4].position.y,
 					parameters.movement.rightwards
 				);
-				// m2.position.set(
-				// 	parameters.movement.forward,
-				// 	scene.children[5].position.y,
-				// 	parameters.movement.rightwards
-				// );
 				m1.rotation.y = parameters.movement.rotation;
-				// m2.rotation.y = parameters.movement.rotation;
 				// Control
 				let horseWalk = mixer.clipAction(ankouAnimations[2]);
 				horseWalk?.play();
