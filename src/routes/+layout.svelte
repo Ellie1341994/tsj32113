@@ -2,30 +2,28 @@
 	import '../app.css';
 	import Icon2 from '$lib/icon2.svelte';
 	import { page } from '$app/stores';
-	import { browser } from '$app/environment';
-	export const ssr = false;
+	import { onMount } from 'svelte';
 	$: pathname = $page.url.pathname;
-	$: href = pathname?.split('/').toSpliced(-1).join('/');
-	let height = 15;
-	let width = 15;
-	if (browser) {
+	$: href = pathname?.split('/').toSpliced(-1).join('/') || '/';
+	$: height = 15;
+	$: width = 15;
+	onMount(() => {
 		height = innerHeight * 0.04;
 		width = innerHeight * 0.04;
-	}
+	});
 </script>
 
 <div class="app">
-	<a
-		id="main-nav-icon"
-		style={pathname === '' ? 'pointer-events: none;' : ''}
-		href={href === '' ? '/' : href}
-		><Icon2
-			leafColors={{ bottom: '#994f7a', top: '#D876B6', left: '#BB5992', right: '#A75484' }}
-			colored={true}
-			{height}
-			{width}
-		/></a
-	>
+	{#if pathname !== href}
+		<a id="main-nav-icon" {href}
+			><Icon2
+				leafColors={{ bottom: '#994f7a', top: '#D876B6', left: '#BB5992', right: '#A75484' }}
+				colored={true}
+				{height}
+				{width}
+			/></a
+		>
+	{/if}
 	<slot />
 	<footer>
 		<p>
