@@ -1,12 +1,21 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import Icon2 from '$lib/icon2.svelte';
 	$: challenge = $page.params.challenge;
 </script>
 
 {#await import(`../../../lib/challenges/${challenge}.svelte`)}
-	<Icon2 />
+	<strong>...</strong>
 {:then challenge}
 	<svelte:component this={challenge.default} />
-	<!-- <slot /> -->
 {/await}
+
+<style lang="scss">
+	strong {
+		font-size: 10vh;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100%;
+		width: 100%;
+	}
+</style>
