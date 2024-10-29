@@ -203,9 +203,9 @@
 			text-decoration: none;
 
 			transition: color 0.2s linear;
-			&.disabled {
-				pointer-events: none;
-			}
+			// &.disabled {
+			// 	pointer-events: none;
+			// }
 		}
 		a:hover {
 			color: var(--color-theme-3);
