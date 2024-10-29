@@ -1,19 +1,28 @@
 <script lang="ts">
+	import GUI from 'lil-gui';
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 	import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-	import { cloneUniformsGroups } from 'three/src/renderers/shaders/UniformsUtils.js';
 	let canvas: HTMLCanvasElement;
+	// naked tree
+	// https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/tree-4-kaykit/model.gltf
+	// bushy tree
+	// https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/tree-lime/model.gltf
+	// simple pumpkin
+	// https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/pumpkin-a/model.gltf
+	// pointy tree
+	// https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/tree-spruce/model.gltf
 	onMount(() => {
 		// Utils
 		let pumpkinReady = false;
 		let ankouReady = false;
 		const parameters = {
+			point3d: new THREE.Vector3(0, 0, 5),
 			cursor: { x: 0, y: 0 },
 			movement: { forward: 0, backwards: 0, leftwards: 0, rightwards: 0, rotation: 0 },
-			width: window.innerWidth * 0.9,
-			height: window.innerHeight * 0.9,
+			width: window.innerWidth,
+			height: window.innerHeight,
 			color: '#999999',
 			get aspectRatio() {
 				return this.width / this.height;
@@ -26,10 +35,30 @@
 			licenceURL: 'https://creativecommons.org/licenses/by/2.0/'
 			//  '#ff3399'
 		};
-
+		// GUI
+		// const gui = new GUI({ title: 'Dev. Panel' });
+		// Texture loader
+		const imageFormat = '.jpg';
+		const loadingManager = new THREE.LoadingManager();
+		const textureLoader = new THREE.TextureLoader(loadingManager);
+		const texturesRootPath = '/assets/halloween/Jungle_Floor';
+		const albedoMap = textureLoader.load(`${texturesRootPath}/basecolor${imageFormat}`);
+		albedoMap.colorSpace = THREE.SRGBColorSpace;
+		albedoMap.repeat.set(1, 4);
+		albedoMap.wrapT = THREE.RepeatWrapping;
+		albedoMap.minFilter = THREE.NearestFilter;
+		// albedoMap.magFilter = THREE.NearestFilter;
+		// const ALPHA_TEXTURE = TEXTURE_LOADER.load(`${texturesRootPath}/alpha${imageFormat}`);
+		const normalMap = textureLoader.load(`${texturesRootPath}/normal${imageFormat}`);
+		const ambientOcclusionMap = textureLoader.load(
+			`${texturesRootPath}/ambientOcclusion${imageFormat}`
+		);
+		const heightMap = textureLoader.load(`${texturesRootPath}/height${imageFormat}`);
+		// const metalnessMap = textureLoader.load(`${texturesRootPath}/metallic${imageFormat}`);
+		const roughnessMap = textureLoader.load(`${texturesRootPath}/roughness${imageFormat}`);
 		//  Models
-		const ankouModel: any = null;
-		const pumpkinModel: any = null;
+		let ankouModel: any = null;
+		let pumpkinModel: any = null;
 		let ankouAnimations: any = null;
 		let mixer: any = null;
 		// Loaders
@@ -41,86 +70,98 @@
 					node.castShadow = true;
 					node.receiveShadow = true;
 				}
-			});
-			let recursivelyFindHead = (obj: any) => {
-				if (obj?.children) {
-					const i = obj.children.findIndex(({ name }: any) => {
-						return name === 'head';
-					});
-					if (i >= 0) {
-						obj.children[i].scale.set(0.001, 0.001, 0.001);
-						console.log('head removed');
-					} else {
-						recursivelyFindHead(obj.children);
-					}
-				} else if (Array.isArray(obj)) {
-					obj.forEach((c) => {
-						recursivelyFindHead(c);
-					});
+				if (node.name === 'head') {
+					node.scale.set(0.01, 0.01, 0.01);
 				}
-			};
-			recursivelyFindHead(gltfAnoku.scene);
+			});
 			ankouAnimations = gltfAnoku.animations;
 			mixer = new THREE.AnimationMixer(gltfAnoku.scene);
-			console.log('ankouScene', gltfAnoku.scene);
 			gltfAnoku.scene.rotation.y = Math.PI * 0.5;
+			ankouModel = gltfAnoku.scene;
+			ankouModel.rotation.y = Math.PI * 0.65;
 			scene.add(gltfAnoku.scene);
 			ankouReady = true;
-			// console.log(gltfAnoku);
 		});
 		gltfLoader.load(parameters.modelsURL.pumpkin, (gltfPumpkin) => {
-			gltfPumpkin.scene.scale.set(0.5, 0.5, 0.5);
-			gltfPumpkin.scene.position.y = 2.55;
-			console.log('pumpkin', gltfPumpkin);
-			// @ts-ignore
-			// gltfPumpkin.scene.children[0].material.color.set('#aa7777');
-			gltfPumpkin.scene.rotation.y = Math.PI * 0.5;
-			// @ts-ignore
-			gltfPumpkin.scene.children[0].material = new THREE.MeshStandardMaterial({
-				color: '#ff4600',
+			// console.log('gltfPumpkin', gltfPumpkin);
+			const pumpkinMesh = gltfPumpkin.scene.getObjectByName('jackolantern_big') as THREE.Mesh;
+			pumpkinMesh.castShadow = true;
+			pumpkinMesh.receiveShadow = true;
+			// pumpkinMesh.scale.set(0.5, 0.5, 0.5);
+			pumpkinMesh.position.set(1, 1, 4);
+			pumpkinMesh.rotation.y = Math.PI * 0.5;
+			pumpkinMesh.material = new THREE.MeshStandardMaterial({
+				color: '#994600',
 				metalness: 0.9,
 				roughness: 0.6
 			});
-			scene.add(gltfPumpkin.scene);
+			pumpkinModel = pumpkinMesh;
+			scene.add(pumpkinMesh);
 			pumpkinReady = true;
 		});
+
 		addEventListener('mousemove', (event) => {
 			parameters.cursor.x = event.clientX;
 			parameters.cursor.y = event.clientY;
+			console.log(parameters.cursor);
+			parameters.point3d.set(
+				(parameters.cursor.x / parameters.width - 0.5) * 20,
+				(-parameters.cursor.y / parameters.height + 0.5) * 10 + 2,
+				camera.position.z
+			);
+			console.log(camera);
 		});
 		// Meshes
-		const platformA = new THREE.Mesh(
-			new THREE.BoxGeometry(10, 0.1, 10),
-			new THREE.MeshStandardMaterial({ color: parameters.color, wireframe: false, visible: true })
-		);
-		const platformB = new THREE.Mesh(
-			new THREE.BoxGeometry(10, 0.1, 10),
-			new THREE.MeshStandardMaterial({ color: parameters.color, wireframe: false, visible: true })
-		);
+		const platformMaterial = new THREE.MeshStandardMaterial({
+			color: '#aa9977',
+			wireframe: false,
+			visible: true,
+			map: albedoMap,
+			aoMap: ambientOcclusionMap,
+			// displacementMap: heightMap,
+			// // displacementBias: 1,
+			// displacementScale: 10,
+			// metalnessMap,
+			roughnessMap,
+			normalMap,
+			metalness: 0.1,
+			roughness: 0.9,
+
+			side: THREE.DoubleSide
+		});
+		// const starOfDavidGeometry = new THREE.Geometry()
+		const platformA = new THREE.Mesh(new THREE.CylinderGeometry(7, 3, 3, 7), platformMaterial);
 		platformA.receiveShadow = true;
-		platformB.receiveShadow = true;
-		platformB.rotation.y = Math.PI * 0.25;
+		platformA.material.side = THREE.DoubleSide;
+		platformA.rotation.y = Math.PI;
+		platformA.rotation.x = Math.PI;
+		platformA.position.y = -1.5;
 		// Light
+		const pointLight = new THREE.PointLight(0xffff00, 5, 1.75);
+		// gui.addColor(pointLight, 'color');
 		const ambientLight = new THREE.AmbientLight('#aaaaaa');
-		const directionalLight = new THREE.DirectionalLight('#ffffff', 6);
+		const directionalLight = new THREE.DirectionalLight('#ffffff', 5);
 		directionalLight.castShadow = true;
 		directionalLight.shadow.mapSize.set(1024, 1024);
-		directionalLight.position.set(3, 3, 6);
+		directionalLight.shadow.camera.near = 1;
+		directionalLight.shadow.camera.far = 15;
+		directionalLight.position.set(-3, 6, -3);
 		// const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight);
 		// Scene
 		const scene = new THREE.Scene();
 
-		scene.add(platformA, platformB, ambientLight, directionalLight);
-		scene.rotation.y = -Math.PI * 0.25;
+		scene.add(platformA, ambientLight, directionalLight, pointLight);
+		scene.rotation.y = Math.PI * 1.5;
 		// Camera
 		const camera = new THREE.PerspectiveCamera(75, parameters.aspectRatio);
-		camera.position.set(3, 6, 9);
+		camera.position.set(0, 6, 12);
 		const control = new OrbitControls(camera, canvas);
 		control.enableDamping = true;
 
 		// Renderer
 		const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
 		renderer.shadowMap.enabled = true;
+		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		renderer.setSize(parameters.width, parameters.height);
 		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
@@ -129,6 +170,8 @@
 		let tickId = 0;
 		let previousElapsedTime = clock.getElapsedTime();
 		// scene.add(new THREE.AxesHelper(100));
+		const orbitHorizontalDistance = 4;
+		const orbitVerticalDistance = 4;
 		function tick() {
 			const elapsedTime = clock.getElapsedTime();
 			const deltaTime = elapsedTime - previousElapsedTime;
@@ -137,10 +180,11 @@
 			let sceneReady = pumpkinReady && ankouReady;
 			// console.log(parameters.movement);
 			if (sceneReady) {
-				let m1 = scene.children[4];
+				// ANKOU ANIMATION
+				let m1 = scene.children[3];
 				m1.position.set(
 					parameters.movement.forward,
-					scene.children[4].position.y,
+					scene.children[3].position.y,
 					parameters.movement.rightwards
 				);
 				m1.rotation.y = parameters.movement.rotation;
@@ -149,8 +193,19 @@
 				horseWalk?.play();
 				let cartMove = mixer.clipAction(ankouAnimations[4]);
 				cartMove.play();
-				// console.log(`A:${action} M:`, mixer);
 				mixer.update(deltaTime);
+				// PUMPKIN ANIMATION
+				pumpkinModel.position.set(
+					Math.cos(elapsedTime) * 8 * Math.abs(parameters.cursor.x / parameters.width - 0.5),
+					Math.cos(elapsedTime * 1.5) +
+						orbitVerticalDistance -
+						4 * Math.abs(parameters.cursor.x / parameters.width - 0.5),
+					Math.sin(elapsedTime) * 8 * Math.abs(parameters.cursor.x / parameters.width - 0.5)
+				);
+				pointLight.position.copy(pumpkinModel.position);
+				// console.log('point3d', point3d);
+				pumpkinModel.lookAt(camera.position);
+				// pumpkinModel.lookAt(parameters.point3d);
 				renderer.render(scene, camera);
 			}
 			tickId = window.requestAnimationFrame(tick);
@@ -202,6 +257,6 @@
 	canvas {
 		border: none;
 		box-shadow: none;
-		margin: 0 5vw;
+		/* margin: 0 5vw; */
 	}
 </style>
