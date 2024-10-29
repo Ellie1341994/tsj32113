@@ -61,8 +61,8 @@
 		// Sizes
 
 		const sizes = {
-			width: 800,
-			height: 600
+			width: innerWidth * 0.75,
+			height: innerHeight * 0.75
 		};
 
 		// Camera

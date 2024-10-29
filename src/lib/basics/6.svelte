@@ -5,10 +5,9 @@
 	let canvas: HTMLCanvasElement;
 	onMount(() => {
 		// Sizes
-
 		const sizes = {
-			width: window.innerWidth >= 800 ? 800 : window.innerWidth * 0.5,
-			height: window.innerHeight >= 600 ? 600 : window.innerHeight * 0.5
+			width: innerWidth * 0.75,
+			height: innerHeight * 0.75
 		};
 
 		/*
@@ -18,7 +17,7 @@
 		const setCursorCoordinates = (event: any) => {
 			CURSOR.x = event.clientX / sizes.width - 0.5;
 			CURSOR.y = event.clientY / sizes.height - 0.5;
-			console.log(`x:${CURSOR.x} y:${CURSOR.y}`);
+			// console.log(`x:${CURSOR.x} y:${CURSOR.y}`);
 		};
 		window.addEventListener('mousemove', setCursorCoordinates);
 

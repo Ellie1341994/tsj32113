@@ -3,6 +3,12 @@
 	import * as THREE from 'three';
 	let canvas: HTMLCanvasElement;
 	onMount(() => {
+		// Utils
+		const sizes = {
+			width: innerWidth * 0.75,
+			height: innerHeight * 0.75
+		};
+
 		const scene = new THREE.Scene();
 		// Objects
 		// const sphereGeometry = new THREE.SphereGeometry(1.5,32,32);
@@ -12,11 +18,6 @@
 		const mesh = new THREE.Mesh(geometry, material);
 		// Aggregate
 		scene.add(mesh);
-		// Sizes
-		const sizes = {
-			width: 800,
-			height: 600
-		};
 		// Camera
 		const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height);
 		camera.position.z = 3;
@@ -27,7 +28,6 @@
 		renderer.setSize(sizes.width, sizes.height);
 		// Render
 		renderer.render(scene, camera);
-		console.log('renderer info2', renderer.info);
 		return () => {
 			scene.traverse((node) => {
 				if (node instanceof THREE.Mesh) {
