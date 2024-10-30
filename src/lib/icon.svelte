@@ -3,7 +3,10 @@
 	export let height: number = 800;
 	export let style: string = '';
 	export let colored: boolean = false;
-	export let leafColors: Partial<typeof defaultColors> = {};
+	export let purpleLeafs = true;
+	export let leafColors: Partial<typeof defaultColors> = purpleLeafs
+		? { bottom: '#994f7a', top: '#D876B6', left: '#BB5992', right: '#A75484' }
+		: {};
 	const defaultColors = { top: '#C6D9B0', right: '#A0BF7C', bottom: '#B3CC96', left: '#788F5D' };
 	const { top, right, bottom, left } = {
 		...defaultColors,

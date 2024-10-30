@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import Icon2 from '$lib/icon2.svelte';
+	import Icon from '$lib/icon.svelte';
 	import { submodules } from '../../../lib/lesson/content/info';
 	let titlePlacer: HTMLSpanElement;
 	$: lesson = parseInt($page.params.lesson);
@@ -8,7 +8,7 @@
 </script>
 
 {#await import(`../../../lib/${module}/${lesson}.svelte`)}
-	<Icon2 />
+	<Icon />
 {:then Scene}
 	{@const title = submodules[lesson - 1]}
 	<svelte:component this={Scene.default} />

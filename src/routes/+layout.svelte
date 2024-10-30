@@ -1,6 +1,6 @@
 <script>
 	import '../app.css';
-	import Icon2 from '$lib/icon2.svelte';
+	import Icon from '$lib/icon.svelte';
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	$: pathname = $page.url.pathname;
@@ -16,8 +16,7 @@
 <div class="app">
 	{#if pathname !== href}
 		<a id="main-nav-icon" {href}
-			><Icon2
-				leafColors={{ bottom: '#994f7a', top: '#D876B6', left: '#BB5992', right: '#A75484' }}
+			><Icon
 				colored={true}
 				style={`transform: rotate(${new Date().getHours() * 0.25}turn)`}
 				{height}
