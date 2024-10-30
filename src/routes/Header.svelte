@@ -2,21 +2,11 @@
 	import { lessonGroupIndexes } from '$lib/lessonGroupIndexes';
 	export let module: keyof typeof lessonGroupIndexes;
 	export let lesson: number;
-	let content = [...(module || 'ThreeJs Journey')]
-		.map((c, i) => (c === '_' ? ' ' : i === 0 ? c.toUpperCase() : c))
-		.join('');
 
 	let { startLessonIndex, endLessonIndex } = lessonGroupIndexes[module] || {};
 
 	let lessonIds = module && [...Array(67).keys()].slice(startLessonIndex, endLessonIndex);
-	let titleMsg = 'T.S.J. Projects';
 </script>
-
-<svelte:head>
-	<title>{titleMsg}</title>
-	<link rel="icon" href="../../src/lib/icon.svg" type="image/x-icon" />
-	<meta name={content} {content} />
-</svelte:head>
 
 <header>
 	<nav class="main-nav">

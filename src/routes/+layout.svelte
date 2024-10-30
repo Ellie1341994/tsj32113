@@ -12,7 +12,7 @@
 		console.log('r is', newString);
 		return newString;
 	}
-	$: title = `T.J.S. Challenges ${capitalize($page.params.challenge)}`;
+	$: titleText = `T.J.S. ${$page.params.module ? 'Projects' : 'Challenges ' + capitalize($page.params.challenge)}`;
 	$: pathname = $page.url.pathname;
 	$: href = pathname?.split('/').toSpliced(-1).join('/') || '/';
 	$: height = 15;
@@ -25,10 +25,11 @@
 </script>
 
 <svelte:head>
-	<title>{title}</title>
-	<link rel="icon" href="../../src/lib/icon.svelte" type="image/x-icon" />
+	<title>{titleText}</title>
+	<link rel="icon" href="../../src/lib/icon.svg" type="image/x-icon" />
 	<meta name="challenges" />
 </svelte:head>
+
 <div class="app">
 	{#if pathname !== href}
 		<a id="main-nav-icon" {href}
