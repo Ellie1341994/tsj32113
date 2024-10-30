@@ -284,14 +284,27 @@
 
 			side: THREE.DoubleSide
 		});
-		// const starOfDavidGeometry = new THREE.Geometry()
 		const platformA = new THREE.Mesh(new THREE.CylinderGeometry(7, 3, 3, 7), platformMaterial);
 		platformA.receiveShadow = true;
 		platformA.material.side = THREE.DoubleSide;
 		platformA.rotation.x = Math.PI;
 		platformA.position.y = -1.5;
 		let platformRotated = false;
+		const setCanvasSize = () => {
+			console.log('Window size has changed.');
+			// Scene size update
+			parameters.width = innerWidth;
+			parameters.height = innerHeight;
+			// Camera AR update
+			camera.aspect = parameters.width / parameters.height;
+			camera.updateProjectionMatrix();
 
+			// Renderer
+			renderer.setSize(parameters.width, parameters.height);
+			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
+			renderer.render(scene, camera);
+		};
+		addEventListener('resize', setCanvasSize);
 		addEventListener('dblclick', (event) => {
 			if (platformRotated) {
 				[nakedTreeModel, bushyTreeModel, pointyTreeModel].forEach((model) => {
