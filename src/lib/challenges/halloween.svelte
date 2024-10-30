@@ -17,6 +17,9 @@
 		// Utils
 		let pumpkinReady = false;
 		let ankouReady = false;
+		let nakedTreeReady = false;
+		let bushyTreeReady = false;
+		let pointyTreeReady = false;
 		const parameters = {
 			point3d: new THREE.Vector3(0, 0, 5),
 			cursor: { x: 0, y: 0 },
@@ -30,7 +33,13 @@
 			modelsURL: {
 				cart: 'https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/ankou-with-cart/model.gltf',
 				pumpkin:
-					'https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/jack-o-lantern/model.gltf'
+					'https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/jack-o-lantern/model.gltf',
+				nakedTree:
+					'https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/tree-4-kaykit/model.gltf',
+				pointyTree:
+					'https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/tree-spruce/model.gltf',
+				bushyTree:
+					'https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/tree-lime/model.gltf'
 			},
 			licenceURL: 'https://creativecommons.org/licenses/by/2.0/'
 			//  '#ff3399'
@@ -48,17 +57,18 @@
 		albedoMap.wrapT = THREE.RepeatWrapping;
 		albedoMap.minFilter = THREE.NearestFilter;
 		// albedoMap.magFilter = THREE.NearestFilter;
-		// const ALPHA_TEXTURE = TEXTURE_LOADER.load(`${texturesRootPath}/alpha${imageFormat}`);
 		const normalMap = textureLoader.load(`${texturesRootPath}/normal${imageFormat}`);
 		const ambientOcclusionMap = textureLoader.load(
 			`${texturesRootPath}/ambientOcclusion${imageFormat}`
 		);
-		const heightMap = textureLoader.load(`${texturesRootPath}/height${imageFormat}`);
+		// const heightMap = textureLoader.load(`${texturesRootPath}/height.png`);
 		// const metalnessMap = textureLoader.load(`${texturesRootPath}/metallic${imageFormat}`);
 		const roughnessMap = textureLoader.load(`${texturesRootPath}/roughness${imageFormat}`);
 		//  Models
 		let ankouModel: any = null;
 		let pumpkinModel: any = null;
+		let nakedTreeModel: any = null;
+		let bushyTreeModel: any = null;
 		let ankouAnimations: any = null;
 		let mixer: any = null;
 		// Loaders
@@ -99,6 +109,40 @@
 			scene.add(pumpkinMesh);
 			pumpkinReady = true;
 		});
+		gltfLoader.load(parameters.modelsURL.nakedTree, (gltfNakedTree) => {
+			console.log('gltfNakedTree', gltfNakedTree);
+			const nakedTreeMesh = gltfNakedTree.scene.getObjectByName('treeD_graveyard') as THREE.Mesh;
+			nakedTreeMesh.castShadow = true;
+			nakedTreeMesh.receiveShadow = true;
+			// @ts-ignore
+			// nakedTreeMesh.material?.dipose();
+			nakedTreeMesh.material.copy(platformMaterial);
+			// @ts-ignore
+			// nakedTreeMesh.material.color = new THREE.Color('#994600');
+			nakedTreeMesh.position.set(1, -1.5, -4);
+			nakedTreeMesh.rotation.x = -Math.PI * 0.25;
+			nakedTreeMesh.scale.set(1, 3, 2);
+			scene.add(nakedTreeMesh);
+			nakedTreeModel = nakedTreeMesh;
+			nakedTreeReady = true;
+		});
+		gltfLoader.load(parameters.modelsURL.bushyTree, (gltfbushyTree) => {
+			console.log('gltfbushyTree', gltfbushyTree);
+			const treeLimeMesh = gltfbushyTree.scene.getObjectByName('tree-lime') as THREE.Mesh;
+			treeLimeMesh.castShadow = true;
+			treeLimeMesh.receiveShadow = true;
+			// @ts-ignore
+			// nakedTreeMesh.material?.dipose();
+			treeLimeMesh.material.copy(platformMaterial);
+			// @ts-ignore
+			// nakedTreeMesh.material.color = new THREE.Color('#994600');
+			treeLimeMesh.position.set(1, -2, 5);
+			treeLimeMesh.rotation.x = Math.PI * 0.25;
+			treeLimeMesh.scale.set(0.5, 0.25, 0.5);
+			scene.add(treeLimeMesh);
+			bushyTreeModel = treeLimeMesh;
+			bushyTreeReady = true;
+		});
 
 		addEventListener('mousemove', (event) => {
 			parameters.cursor.x = event.clientX;
@@ -109,7 +153,7 @@
 				(-parameters.cursor.y / parameters.height + 0.5) * 10 + 2,
 				camera.position.z
 			);
-			console.log(camera);
+			// console.log(camera);
 		});
 		// Meshes
 		const platformMaterial = new THREE.MeshStandardMaterial({
@@ -118,10 +162,6 @@
 			visible: true,
 			map: albedoMap,
 			aoMap: ambientOcclusionMap,
-			// displacementMap: heightMap,
-			// // displacementBias: 1,
-			// displacementScale: 10,
-			// metalnessMap,
 			roughnessMap,
 			normalMap,
 			metalness: 0.1,
@@ -177,9 +217,12 @@
 			const deltaTime = elapsedTime - previousElapsedTime;
 			previousElapsedTime = elapsedTime;
 			control.update();
-			let sceneReady = pumpkinReady && ankouReady;
+			let sceneReady = [pumpkinReady, ankouReady, nakedTreeReady].every(
+				(modelLoaded) => modelLoaded
+			);
 			// console.log(parameters.movement);
 			if (sceneReady) {
+				const valueBetweenAhaldAndNegativeHalf = parameters.cursor.x / parameters.width - 0.5;
 				// ANKOU ANIMATION
 				let m1 = scene.children[3];
 				m1.position.set(
@@ -196,13 +239,21 @@
 				mixer.update(deltaTime);
 				// PUMPKIN ANIMATION
 				pumpkinModel.position.set(
-					Math.cos(elapsedTime) * 8 * Math.abs(parameters.cursor.x / parameters.width - 0.5),
+					Math.cos(elapsedTime) * 8 * Math.abs(valueBetweenAhaldAndNegativeHalf),
 					Math.cos(elapsedTime * 1.5) +
 						orbitVerticalDistance -
-						4 * Math.abs(parameters.cursor.x / parameters.width - 0.5),
-					Math.sin(elapsedTime) * 8 * Math.abs(parameters.cursor.x / parameters.width - 0.5)
+						4 * Math.abs(valueBetweenAhaldAndNegativeHalf),
+					Math.sin(elapsedTime) * 8 * Math.abs(valueBetweenAhaldAndNegativeHalf)
 				);
+				// POINT LIGHT ANIMATION
 				pointLight.position.copy(pumpkinModel.position);
+				// TREE ANIMATION
+				nakedTreeModel.scale.set(
+					1,
+					3 - 4 * Math.abs(valueBetweenAhaldAndNegativeHalf),
+					2 - 2 * Math.abs(valueBetweenAhaldAndNegativeHalf)
+				);
+
 				// console.log('point3d', point3d);
 				pumpkinModel.lookAt(camera.position);
 				// pumpkinModel.lookAt(parameters.point3d);
