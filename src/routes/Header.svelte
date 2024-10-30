@@ -1,9 +1,7 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import { lessonGroupIndexes } from '$lib/lessonGroupIndexes';
 	export let module: keyof typeof lessonGroupIndexes;
 	export let lesson: number;
-	console.log($page.url.pathname);
 	let content = [...(module || 'ThreeJs Journey')]
 		.map((c, i) => (c === '_' ? ' ' : i === 0 ? c.toUpperCase() : c))
 		.join('');
@@ -11,9 +9,7 @@
 	let { startLessonIndex, endLessonIndex } = lessonGroupIndexes[module] || {};
 
 	let lessonIds = module && [...Array(67).keys()].slice(startLessonIndex, endLessonIndex);
-	console.log(`si${startLessonIndex} ei${endLessonIndex} mod${module}`, lessonGroupIndexes[module]);
-	console.log(lessonIds);
-	let titleMsg = 'T.S.J. ';
+	let titleMsg = 'T.S.J. Projects';
 </script>
 
 <svelte:head>

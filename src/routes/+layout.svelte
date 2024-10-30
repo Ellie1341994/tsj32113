@@ -13,6 +13,11 @@
 	});
 </script>
 
+<svelte:head>
+	<title>T.S.J. Challenges</title>
+	<link rel="icon" href="../../src/lib/icon.svelte" type="image/x-icon" />
+	<meta name="challenges" />
+</svelte:head>
 <div class="app">
 	{#if pathname !== href}
 		<a id="main-nav-icon" {href}
