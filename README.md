@@ -1,1 +1,1 @@
-# Threejsj
+# Three.js Journey & Challenges 

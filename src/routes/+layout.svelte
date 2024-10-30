@@ -26,7 +26,7 @@
 
 <svelte:head>
 	<title>{titleText}</title>
-	<link rel="icon" href="../../src/lib/icon.svg" type="image/x-icon" />
+	<link rel="icon" href="/icon.svg" type="image/x-icon" />
 	<meta name="challenges" />
 </svelte:head>
 
