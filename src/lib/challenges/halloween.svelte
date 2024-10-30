@@ -5,14 +5,6 @@
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 	import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 	let canvas: HTMLCanvasElement;
-	// naked tree
-	// https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/tree-4-kaykit/model.gltf
-	// bushy tree
-	// https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/tree-lime/model.gltf
-	// simple pumpkin
-	// https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/pumpkin-a/model.gltf
-	// pointy tree
-	// https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/tree-spruce/model.gltf
 	onMount(() => {
 		// Utils
 		let pumpkinReady = false;
@@ -110,7 +102,7 @@
 			pumpkinReady = true;
 		});
 		gltfLoader.load(parameters.modelsURL.nakedTree, (gltfNakedTree) => {
-			console.log('gltfNakedTree', gltfNakedTree);
+			// console.log('gltfNakedTree', gltfNakedTree);
 			const nakedTreeMesh = gltfNakedTree.scene.getObjectByName('treeD_graveyard') as THREE.Mesh;
 			nakedTreeMesh.castShadow = true;
 			nakedTreeMesh.receiveShadow = true;
@@ -127,7 +119,7 @@
 			nakedTreeReady = true;
 		});
 		gltfLoader.load(parameters.modelsURL.bushyTree, (gltfbushyTree) => {
-			console.log('gltfbushyTree', gltfbushyTree);
+			// console.log('gltfbushyTree', gltfbushyTree);
 			const treeLimeMesh = gltfbushyTree.scene.getObjectByName('tree-lime') as THREE.Mesh;
 			treeLimeMesh.castShadow = true;
 			treeLimeMesh.receiveShadow = true;
@@ -147,7 +139,7 @@
 		addEventListener('mousemove', (event) => {
 			parameters.cursor.x = event.clientX;
 			parameters.cursor.y = event.clientY;
-			console.log(parameters.cursor);
+			// console.log(parameters.cursor);
 			parameters.point3d.set(
 				(parameters.cursor.x / parameters.width - 0.5) * 20,
 				(-parameters.cursor.y / parameters.height + 0.5) * 10 + 2,
