@@ -217,7 +217,7 @@
 			const deltaTime = elapsedTime - previousElapsedTime;
 			previousElapsedTime = elapsedTime;
 			control.update();
-			let sceneReady = [pumpkinReady, ankouReady, nakedTreeReady].every(
+			let sceneReady = [pumpkinReady, ankouReady, nakedTreeReady, bushyTreeReady].every(
 				(modelLoaded) => modelLoaded
 			);
 			// console.log(parameters.movement);
@@ -245,6 +245,7 @@
 						4 * Math.abs(valueBetweenAhaldAndNegativeHalf),
 					Math.sin(elapsedTime) * 8 * Math.abs(valueBetweenAhaldAndNegativeHalf)
 				);
+				pumpkinModel.lookAt(camera.position);
 				// POINT LIGHT ANIMATION
 				pointLight.position.copy(pumpkinModel.position);
 				// TREE ANIMATION
@@ -253,9 +254,8 @@
 					3 - 4 * Math.abs(valueBetweenAhaldAndNegativeHalf),
 					2 - 2 * Math.abs(valueBetweenAhaldAndNegativeHalf)
 				);
-
+				bushyTreeModel.rotation.y = Math.PI * valueBetweenAhaldAndNegativeHalf * 4;
 				// console.log('point3d', point3d);
-				pumpkinModel.lookAt(camera.position);
 				// pumpkinModel.lookAt(parameters.point3d);
 				renderer.render(scene, camera);
 			}
