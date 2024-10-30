@@ -1,8 +1,18 @@
-<script>
+<script lang="ts">
 	import '../app.css';
 	import Icon from '$lib/icon.svelte';
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
+	function capitalize(s: string) {
+		let newString = '';
+		if (s) {
+			const [c, ...ss] = s as unknown as [string, string[]];
+			newString = '> ' + c.toUpperCase() + ss.join('');
+		}
+		console.log('r is', newString);
+		return newString;
+	}
+	$: title = `T.J.S. Challenges ${capitalize($page.params.challenge)}`;
 	$: pathname = $page.url.pathname;
 	$: href = pathname?.split('/').toSpliced(-1).join('/') || '/';
 	$: height = 15;
@@ -11,10 +21,11 @@
 		height = innerHeight * 0.04;
 		width = innerHeight * 0.04;
 	});
+	console.log('challengeVar', $page.params);
 </script>
 
 <svelte:head>
-	<title>T.S.J. Challenges</title>
+	<title>{title}</title>
 	<link rel="icon" href="../../src/lib/icon.svelte" type="image/x-icon" />
 	<meta name="challenges" />
 </svelte:head>
