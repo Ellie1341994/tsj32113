@@ -344,8 +344,10 @@
 				clonedNakedTreeMeshes.forEach((mesh: any, i: any) => {
 					gsap.to(mesh.scale, { x: 0, y: 0, z: 0, duration: 0.5 }).then(() => {
 						const alteredPumpkinPos = new THREE.Vector3(0, 69, 0);
-						mesh.position.x = 1 / mesh.position.x;
-						mesh.position.z = 1 / mesh.position.z;
+						const isFraccionZ = Math.abs(mesh.position.z) < 1;
+						const isFraccionX = Math.abs(mesh.position.x) < 1;
+						mesh.position.x = isFraccionX ? mesh.position.x : 1 / mesh.position.x;
+						mesh.position.z = isFraccionZ ? mesh.position.z : 1 / mesh.position.z;
 						mesh.lookAt(alteredPumpkinPos);
 					});
 					const offset = (Math.random() * i) / 3;
@@ -359,8 +361,6 @@
 				});
 			}
 			platformRotated = !platformRotated;
-			// gsap.to(platformA.rotation, { z: -Math.PI, duration: 1 });
-			// renderer.render(scene, camera)
 		});
 		// Light
 		const pointLight = new THREE.PointLight(0xffff00, 5, 1.75);
