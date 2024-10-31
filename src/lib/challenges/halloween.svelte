@@ -365,7 +365,7 @@
 		// Light
 		const pointLight = new THREE.PointLight(0xffff00, 5, 1.75);
 		// gui.addColor(pointLight, 'color');
-		const ambientLight = new THREE.AmbientLight('#aaaaaa');
+		const ambientLight = new THREE.AmbientLight('#ffffff');
 		const directionalLight = new THREE.DirectionalLight(
 			'#ffffff',
 			new Date().getHours() < 9 || new Date().getHours() > 18 ? 3 : 5
@@ -411,6 +411,29 @@
 			}
 			camera.position.y = parameters.movement.upwards;
 			renderer.render(scene, camera);
+		});
+		let wheelPressedCount = 0;
+		const colors = [
+			'#ffffff',
+			'#000000',
+			'#0000ff',
+			'#00ff00',
+			'#ff0000',
+			'#ffff00',
+			'#00ffff',
+			'#ff00ff'
+		];
+		addEventListener('mousedown', (event) => {
+			switch (event.button) {
+				case 1:
+					ambientLight.color = new THREE.Color(colors[wheelPressedCount]);
+					wheelPressedCount += wheelPressedCount !== colors.length ? 1 : -colors.length;
+					break;
+				case 2:
+					pointLight.color = new THREE.Color(colors[wheelPressedCount]);
+					wheelPressedCount += wheelPressedCount !== colors.length ? 1 : -colors.length;
+					break;
+			}
 		});
 		// Play
 		const clock = new THREE.Clock();
