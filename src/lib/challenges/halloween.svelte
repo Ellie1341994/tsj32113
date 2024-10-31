@@ -5,6 +5,9 @@
 	import * as THREE from 'three';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 	import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+	// import { readable } from 'svelte/store';
+	import dateStore from '$lib/dateStore.ts';
+	const clock = dateStore();
 	let canvas: HTMLCanvasElement;
 	onMount(() => {
 		// Utils
@@ -84,7 +87,7 @@
 				}
 			});
 			ankouAnimations = gltfAnoku.animations;
-			console.log(ankouAnimations);
+			// console.log(ankouAnimations);
 			mixer = new THREE.AnimationMixer(gltfAnoku.scene);
 			gltfAnoku.scene.rotation.y = Math.PI * 0.5;
 			ankouModel = gltfAnoku.scene;
@@ -179,7 +182,7 @@
 			bushyTreeReady = true;
 		});
 		gltfLoader.load(parameters.modelsURL.pointyTree, (gltfpointyTree) => {
-			console.log('gltfpointyTree', gltfpointyTree);
+			// console.log('gltfpointyTree', gltfpointyTree);
 			const pointyTreeMesh = gltfpointyTree.scene.getObjectByName('tree-spruce') as THREE.Mesh;
 			pointyTreeMesh.castShadow = true;
 			pointyTreeMesh.receiveShadow = true;
@@ -214,7 +217,7 @@
 				// 'Sphere018'
 				// 'Sphere018_1'
 			) as THREE.Mesh;
-			console.log('normalPumpkinMesh', normalPumpkinGroup);
+			// console.log('normalPumpkinMesh', normalPumpkinGroup);
 			normalPumpkinGroup.castShadow = true;
 			normalPumpkinGroup.receiveShadow = true;
 			// nakedTreeMesh.material?.dipose();
@@ -297,10 +300,10 @@
 		};
 		addEventListener('resize', setCanvasSize);
 		let previousExecutionTimestamp = 0;
+		const timeBetweenTransformations = 2;
 		addEventListener('dblclick', (event) => {
 			const timestampDelta = event.timeStamp / 1000 - previousExecutionTimestamp;
-			let runListener = timestampDelta > 3;
-			console.log(`${timestampDelta} ${runListener}`, timestampDelta);
+			let runListener = timestampDelta > timeBetweenTransformations;
 			previousExecutionTimestamp = event.timeStamp / 1000;
 			if (!runListener) return;
 			if (platformRotated) {
@@ -341,10 +344,12 @@
 				clonedNakedTreeMeshes.forEach((mesh: any, i: any) => {
 					gsap.to(mesh.scale, { x: 0, y: 0, z: 0, duration: 0.5 }).then(() => {
 						const alteredPumpkinPos = new THREE.Vector3(0, 69, 0);
-						const isFraccionZ = Math.abs(mesh.position.z) < 1;
-						const isFraccionX = Math.abs(mesh.position.x) < 1;
-						mesh.position.x = isFraccionX ? mesh.position.x : 1 / mesh.position.x;
-						mesh.position.z = isFraccionZ ? mesh.position.z : 1 / mesh.position.z;
+						// const isFraccionZ = Math.abs(mesh.position.z) < 1;
+						// const isFraccionX = Math.abs(mesh.position.x) < 1;
+						// 						isFraccionX ? mesh.position.x :
+						// isFraccionZ ? mesh.position.z :
+						mesh.position.x = 1 / mesh.position.x;
+						mesh.position.z = 1 / mesh.position.z;
 						mesh.lookAt(alteredPumpkinPos);
 					});
 					const offset = (Math.random() * i) / 3;
@@ -457,13 +462,12 @@
 				);
 				intersect = raycaster.intersectObject(nakedTreeModel);
 				if (!nakedTreeRingCreated) {
-					// console.log('creating tree ring', clonedNakedTreeMeshes);
 					clonedNakedTreeMeshes.forEach((mesh: any, i: any) => {
 						const horizontalOffset = 4;
 						mesh.position.set(
-							Math.cos((Math.PI * 2 * i) / 7 + Math.random() * 0.5) * horizontalOffset,
+							Math.cos((Math.PI * 2 * i) / 7) * horizontalOffset,
 							-2,
-							Math.sin((Math.PI * 2 * i) / 7 + Math.random() * 0.5) * horizontalOffset
+							Math.sin((Math.PI * 2 * i) / 7) * horizontalOffset
 						);
 						mesh.lookAt(pumpkinModel.position);
 						mesh.rotation.x = -Math.PI * 0.4;
@@ -545,11 +549,23 @@
 </script>
 
 <canvas bind:this={canvas}></canvas>
+<div id="timeUntilHalloweenPlacer">
+	{$clock}
+</div>
 
 <style>
 	canvas {
 		border: none;
 		box-shadow: none;
 		/* margin: 0 5vw; */
+	}
+	#timeUntilHalloweenPlacer {
+		font-size: 48px;
+		display: flex;
+		justify-content: center;
+		font-weight: bold;
+		position: fixed;
+		width: 100vw;
+		top: 10vh;
 	}
 </style>
