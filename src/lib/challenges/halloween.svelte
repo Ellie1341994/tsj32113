@@ -17,15 +17,6 @@
 		const parameters = {
 			point3d: new THREE.Vector3(0, 0, 5),
 			cursor: { x: 0, y: 0 },
-			movement: {
-				forward: 0,
-				backwards: 0,
-				leftwards: 0,
-				rightwards: 0,
-				rotation: 0,
-				upwards: 0,
-				downwards: 0
-			},
 			width: window.innerWidth,
 			height: window.innerHeight,
 			color: '#999999',
@@ -138,7 +129,7 @@
 			nakedTreeMesh.material.copy(platformMaterial);
 			// @ts-ignore
 			// nakedTreeMesh.material.color = new THREE.Color('#994600');
-			nakedTreeMesh.position.set(1, -1.5, -4);
+			nakedTreeMesh.position.set(0, -2, -5);
 			nakedTreeMesh.rotation.x = -Math.PI * 0.25;
 			nakedTreeMesh.scale.set(1, 3, 2);
 			scene.add(nakedTreeMesh);
@@ -305,7 +296,13 @@
 			renderer.render(scene, camera);
 		};
 		addEventListener('resize', setCanvasSize);
+		let previousExecutionTimestamp = 0;
 		addEventListener('dblclick', (event) => {
+			const timestampDelta = event.timeStamp / 1000 - previousExecutionTimestamp;
+			let runListener = timestampDelta > 3;
+			console.log(`${timestampDelta} ${runListener}`, timestampDelta);
+			previousExecutionTimestamp = event.timeStamp / 1000;
+			if (!runListener) return;
 			if (platformRotated) {
 				[nakedTreeModel, bushyTreeModel, pointyTreeModel].forEach((model) => {
 					gsap.to(model.position, {
@@ -333,7 +330,7 @@
 				});
 				gsap.to(normalPumpkinMetaGroup.position, { y: 0, x: 0, duration: 0.5, delay: 1 });
 			} else {
-				gsap.to(normalPumpkinMetaGroup.position, { y: 2, x: -2, duration: 0.5, delay: 1 });
+				gsap.to(normalPumpkinMetaGroup.position, { y: 2, x: -4, duration: 0.5, delay: 1 });
 				[nakedTreeModel, bushyTreeModel, pointyTreeModel].forEach((model) => {
 					gsap.to(model.position, { y: 0, duration: 1, delay: 1.25 });
 					gsap.to(model.rotation, { x: 0.1, y: 0.1, z: 0.1, duration: 1, delay: 0.5 });
@@ -393,25 +390,6 @@
 		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		renderer.setSize(parameters.width, parameters.height);
 		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-		addEventListener('keydown', (event) => {
-			switch (event.key) {
-				case 'a':
-					parameters.movement.rightwards -= 1;
-					break;
-				case 'w':
-					parameters.movement.upwards += 1;
-					break;
-				case 's':
-					parameters.movement.upwards -= 1;
-					break;
-				case 'd':
-					parameters.movement.rightwards += 1;
-					break;
-			}
-			camera.position.y = parameters.movement.upwards;
-			renderer.render(scene, camera);
-		});
 		let wheelPressedCount = 0;
 		const colors = [
 			'#ffffff',
@@ -425,6 +403,17 @@
 		];
 		addEventListener('mousedown', (event) => {
 			switch (event.button) {
+				case 0:
+					if (intersect.length) {
+						const nakedTreeMesh = intersect.shift().object;
+						const isScaled = nakedTreeMesh.scale.x > 1;
+						gsap.to(nakedTreeMesh.scale, {
+							x: isScaled ? 1 : 5,
+							z: isScaled ? 1 : 5,
+							duration: 1
+						});
+					}
+					break;
 				case 1:
 					ambientLight.color = new THREE.Color(colors[wheelPressedCount]);
 					wheelPressedCount += wheelPressedCount !== colors.length ? 1 : -colors.length;
@@ -436,6 +425,8 @@
 			}
 		});
 		// Play
+		const raycaster = new THREE.Raycaster();
+		let intersect: any = [];
 		const clock = new THREE.Clock();
 		let tickId = 0;
 		let previousElapsedTime = clock.getElapsedTime();
@@ -457,6 +448,14 @@
 			].every((modelLoaded) => modelLoaded);
 			if (sceneReady) {
 				// Utils
+				raycaster.setFromCamera(
+					new THREE.Vector2(
+						(parameters.cursor.x / innerWidth) * 2 - 1,
+						-(parameters.cursor.y / innerHeight) * 2 + 1
+					),
+					camera
+				);
+				intersect = raycaster.intersectObject(nakedTreeModel);
 				if (!nakedTreeRingCreated) {
 					// console.log('creating tree ring', clonedNakedTreeMeshes);
 					clonedNakedTreeMeshes.forEach((mesh: any, i: any) => {
@@ -472,17 +471,8 @@
 						nakedTreeRingCreated = true;
 					});
 				}
-				parameters.movement.upwards = camera.position.y;
 				const valueBetweenAhaldAndNegativeHalf = parameters.cursor.x / parameters.width - 0.5;
 				// ANKOU ANIMATION
-				let m1 = scene.children[3];
-				m1.position.set(
-					parameters.movement.forward,
-					scene.children[3].position.y,
-					parameters.movement.rightwards
-				);
-				m1.rotation.y = parameters.movement.rotation;
-				// Control
 				let horseWalk = mixer.clipAction(ankouAnimations[2]);
 				horseWalk?.play();
 				let cartMove = mixer.clipAction(ankouAnimations[4]);
@@ -506,13 +496,6 @@
 					Math.sin((2 * Math.PI * elapsedTime) / 60) * orbitHorizontalDistance
 				);
 				directionalLight.lookAt(platformA.position);
-				// TREE ANIMATION
-				nakedTreeModel.scale.set(
-					1,
-					3 - 4 * Math.abs(valueBetweenAhaldAndNegativeHalf),
-					2 - 2 * Math.abs(valueBetweenAhaldAndNegativeHalf)
-				);
-
 				pointyTreeModel.scale.set(0.5, 0.5 - Math.abs(valueBetweenAhaldAndNegativeHalf) / 2, 0.5);
 				bushyTreeModel.rotation.y = Math.PI * valueBetweenAhaldAndNegativeHalf * 4;
 				renderer.render(scene, camera);
