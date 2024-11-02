@@ -325,13 +325,13 @@
 				gsap.to(platformA.rotation, { z: 0, duration: 1, delay: 0.5 });
 				gsap.to(platformA.position, { y: -1.5, duration: 1, delay: 1 });
 				clonedNakedTreeMeshes.forEach((mesh: any, i: any) => {
-					gsap.to(mesh.scale, { x: 0, y: 0, z: 0, duration: 0.5 }).then(() => {
+					gsap.to(mesh.scale, { x: 0, y: 0, z: 0, duration: 0.25 }).then(() => {
 						mesh.position.x = 1 / mesh.position.x;
 						mesh.position.z = 1 / mesh.position.z;
 
 						mesh.lookAt(pumpkinModel.position);
 					});
-					gsap.to(mesh.scale, { x: 1, y: 1, z: 1, duration: 1, delay: 1.25 });
+					gsap.to(mesh.scale, { x: 1, y: 1, z: 1, duration: 1, delay: 1.75 });
 				});
 				gsap.to(normalPumpkinMetaGroup.position, { y: 0, x: 0, duration: 0.5, delay: 1 });
 			} else {
@@ -360,7 +360,7 @@
 						y: 4,
 						z: 2 + offset,
 						duration: 1,
-						delay: 1.25
+						delay: 1.75
 					});
 				});
 			}
@@ -553,7 +553,7 @@
 <canvas bind:this={canvas}></canvas>
 <div id="timeUntilHalloweenPlacer">
 	{#if isHalloween}
-		<p><strong>Halloween !</strong></p>
+		<p style="font-size: 10vh;"><strong>Halloween !</strong></p>
 	{:else}
 		<p class="halloweenTitleContainer">{$clock} until <strong>Halloween</strong></p>
 	{/if}
@@ -566,26 +566,17 @@
 		/* margin: 0 5vw; */
 	}
 	#timeUntilHalloweenPlacer {
-		// #timeUntilHalloweenContainer {
-		// 	font-size: 10vh;
-		// }
-		.halloweenTitleContainer {
-			line-break: anywhere;
-		}
 		@font-face {
 			font-family: 'NemoNightmares';
 			src: url('$lib/fonts/NemoNightmares.ttf') format('truetype');
 		}
+		z-index: -1;
+		line-break: anywhere;
 		font-family: 'NemoNightmares';
-		// -webkit-text-stroke: 0.1vh;
-		// -webkit-text-stroke-width: 0.05vh;
 		-webkit-text-stroke-color: white;
-		font-size: 10vh;
+		font-size: 5vh;
 		display: flex;
-		// flex-direction: column;
 		justify-content: center;
-		// align-items: center;
-		// font-weight: bold;
 		position: fixed;
 		width: 100vw;
 		top: 0vh;
