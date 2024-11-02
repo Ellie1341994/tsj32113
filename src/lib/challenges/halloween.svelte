@@ -7,6 +7,8 @@
 	import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 	// import { readable } from 'svelte/store';
 	import dateStore from '$lib/dateStore.ts';
+	$: now = new Date();
+	$: isHalloween = now === new Date(now.getFullYear(), 9, 31);
 	const clock = dateStore();
 	let canvas: HTMLCanvasElement;
 	onMount(() => {
@@ -550,22 +552,42 @@
 
 <canvas bind:this={canvas}></canvas>
 <div id="timeUntilHalloweenPlacer">
-	{$clock}
+	{#if isHalloween}
+		<p><strong>Halloween !</strong></p>
+	{:else}
+		<p class="halloweenTitleContainer">{$clock} until <strong>Halloween</strong></p>
+	{/if}
 </div>
 
-<style>
+<style lang="scss">
 	canvas {
 		border: none;
 		box-shadow: none;
 		/* margin: 0 5vw; */
 	}
 	#timeUntilHalloweenPlacer {
-		font-size: 48px;
+		// #timeUntilHalloweenContainer {
+		// 	font-size: 10vh;
+		// }
+		.halloweenTitleContainer {
+			line-break: anywhere;
+		}
+		@font-face {
+			font-family: 'NemoNightmares';
+			src: url('$lib/fonts/NemoNightmares.ttf') format('truetype');
+		}
+		font-family: 'NemoNightmares';
+		// -webkit-text-stroke: 0.1vh;
+		// -webkit-text-stroke-width: 0.05vh;
+		-webkit-text-stroke-color: white;
+		font-size: 10vh;
 		display: flex;
+		// flex-direction: column;
 		justify-content: center;
-		font-weight: bold;
+		// align-items: center;
+		// font-weight: bold;
 		position: fixed;
 		width: 100vw;
-		top: 10vh;
+		top: 0vh;
 	}
 </style>
