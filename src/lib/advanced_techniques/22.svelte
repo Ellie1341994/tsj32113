@@ -1,12 +1,10 @@
 <script lang="ts">
-	import gsap from 'gsap';
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 	import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 	import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
-	import { objectDirection } from 'three/webgpu';
 	let canvas: HTMLCanvasElement;
 	let lilGuiPlacer: HTMLSpanElement;
 	onMount(() => {
