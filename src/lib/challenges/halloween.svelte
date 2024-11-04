@@ -1,16 +1,22 @@
 <script lang="ts">
+	import { fade, fly, slide } from 'svelte/transition';
 	import gsap from 'gsap';
-	import GUI from 'lil-gui';
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 	import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-	// import { readable } from 'svelte/store';
 	import dateStore from '$lib/dateStore.ts';
+	import SquaredSpiral from '$lib/challenges/icons/SquaredSpiral.svelte';
+	import LightIcon from '$lib/challenges/icons/Light.svelte';
+	import PumpkinIcon from '$lib/challenges/icons/Pumpkin.svelte';
+	import BranchIcon from '$lib/challenges/icons/Branch.svelte';
+	import TransformFigure from '$lib/challenges/icons/TransformFigure.svelte';
 	$: now = new Date();
 	$: isHalloween = now === new Date(now.getFullYear(), 9, 31);
 	const clock = dateStore();
 	let canvas: HTMLCanvasElement;
+	let halloweenTitle: HTMLElement;
+	$: sceneReady = false;
 	onMount(() => {
 		// Utils
 		let pumpkinReady = false;
@@ -25,6 +31,16 @@
 			width: window.innerWidth,
 			height: window.innerHeight,
 			color: '#999999',
+			colors: [
+				'#ffffff',
+				'#000000',
+				'#0000ff',
+				'#00ff00',
+				'#ff0000',
+				'#ffff00',
+				'#00ffff',
+				'#ff00ff'
+			],
 			get aspectRatio() {
 				return this.width / this.height;
 			},
@@ -47,6 +63,13 @@
 		const initialModelPhysics: any = {};
 		// GUI
 		// const gui = new GUI({ title: 'Dev. Panel' });
+		/**
+		 * Fonts
+		 */
+		// const fontLoader = new FontLoader();
+		// fontLoader.load('three/examples/fonts/optimer_regular.typeface.json', (font) => {
+		// 	console.log('loaded');
+		// });
 		// Texture loader
 		const imageFormat = '.jpg';
 		const loadingManager = new THREE.LoadingManager();
@@ -309,6 +332,7 @@
 			previousExecutionTimestamp = event.timeStamp / 1000;
 			if (!runListener) return;
 			if (platformRotated) {
+				gsap.to('#TransformFigureIcon', { rotation: 0, duration: 1 });
 				[nakedTreeModel, bushyTreeModel, pointyTreeModel].forEach((model) => {
 					gsap.to(model.position, {
 						...initialModelPhysics[model.name].position,
@@ -335,6 +359,13 @@
 				});
 				gsap.to(normalPumpkinMetaGroup.position, { y: 0, x: 0, duration: 0.5, delay: 1 });
 			} else {
+				gsap.to('#TransformFigureIcon', { rotation: 180, opacity: 0.7, duration: 1 });
+
+				// gsap.to('#TransformFigureIcon', {
+				// 	fill: '#' + pointLight.color.getHexString() + 'aa',
+				// 	duration: 1
+				// });
+
 				gsap.to(normalPumpkinMetaGroup.position, { y: 2, x: -4, duration: 0.5, delay: 1 });
 				[nakedTreeModel, bushyTreeModel, pointyTreeModel].forEach((model) => {
 					gsap.to(model.position, { y: 0, duration: 1, delay: 1.25 });
@@ -367,17 +398,22 @@
 			platformRotated = !platformRotated;
 		});
 		// Light
-		const pointLight = new THREE.PointLight(0xffff00, 5, 1.75);
-		// gui.addColor(pointLight, 'color');
+		const randomColor = parameters.colors[Math.floor(Math.random() * parameters.colors.length)];
+		const pointLight = new THREE.PointLight(randomColor, 5, 1.75);
 		const ambientLight = new THREE.AmbientLight('#ffffff');
 		const directionalLight = new THREE.DirectionalLight(
 			'#ffffff',
-			new Date().getHours() < 9 || new Date().getHours() > 18 ? 3 : 5
+			new Date().getHours() < 9 || new Date().getHours() > 18 ? 4 : 6
 		);
 		directionalLight.castShadow = true;
 		directionalLight.shadow.mapSize.set(1024, 1024);
 		directionalLight.shadow.camera.near = 1;
 		directionalLight.shadow.camera.far = 15;
+		directionalLight.shadow.camera.left = -15;
+		directionalLight.shadow.camera.right = 15;
+		directionalLight.shadow.camera.top = 15;
+		directionalLight.shadow.camera.bottom = -15;
+
 		directionalLight.position.set(-3, 6, -3);
 		// const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight);
 		// Scene
@@ -387,7 +423,7 @@
 		scene.rotation.y = Math.PI * 1.5;
 		// Camera
 		const camera = new THREE.PerspectiveCamera(75, parameters.aspectRatio);
-		camera.position.set(0, 6, 12);
+		camera.position.set(0, 6, 15);
 		const control = new OrbitControls(camera, canvas);
 		control.enableDamping = true;
 
@@ -398,22 +434,15 @@
 		renderer.setSize(parameters.width, parameters.height);
 		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 		let wheelPressedCount = 0;
-		const colors = [
-			'#ffffff',
-			'#000000',
-			'#0000ff',
-			'#00ff00',
-			'#ff0000',
-			'#ffff00',
-			'#00ffff',
-			'#ff00ff'
-		];
 		addEventListener('mousedown', (event) => {
+			const colorsLength = parameters.colors.length;
+			const colorSelection = parameters.colors[wheelPressedCount];
 			switch (event.button) {
 				case 0:
 					if (intersect.length) {
 						const nakedTreeMesh = intersect.shift().object;
 						const isScaled = nakedTreeMesh.scale.x > 1;
+						gsap.to('#BranchIcon', { scale: !isScaled ? 1.5 : 1, opacity: 0.7, duration: 1 });
 						gsap.to(nakedTreeMesh.scale, {
 							x: isScaled ? 1 : 5,
 							z: isScaled ? 1 : 5,
@@ -422,12 +451,22 @@
 					}
 					break;
 				case 1:
-					ambientLight.color = new THREE.Color(colors[wheelPressedCount]);
-					wheelPressedCount += wheelPressedCount !== colors.length ? 1 : -colors.length;
+					ambientLight.color = new THREE.Color(colorSelection);
+					gsap.to('#LightIcon', { fill: colorSelection, opacity: 0.7, duration: 1 });
+					gsap.to('#halloweenTitle', { color: colorSelection, duration: 1 });
+
+					wheelPressedCount += wheelPressedCount !== colorsLength ? 1 : -colorsLength;
 					break;
 				case 2:
-					pointLight.color = new THREE.Color(colors[wheelPressedCount]);
-					wheelPressedCount += wheelPressedCount !== colors.length ? 1 : -colors.length;
+					pointLight.color = new THREE.Color(colorSelection);
+					gsap.to('#PumpkinIcon path', {
+						stroke: colorSelection,
+						fill: colorSelection + '00',
+						opacity: 1,
+						duration: 1
+					});
+					gsap.to('#halloweenTitle', { color: colorSelection, duration: 1 });
+					wheelPressedCount += wheelPressedCount !== colorsLength ? 1 : -colorsLength;
 					break;
 			}
 		});
@@ -446,7 +485,7 @@
 			const deltaTime = elapsedTime - previousElapsedTime;
 			previousElapsedTime = elapsedTime;
 			control.update();
-			let sceneReady = [
+			sceneReady = [
 				pumpkinReady,
 				ankouReady,
 				nakedTreeReady,
@@ -477,7 +516,6 @@
 						nakedTreeRingCreated = true;
 					});
 				}
-				const valueBetweenAhaldAndNegativeHalf = parameters.cursor.x / parameters.width - 0.5;
 				// ANKOU ANIMATION
 				let horseWalk = mixer.clipAction(ankouAnimations[2]);
 				horseWalk?.play();
@@ -485,6 +523,7 @@
 				cartMove.play();
 				mixer.update(deltaTime);
 				// PUMPKIN ANIMATION
+				const valueBetweenAhaldAndNegativeHalf = parameters.cursor.x / parameters.width - 0.5;
 				pumpkinModel.position.set(
 					Math.cos(elapsedTime) * 8 * Math.abs(valueBetweenAhaldAndNegativeHalf),
 					Math.cos(elapsedTime * 1.5) +
@@ -493,6 +532,7 @@
 					Math.sin(elapsedTime) * 8 * Math.abs(valueBetweenAhaldAndNegativeHalf)
 				);
 				pumpkinModel.lookAt(camera.position);
+
 				// POINT LIGHT ANIMATION
 				pointLight.position.copy(pumpkinModel.position);
 				// DIRECTIONAL LIGHT ANIMATION
@@ -550,35 +590,77 @@
 	});
 </script>
 
-<canvas bind:this={canvas}></canvas>
-<div id="timeUntilHalloweenPlacer">
-	{#if isHalloween}
-		<p style="font-size: 10vh;"><strong>Halloween !</strong></p>
-	{:else}
-		<p class="halloweenTitleContainer">{$clock} until <strong>Halloween</strong></p>
-	{/if}
-</div>
+<canvas in:fade={{ duration: 2500, delay: 1000 }} bind:this={canvas}></canvas>
+<div id="coloredLayer"></div>
+{#if !sceneReady}
+	<div out:fade={{ duration: 1000, delay: 0 }} id="spiralLoader">
+		<SquaredSpiral />
+	</div>
+{:else}
+	<div id="timeUntilHalloweenPlacer">
+		{#if isHalloween}
+			<p style="font-size: 10vh;"><strong id="halloweenTitle">Halloween !</strong></p>
+		{:else}
+			<p>{$clock} until <strong id="halloweenTitle">Halloween</strong></p>
+		{/if}
+		<div id="interactionIcons">
+			<LightIcon style="opacity: 0.25" />
+			<PumpkinIcon style="opacity: 0.25" />
+			<BranchIcon style="opacity: 0.25" />
+			<TransformFigure style="opacity: 0.25" />
+		</div>
+	</div>
+{/if}
 
 <style lang="scss">
+	#spiralLoader {
+		position: fixed;
+		top: 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 100vw;
+		height: 100vh;
+	}
 	canvas {
 		border: none;
 		box-shadow: none;
-		/* margin: 0 5vw; */
+	}
+	#coloredLayer {
+		height: 100vh;
+		width: 100vw;
+		position: fixed;
+		top: 0;
+		opacity: 27%;
+		z-index: -1;
+		background-color: black;
+	}
+	@font-face {
+		font-family: 'NemoNightmares';
+		src: url('$lib/fonts/NemoNightmares.ttf') format('truetype');
 	}
 	#timeUntilHalloweenPlacer {
-		@font-face {
-			font-family: 'NemoNightmares';
-			src: url('$lib/fonts/NemoNightmares.ttf') format('truetype');
+		#interactionIcons {
+			display: flex;
+			width: 100%;
+			height: 25vh;
+			align-items: center;
+			justify-content: space-evenly;
+		}
+		p {
+			margin: 0;
 		}
 		z-index: -1;
 		line-break: anywhere;
 		font-family: 'NemoNightmares';
-		-webkit-text-stroke-color: white;
-		font-size: 5vh;
+		font-size: min(7vh, 7vw);
 		display: flex;
-		justify-content: center;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: center;
 		position: fixed;
 		width: 100vw;
+		height: 100vh;
 		top: 0vh;
 	}
 </style>
