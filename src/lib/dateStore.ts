@@ -28,7 +28,7 @@ function getTimeUntilNextHalloween() {
     months++;
   }
   const daysCorrectionFromMonthSimplification = 7
-  return `${months}M. ${days + daysCorrectionFromMonthSimplification}D. ${hours}h. ${minutes}m. ${seconds}s.`
+  return `${months}M ${days + daysCorrectionFromMonthSimplification}D ${hours}h ${minutes}m ${seconds}s`
   // return {
   //   months: months,
   //   days: days,
