@@ -12,6 +12,7 @@
 		console.log('r is', newString);
 		return newString;
 	}
+
 	$: titleText = `T.J.S. ${$page.params.module ? 'Projects' : 'Challenges ' + capitalize($page.params.challenge)}`;
 	$: pathname = $page.url.pathname;
 	$: href = pathname?.split('/').toSpliced(-1).join('/') || '/';
@@ -31,11 +32,11 @@
 </svelte:head>
 
 <div class="app">
-	{#if pathname !== href}
+	{#if pathname !== href && !$page.params.challenge}
 		<a id="main-nav-icon" {href}
 			><Icon
 				colored={true}
-				style={`transform: rotate(${new Date().getHours() * 0.25}turn)`}
+				style={`transform: rotate(${new Date().getHours() * 0.25}turn);`}
 				{height}
 				{width}
 			/></a
