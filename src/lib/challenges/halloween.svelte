@@ -591,7 +591,6 @@
 </script>
 
 <canvas in:fade={{ duration: 2500, delay: 1000 }} bind:this={canvas}></canvas>
-<div id="coloredLayer"></div>
 {#if !sceneReady}
 	<div out:fade={{ duration: 1000, delay: 0 }} id="spiralLoader">
 		<SquaredSpiral />
@@ -626,14 +625,14 @@
 		border: none;
 		box-shadow: none;
 	}
-	#coloredLayer {
-		height: 100vh;
-		width: 100vw;
-		position: fixed;
-		top: 0;
-		opacity: 27%;
-		z-index: -1;
-		background-color: black;
+
+	:global(body) {
+		background-color: var(--color-bg-2);
+		background-image: radial-gradient(
+			50% 50% at 50% 50%,
+			rgba(255, 255, 255, 0.5) 0%,
+			rgba(255, 255, 255, 0) 100%
+		);
 	}
 	@font-face {
 		font-family: 'NemoNightmares';
