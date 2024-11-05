@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fade, fly, slide } from 'svelte/transition';
+	import { fade } from 'svelte/transition';
 	import gsap from 'gsap';
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
@@ -15,7 +15,6 @@
 	$: isHalloween = now === new Date(now.getFullYear(), 9, 31);
 	const clock = dateStore();
 	let canvas: HTMLCanvasElement;
-	let halloweenTitle: HTMLElement;
 	$: sceneReady = false;
 	onMount(() => {
 		// Utils
@@ -25,6 +24,7 @@
 		let bushyTreeReady = false;
 		let pointyTreeReady = false;
 		let normalPumpkinReady = false;
+		let platformRotated = false;
 		const parameters = {
 			point3d: new THREE.Vector3(0, 0, 5),
 			cursor: { x: 0, y: 0 },
@@ -58,18 +58,8 @@
 					'https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/pumpkin-a/model.gltf'
 			},
 			licenceURL: 'https://creativecommons.org/licenses/by/2.0/'
-			//  '#ff3399'
 		};
 		const initialModelPhysics: any = {};
-		// GUI
-		// const gui = new GUI({ title: 'Dev. Panel' });
-		/**
-		 * Fonts
-		 */
-		// const fontLoader = new FontLoader();
-		// fontLoader.load('three/examples/fonts/optimer_regular.typeface.json', (font) => {
-		// 	console.log('loaded');
-		// });
 		// Texture loader
 		const imageFormat = '.jpg';
 		const loadingManager = new THREE.LoadingManager();
@@ -88,7 +78,8 @@
 		// const heightMap = textureLoader.load(`${texturesRootPath}/height.png`);
 		// const metalnessMap = textureLoader.load(`${texturesRootPath}/metallic${imageFormat}`);
 		const roughnessMap = textureLoader.load(`${texturesRootPath}/roughness${imageFormat}`);
-		//  Loaded Models
+		// Loaders
+		let clonedNakedTreeMeshes: any;
 		let ankouModel: any = null;
 		let pumpkinModel: any = null;
 		let nakedTreeModel: any = null;
@@ -96,9 +87,7 @@
 		let pointyTreeModel: any = null;
 		let ankouAnimations: any = null;
 		let normalPumpkinMetaGroup: any = null;
-		//  Loaded Animations
 		let mixer: any = null;
-		// Loaders
 		const gltfLoader = new GLTFLoader();
 		gltfLoader.load(parameters.modelsURL.cart, (gltfAnoku) => {
 			gltfAnoku.scene.traverse((node) => {
@@ -137,7 +126,6 @@
 			scene.add(pumpkinMesh);
 			pumpkinReady = true;
 		});
-		let clonedNakedTreeMeshes: any;
 		gltfLoader.load(parameters.modelsURL.nakedTree, (gltfNakedTree) => {
 			// console.log('gltfNakedTree', gltfNakedTree);
 			const nakedTreeMesh = gltfNakedTree.scene.getObjectByName('treeD_graveyard') as THREE.Mesh;
@@ -278,17 +266,7 @@
 			// normalPumpkinMetaGroup.rotation.z = -Math.PI * 0.5;
 			normalPumpkinReady = true;
 		});
-		addEventListener('mousemove', (event) => {
-			parameters.cursor.x = event.clientX;
-			parameters.cursor.y = event.clientY;
-			// console.log(parameters.cursor);
-			parameters.point3d.set(
-				(parameters.cursor.x / parameters.width - 0.5) * 20,
-				(-parameters.cursor.y / parameters.height + 0.5) * 10 + 2,
-				camera.position.z
-			);
-			// console.log(camera);
-		});
+
 		// Meshes
 		const platformMaterial = new THREE.MeshStandardMaterial({
 			color: '#aa9977',
@@ -300,7 +278,6 @@
 			normalMap,
 			metalness: 0.1,
 			roughness: 0.9,
-
 			side: THREE.DoubleSide
 		});
 		const platformA = new THREE.Mesh(new THREE.CylinderGeometry(7, 3, 3, 7), platformMaterial);
@@ -308,8 +285,55 @@
 		platformA.material.side = THREE.DoubleSide;
 		platformA.rotation.x = Math.PI;
 		platformA.position.y = -1.5;
-		let platformRotated = false;
-		const setCanvasSize = () => {
+
+		// Lights
+		const randomColor = parameters.colors[Math.floor(Math.random() * parameters.colors.length)];
+		const pointLight = new THREE.PointLight(randomColor, 5, 1.75);
+		const ambientLight = new THREE.AmbientLight('#ffffff');
+		const directionalLight = new THREE.DirectionalLight(
+			'#ffffff',
+			new Date().getHours() < 9 || new Date().getHours() > 18 ? 4 : 6
+		);
+		directionalLight.castShadow = true;
+		directionalLight.shadow.mapSize.set(1024, 1024);
+		directionalLight.shadow.camera.near = 1;
+		directionalLight.shadow.camera.far = 15;
+		directionalLight.shadow.camera.left = -15;
+		directionalLight.shadow.camera.right = 15;
+		directionalLight.shadow.camera.top = 15;
+		directionalLight.shadow.camera.bottom = -15;
+		directionalLight.position.set(-3, 6, -3);
+		// Scene
+		const scene = new THREE.Scene();
+
+		scene.add(platformA, ambientLight, directionalLight, pointLight);
+		scene.rotation.y = Math.PI * 1.5;
+		// Camera
+		const camera = new THREE.PerspectiveCamera(75, parameters.aspectRatio);
+		camera.position.set(0, 6, 15);
+		const control = new OrbitControls(camera, canvas);
+		control.enableDamping = true;
+
+		// Renderer
+		const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+		renderer.shadowMap.enabled = true;
+		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+		renderer.setSize(parameters.width, parameters.height);
+		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+		// Listener actions
+		addEventListener('mousemove', (event) => {
+			parameters.cursor.x = event.clientX;
+			parameters.cursor.y = event.clientY;
+			// console.log(parameters.cursor);
+			parameters.point3d.set(
+				(parameters.cursor.x / parameters.width - 0.5) * 20,
+				(-parameters.cursor.y / parameters.height + 0.5) * 10 + 2,
+				camera.position.z
+			);
+			// console.log(camera);
+		});
+		addEventListener('resize', () => {
 			console.log('Window size has changed.');
 			// Scene size update
 			parameters.width = innerWidth;
@@ -322,8 +346,7 @@
 			renderer.setSize(parameters.width, parameters.height);
 			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
 			renderer.render(scene, camera);
-		};
-		addEventListener('resize', setCanvasSize);
+		});
 		let previousExecutionTimestamp = 0;
 		const timeBetweenTransformations = 2;
 		addEventListener('dblclick', (event) => {
@@ -397,42 +420,6 @@
 			}
 			platformRotated = !platformRotated;
 		});
-		// Light
-		const randomColor = parameters.colors[Math.floor(Math.random() * parameters.colors.length)];
-		const pointLight = new THREE.PointLight(randomColor, 5, 1.75);
-		const ambientLight = new THREE.AmbientLight('#ffffff');
-		const directionalLight = new THREE.DirectionalLight(
-			'#ffffff',
-			new Date().getHours() < 9 || new Date().getHours() > 18 ? 4 : 6
-		);
-		directionalLight.castShadow = true;
-		directionalLight.shadow.mapSize.set(1024, 1024);
-		directionalLight.shadow.camera.near = 1;
-		directionalLight.shadow.camera.far = 15;
-		directionalLight.shadow.camera.left = -15;
-		directionalLight.shadow.camera.right = 15;
-		directionalLight.shadow.camera.top = 15;
-		directionalLight.shadow.camera.bottom = -15;
-
-		directionalLight.position.set(-3, 6, -3);
-		// const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight);
-		// Scene
-		const scene = new THREE.Scene();
-
-		scene.add(platformA, ambientLight, directionalLight, pointLight);
-		scene.rotation.y = Math.PI * 1.5;
-		// Camera
-		const camera = new THREE.PerspectiveCamera(75, parameters.aspectRatio);
-		camera.position.set(0, 6, 15);
-		const control = new OrbitControls(camera, canvas);
-		control.enableDamping = true;
-
-		// Renderer
-		const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
-		renderer.shadowMap.enabled = true;
-		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-		renderer.setSize(parameters.width, parameters.height);
-		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 		let wheelPressedCount = 0;
 		addEventListener('mousedown', (event) => {
 			const colorsLength = parameters.colors.length;
@@ -453,7 +440,7 @@
 				case 1:
 					ambientLight.color = new THREE.Color(colorSelection);
 					gsap.to('#LightIcon', { fill: colorSelection, opacity: 0.7, duration: 1 });
-					gsap.to('#halloweenTitle', { color: colorSelection, duration: 1 });
+					gsap.to('#halloween-title', { color: colorSelection, duration: 1 });
 
 					wheelPressedCount += wheelPressedCount !== colorsLength ? 1 : -colorsLength;
 					break;
@@ -465,18 +452,18 @@
 						opacity: 1,
 						duration: 1
 					});
-					gsap.to('#halloweenTitle', { color: colorSelection, duration: 1 });
+					gsap.to('#halloween-title', { color: colorSelection, duration: 1 });
 					wheelPressedCount += wheelPressedCount !== colorsLength ? 1 : -colorsLength;
 					break;
 			}
 		});
+
 		// Play
 		const raycaster = new THREE.Raycaster();
 		let intersect: any = [];
 		const clock = new THREE.Clock();
 		let tickId = 0;
 		let previousElapsedTime = clock.getElapsedTime();
-		// scene.add(new THREE.AxesHelper(100));
 		const orbitHorizontalDistance = 4;
 		const orbitVerticalDistance = 4;
 		let nakedTreeRingCreated = false;
@@ -556,7 +543,6 @@
 			window.cancelAnimationFrame(tickId);
 			function disposeAll(node: any) {
 				if (node.isMesh || node instanceof THREE.Mesh) {
-					// node.material?.envMap?.dispose();
 					if (node.type === 'SkinnedMesh') {
 						console.log(node);
 						node.material?.map?.dispose();
@@ -574,7 +560,6 @@
 				}
 			}
 			scene.traverse(disposeAll);
-			// mixer?.dispose();
 			scene.clear();
 			scene.removeFromParent();
 			control.dispose();
@@ -592,17 +577,17 @@
 
 <canvas in:fade={{ duration: 2500, delay: 1000 }} bind:this={canvas}></canvas>
 {#if !sceneReady}
-	<div out:fade={{ duration: 1000, delay: 0 }} id="spiralLoader">
+	<div out:fade={{ duration: 1000, delay: 0 }} id="spiral-loader">
 		<SquaredSpiral />
 	</div>
 {:else}
-	<div id="timeUntilHalloweenPlacer">
+	<div id="halloween-clock-container" in:fade={{ duration: 2500, delay: 1000 }}>
 		{#if isHalloween}
-			<p style="font-size: 10vh;"><strong id="halloweenTitle">Halloween !</strong></p>
+			<p style="font-size: 10vh;"><strong id="halloween-title">Halloween !</strong></p>
 		{:else}
-			<p>{$clock} until <strong id="halloweenTitle">Halloween</strong></p>
+			<p>{$clock} until <strong id="halloween-title">Halloween</strong></p>
 		{/if}
-		<div id="interactionIcons">
+		<div id="interaction-icons-container">
 			<LightIcon style="opacity: 0.25" />
 			<PumpkinIcon style="opacity: 0.25" />
 			<BranchIcon style="opacity: 0.25" />
@@ -612,20 +597,6 @@
 {/if}
 
 <style lang="scss">
-	#spiralLoader {
-		position: fixed;
-		top: 0;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		width: 100vw;
-		height: 100vh;
-	}
-	canvas {
-		border: none;
-		box-shadow: none;
-	}
-
 	:global(body) {
 		background-color: var(--color-bg-2);
 		background-image: radial-gradient(
@@ -634,12 +605,29 @@
 			rgba(255, 255, 255, 0) 100%
 		);
 	}
+
 	@font-face {
 		font-family: 'NemoNightmares';
 		src: url('$lib/fonts/NemoNightmares.ttf') format('truetype');
 	}
-	#timeUntilHalloweenPlacer {
-		#interactionIcons {
+
+	canvas {
+		border: none;
+		box-shadow: none;
+	}
+
+	#spiral-loader {
+		position: fixed;
+		top: 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 100vw;
+		height: 100vh;
+	}
+
+	#halloween-clock-container {
+		#interaction-icons-container {
 			display: flex;
 			width: 100%;
 			height: 25vh;
