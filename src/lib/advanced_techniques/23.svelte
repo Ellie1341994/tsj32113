@@ -56,20 +56,22 @@
 		});
 
 		const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+		particles.castShadow = true;
 		particles.rotation.x = Math.PI * 0.5;
 		particles.position.y = 1;
 		// Lights
+		const d = 25;
 		const ambientLight = new THREE.AmbientLight('#ffffff');
 		const directionalLight = new THREE.DirectionalLight('#ffffff', 2);
 		directionalLight.castShadow = true;
 		directionalLight.shadow.mapSize.set(1024, 1024);
 		directionalLight.shadow.camera.near = 1;
-		directionalLight.shadow.camera.far = 25;
-		directionalLight.shadow.camera.left = -25;
-		directionalLight.shadow.camera.right = 25;
-		directionalLight.shadow.camera.top = 25;
-		directionalLight.shadow.camera.bottom = -25;
-		directionalLight.position.set(0, 6, 3);
+		directionalLight.shadow.camera.far = d;
+		directionalLight.shadow.camera.left = -d;
+		directionalLight.shadow.camera.right = d;
+		directionalLight.shadow.camera.top = d;
+		directionalLight.shadow.camera.bottom = -d;
+		directionalLight.position.set(2.5, 6, 8);
 		let hamburgerModel: any = undefined;
 		// Raycaster
 		const raycaster = new THREE.Raycaster();
