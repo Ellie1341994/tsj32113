@@ -1,8 +1,8 @@
 <div>
 	<h1>
-		<a class="" href="/challenges">challenges</a>
+		<a class="" href="/challenges"> Challenge <sup>Projects</sup> </a>
 	</h1>
-	<h1><a href="/basics">projects</a></h1>
+	<h1><a href="/basics">Lesson<sub>Practices</sub> </a></h1>
 </div>
 
 <style lang="scss">
@@ -16,8 +16,12 @@
 			font-size: 4em;
 			a {
 				text-decoration: none;
-				text-transform: uppercase;
+				text-transform: capitalize;
 				color: var(--color-theme-3);
+				sub,
+				sup {
+					color: var(--color-text);
+				}
 				// .disabled-link {
 				// 	pointer-events: none;
 				// }
