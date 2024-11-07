@@ -20,7 +20,19 @@
 			modelLoadReady: false
 		};
 		// Meshes
-		const dishMesh = new THREE.Mesh(
+		const cylinderMesh = new THREE.Mesh(
+			new THREE.CylinderGeometry(3, 2.5, 0.5, 64, 1, true),
+			new THREE.MeshStandardMaterial({
+				color: '#fff',
+				metalness: 0.6,
+				roughness: 0.6,
+				side: THREE.DoubleSide
+			})
+		);
+		cylinderMesh.castShadow = true;
+		cylinderMesh.receiveShadow = true;
+		cylinderMesh.position.y = 0.4; // circle position plus half cylinder's height for both meshes to match positionally
+		const circleMesh = new THREE.Mesh(
 			new THREE.CircleGeometry(2.5, 128, 0, Math.PI * 2),
 			new THREE.MeshStandardMaterial({
 				color: '#fff',
@@ -29,28 +41,42 @@
 				side: THREE.DoubleSide
 			})
 		);
-		dishMesh.receiveShadow = true;
+		circleMesh.receiveShadow = true;
 		// dishMesh.castShadow = true;
-		dishMesh.rotation.x = Math.PI * 0.5;
-		dishMesh.position.y = 0.15;
+		circleMesh.rotation.x = Math.PI * 0.5;
+		circleMesh.position.y = 0.15;
+		const dishMesh = new THREE.Group();
+		dishMesh.add(circleMesh, cylinderMesh);
+		// Particles
+		const particlesGeometry = new THREE.BoxGeometry(10, 10, 10, 64, 64, 64);
+		const particlesMaterial = new THREE.PointsMaterial({
+			size: 0.1,
+			sizeAttenuation: true,
+			color: '#aa99aa'
+		});
+
+		const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+		particles.rotation.x = Math.PI * 0.5;
+		particles.position.y = 1;
 		// Lights
 		const ambientLight = new THREE.AmbientLight('#ffffff');
 		const directionalLight = new THREE.DirectionalLight('#ffffff', 2);
 		directionalLight.castShadow = true;
 		directionalLight.shadow.mapSize.set(1024, 1024);
 		directionalLight.shadow.camera.near = 1;
-		directionalLight.shadow.camera.far = 15;
-		directionalLight.shadow.camera.left = -15;
-		directionalLight.shadow.camera.right = 15;
-		directionalLight.shadow.camera.top = 15;
-		directionalLight.shadow.camera.bottom = -15;
+		directionalLight.shadow.camera.far = 25;
+		directionalLight.shadow.camera.left = -25;
+		directionalLight.shadow.camera.right = 25;
+		directionalLight.shadow.camera.top = 25;
+		directionalLight.shadow.camera.bottom = -25;
 		directionalLight.position.set(0, 6, 3);
 		let hamburgerModel: any = undefined;
 		// Raycaster
 		const raycaster = new THREE.Raycaster();
 		// Scene
 		const scene = new THREE.Scene();
-		scene.add(dishMesh, ambientLight, directionalLight);
+		scene.background = new THREE.Color('#993333');
+		scene.add(dishMesh, particles, ambientLight, directionalLight);
 		gsap.to(scene.rotation, { y: Math.PI, duration: 3.6, repeat: -1, yoyo: true });
 		// Coords
 		let mouse = new THREE.Vector2(0, 0);
@@ -58,12 +84,16 @@
 			mouse.x = ((event.clientX - canvas.offsetLeft) / parameters.width) * 2 - 1;
 			mouse.y = -((event.clientY - canvas.offsetTop) / parameters.height) * 2 + 1;
 		});
-		canvas.addEventListener('click', () => {
+		canvas.addEventListener('mousedown', (event) => {
 			const intersect = raycaster.intersectObject(hamburgerModel);
-			console.log(intersect);
-			if (hamburgerReady && intersect.length) {
+			if (event.button === 0 && hamburgerReady && intersect.length) {
 				gsap.to(hamburgerModel.scale, { x: 2, z: 2, duration: 1 });
 				gsap.to(hamburgerModel.scale, { x: 1, z: 1, duration: 1, delay: 1 });
+				gsap.to(camera.rotation, { z: 0, duration: 0.5 });
+			} else if (event.button === 1) {
+				gsap.to(camera.rotation, { z: -Math.PI * 0.25, duration: 0.5 });
+			} else {
+				gsap.to(camera.rotation, { z: -camera.rotation.z, duration: 0.5 });
 			}
 		});
 		// Loader
@@ -88,8 +118,8 @@
 		// Camera
 		const camera = new THREE.PerspectiveCamera(75, parameters.aspect_ratio);
 		camera.position.set(0, 6, 9);
-		const control = new OrbitControls(camera, canvas);
-		control.enableDamping = true;
+		camera.rotation.x = -Math.PI * 0.2;
+		camera.rotation.z = Math.PI * 0.25;
 		// Renderer
 		const renderer = new THREE.WebGLRenderer({ canvas });
 		renderer.shadowMap.enabled = true;
@@ -103,7 +133,6 @@
 		scene.scale.set(2, 2, 2);
 		function tick() {
 			// Updates
-			control.update();
 
 			// Animate
 			const elapsedTime = clock.getElapsedTime();
