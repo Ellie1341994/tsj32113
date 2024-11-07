@@ -18,6 +18,14 @@
 	$: sceneReady = false;
 	onMount(() => {
 		// Utils
+		const bodyElement: HTMLBodyElement = document.getElementsByTagName('body')[0];
+		console.log(bodyElement.style);
+		bodyElement.setAttribute(
+			'style',
+			'background-color: var(--color-bg-2); background-image: radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0) 100%);'
+		);
+		console.log(bodyElement.style);
+
 		let pumpkinReady = false;
 		let ankouReady = false;
 		let nakedTreeReady = false;
@@ -540,6 +548,7 @@
 
 		// Dispose
 		function disposeScene() {
+			bodyElement.setAttribute('style', '');
 			window.cancelAnimationFrame(tickId);
 			function disposeAll(node: any) {
 				if (node.isMesh || node instanceof THREE.Mesh) {
@@ -597,14 +606,14 @@
 {/if}
 
 <style lang="scss">
-	:global(body) {
-		background-color: var(--color-bg-2);
-		background-image: radial-gradient(
-			50% 50% at 50% 50%,
-			rgba(255, 255, 255, 0.5) 0%,
-			rgba(255, 255, 255, 0) 100%
-		);
-	}
+	// :global(body) {
+	// 	background-color: var(--color-bg-2);
+	// 	background-image: radial-gradient(
+	// 		50% 50% at 50% 50%,
+	// 		rgba(255, 255, 255, 0.5) 0%,
+	// 		rgba(255, 255, 255, 0) 100%
+	// 	);
+	// }
 
 	@font-face {
 		font-family: 'NemoNightmares';
