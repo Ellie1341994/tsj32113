@@ -5,7 +5,6 @@
 	import gsap from 'gsap';
 	import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 	import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
-	import { nodeArray } from 'three/webgpu';
 	let canvas: HTMLCanvasElement;
 	let lilGuiPlacer: HTMLSpanElement;
 	onMount(() => {
@@ -36,16 +35,15 @@
 		dishMesh.position.y = 0.15;
 		// Lights
 		const ambientLight = new THREE.AmbientLight('#ffffff');
-		ambientLight.castShadow = true;
 		const directionalLight = new THREE.DirectionalLight('#ffffff', 2);
 		directionalLight.castShadow = true;
 		directionalLight.shadow.mapSize.set(1024, 1024);
-		// directionalLight.shadow.camera.near = 1;
-		// directionalLight.shadow.camera.far = 15;
-		// directionalLight.shadow.camera.left = -15;
-		// directionalLight.shadow.camera.right = 15;
-		// directionalLight.shadow.camera.top = 15;
-		// directionalLight.shadow.camera.bottom = -15;
+		directionalLight.shadow.camera.near = 1;
+		directionalLight.shadow.camera.far = 15;
+		directionalLight.shadow.camera.left = -15;
+		directionalLight.shadow.camera.right = 15;
+		directionalLight.shadow.camera.top = 15;
+		directionalLight.shadow.camera.bottom = -15;
 		directionalLight.position.set(0, 6, 3);
 		let hamburgerModel: any = undefined;
 		// Raycaster
@@ -60,7 +58,7 @@
 			mouse.x = ((event.clientX - canvas.offsetLeft) / parameters.width) * 2 - 1;
 			mouse.y = -((event.clientY - canvas.offsetTop) / parameters.height) * 2 + 1;
 		});
-		canvas.addEventListener('click', (event) => {
+		canvas.addEventListener('click', () => {
 			const intersect = raycaster.intersectObject(hamburgerModel);
 			console.log(intersect);
 			if (hamburgerReady && intersect.length) {

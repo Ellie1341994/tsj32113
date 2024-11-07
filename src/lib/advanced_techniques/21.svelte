@@ -74,7 +74,6 @@
 		platform.receiveShadow = true;
 		// Light
 		const ambientLight = new THREE.AmbientLight('#aaaaaa');
-		ambientLight.castShadow = true;
 		const directionalLight = new THREE.DirectionalLight('#ffffff', 3);
 		directionalLight.castShadow = true;
 		directionalLight.shadow.mapSize.set(1024, 1024);
