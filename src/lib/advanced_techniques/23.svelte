@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
-	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 	import gsap from 'gsap';
 	import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 	import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
@@ -87,6 +86,8 @@
 			mouse.y = -((event.clientY - canvas.offsetTop) / parameters.height) * 2 + 1;
 		});
 		canvas.addEventListener('mousedown', (event) => {
+			raycaster.setFromCamera(mouse, camera);
+
 			const intersect = raycaster.intersectObject(hamburgerModel);
 			if (event.button === 0 && hamburgerReady && intersect.length) {
 				gsap.to(hamburgerModel.scale, { x: 2, z: 2, duration: 1 });
@@ -130,15 +131,10 @@
 		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 		// Play
 		const clock = new THREE.Clock();
-		let currentIntersect: any = null;
 		let tickId = 0;
 		scene.scale.set(2, 2, 2);
 		function tick() {
-			// Updates
-
 			// Animate
-			const elapsedTime = clock.getElapsedTime();
-			raycaster.setFromCamera(mouse, camera);
 
 			// render
 			renderer.render(scene, camera);
@@ -148,6 +144,35 @@
 		}
 		tick();
 		// Dispose
+		function disposeScene() {
+			console.log(particles);
+			window.cancelAnimationFrame(tickId);
+			function disposeAll(node: any) {
+				if (node.isMesh || node.isPoints) {
+					node.material?.dispose();
+					node.geometry?.dispose();
+					console.log(`Disposed ${node.type} G:${node.geometry.type} M:${node.material.type} `);
+				} else if (node.isLight || node instanceof THREE.Light) {
+					node.dispose();
+					console.log(`Disposed ${node.type}`);
+				} else if (node.isTexture || node instanceof THREE.Texture) {
+					node.dispose();
+					console.log(`Disposed ${node.type}`);
+				}
+			}
+			console.log('renderer.info', renderer.info);
+			scene.traverse(disposeAll);
+			scene.clear();
+			scene.removeFromParent();
+			console.log(`GUI destroyed`);
+			console.log(`tickId`, tickId);
+			console.log(`Tick disposed`);
+			renderer.clear();
+			renderer.dispose();
+			console.log(`renderer.disposed`, renderer.info);
+			console.log(`Renderer cleared and`);
+		}
+		return disposeScene;
 	});
 </script>
 
