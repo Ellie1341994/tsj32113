@@ -19,7 +19,6 @@
 	onMount(() => {
 		// Utils
 		const bodyElement: HTMLBodyElement = document.getElementsByTagName('body')[0];
-		console.log(bodyElement.style);
 		bodyElement.setAttribute(
 			'style',
 			'background-color: var(--color-bg-2); background-image: radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0) 100%);'
@@ -330,18 +329,16 @@
 		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 		// Listener actions
-		addEventListener('mousemove', (event) => {
+		const setMousePosition = (event: MouseEvent) => {
 			parameters.cursor.x = event.clientX;
 			parameters.cursor.y = event.clientY;
-			// console.log(parameters.cursor);
 			parameters.point3d.set(
 				(parameters.cursor.x / parameters.width - 0.5) * 20,
 				(-parameters.cursor.y / parameters.height + 0.5) * 10 + 2,
 				camera.position.z
 			);
-			// console.log(camera);
-		});
-		addEventListener('resize', () => {
+		};
+		const setRendererSize = () => {
 			console.log('Window size has changed.');
 			// Scene size update
 			parameters.width = innerWidth;
@@ -354,10 +351,10 @@
 			renderer.setSize(parameters.width, parameters.height);
 			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
 			renderer.render(scene, camera);
-		});
+		};
 		let previousExecutionTimestamp = 0;
 		const timeBetweenTransformations = 2;
-		addEventListener('dblclick', (event) => {
+		const playSceneTransformation = (event: MouseEvent) => {
 			const timestampDelta = event.timeStamp / 1000 - previousExecutionTimestamp;
 			let runListener = timestampDelta > timeBetweenTransformations;
 			previousExecutionTimestamp = event.timeStamp / 1000;
@@ -427,9 +424,9 @@
 				});
 			}
 			platformRotated = !platformRotated;
-		});
+		};
 		let wheelPressedCount = 0;
-		addEventListener('mousedown', (event) => {
+		const playMicrointeraction = (event: MouseEvent) => {
 			const colorsLength = parameters.colors.length;
 			const colorSelection = parameters.colors[wheelPressedCount];
 			switch (event.button) {
@@ -464,8 +461,21 @@
 					wheelPressedCount += wheelPressedCount !== colorsLength ? 1 : -colorsLength;
 					break;
 			}
-		});
-
+		};
+		const events = {
+			mousemove: setMousePosition,
+			resize: setRendererSize,
+			dblclick: playSceneTransformation,
+			mousedown: playMicrointeraction
+		};
+		const handleEventListeners = (action: 'add' | 'remove' = 'add') => {
+			if (!/^add$|^remove$/.test(action)) return;
+			for (const [type, listener] of Object.entries(events) as Array<[string, EventListener]>) {
+				(action === 'add' ? addEventListener : removeEventListener)(type, listener);
+				console.log(action + 'ed', type);
+			}
+		};
+		handleEventListeners('add');
 		// Play
 		const raycaster = new THREE.Raycaster();
 		let intersect: any = [];
@@ -550,6 +560,7 @@
 		function disposeScene() {
 			bodyElement.setAttribute('style', '');
 			window.cancelAnimationFrame(tickId);
+			handleEventListeners('remove');
 			function disposeAll(node: any) {
 				if (node.isMesh || node instanceof THREE.Mesh) {
 					if (node.type === 'SkinnedMesh') {
