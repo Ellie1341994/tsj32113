@@ -43,6 +43,13 @@
 				// const [fox]: any = gltf.scene.children[0].children;
 				// console.log(fox);
 				// fox.material.color.set(new THREE.Color(parameters.color));
+				gltf.scene.traverse((node) => {
+					// @ts-ignore
+					if (node.isMesh) {
+						node.receiveShadow = true;
+						node.castShadow = true;
+					}
+				});
 				gltf.scene.scale.set(0.05, 0.05, 0.05);
 				mixer = new THREE.AnimationMixer(gltf.scene);
 				actions = gltf.animations;
@@ -69,6 +76,7 @@
 		const ambientLight = new THREE.AmbientLight('#aaaaaa');
 		ambientLight.castShadow = true;
 		const directionalLight = new THREE.DirectionalLight('#ffffff', 3);
+		directionalLight.castShadow = true;
 		directionalLight.shadow.mapSize.set(1024, 1024);
 		directionalLight.position.set(3, 3, 6);
 		// const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight);
@@ -83,6 +91,8 @@
 
 		// Renderer
 		const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+		renderer.shadowMap.enabled = true;
+		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		renderer.setSize(parameters.width, parameters.height);
 		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
