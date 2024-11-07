@@ -137,7 +137,7 @@
 			function disposeAll(node: any) {
 				bfG.dispose();
 				PARTICLE_TEXTURE.dispose();
-				if (node instanceof THREE.Mesh) {
+				if (node instanceof THREE.Mesh || node.isPoints) {
 					node.geometry?.dispose();
 					if (node.material) {
 						node.material.alphaMap?.dispose(), node.material?.dispose();
