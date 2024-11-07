@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import Header from '../Header.svelte';
+	import Header from '../../lib/Header.svelte';
 	// import { fade, fly } from 'svelte/transition';
 	$: module = $page.params.module as any;
 	$: lesson = parseInt($page.params.lesson);
