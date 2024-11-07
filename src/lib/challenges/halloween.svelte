@@ -1,4 +1,7 @@
 <script lang="ts">
+	console.log(
+		"Note: Three textures remain after disposal. Probably GTLF related but coulnd't fint them yet"
+	);
 	import { fade } from 'svelte/transition';
 	import gsap from 'gsap';
 	import { onMount } from 'svelte';
@@ -108,7 +111,6 @@
 				}
 			});
 			ankouAnimations = gltfAnoku.animations;
-			// console.log(ankouAnimations);
 			mixer = new THREE.AnimationMixer(gltfAnoku.scene);
 			gltfAnoku.scene.rotation.y = Math.PI * 0.5;
 			ankouModel = gltfAnoku.scene;
@@ -134,8 +136,11 @@
 			pumpkinReady = true;
 		});
 		gltfLoader.load(parameters.modelsURL.nakedTree, (gltfNakedTree) => {
-			// console.log('gltfNakedTree', gltfNakedTree);
 			const nakedTreeMesh = gltfNakedTree.scene.getObjectByName('treeD_graveyard') as THREE.Mesh;
+			nakedTreeMesh.castShadow = true;
+			nakedTreeMesh.receiveShadow = true;
+			// @ts-ignore
+			nakedTreeMesh.material.copy(platformMaterial);
 			clonedNakedTreeMeshes = [
 				nakedTreeMesh.clone(),
 				nakedTreeMesh.clone(),
@@ -145,13 +150,7 @@
 				nakedTreeMesh.clone(),
 				nakedTreeMesh.clone()
 			];
-			nakedTreeMesh.castShadow = true;
-			nakedTreeMesh.receiveShadow = true;
 			// @ts-ignore
-			// nakedTreeMesh.material?.dipose();
-			nakedTreeMesh.material.copy(platformMaterial);
-			// @ts-ignore
-			// nakedTreeMesh.material.color = new THREE.Color('#994600');
 			nakedTreeMesh.position.set(0, -2, -5);
 			nakedTreeMesh.rotation.x = -Math.PI * 0.25;
 			nakedTreeMesh.scale.set(1, 3, 2);
@@ -431,6 +430,14 @@
 			const colorSelection = parameters.colors[wheelPressedCount];
 			switch (event.button) {
 				case 0:
+					raycaster.setFromCamera(
+						new THREE.Vector2(
+							(parameters.cursor.x / innerWidth) * 2 - 1,
+							-(parameters.cursor.y / innerHeight) * 2 + 1
+						),
+						camera
+					);
+					intersect = raycaster.intersectObject(nakedTreeModel);
 					if (intersect.length) {
 						const nakedTreeMesh = intersect.shift().object;
 						const isScaled = nakedTreeMesh.scale.x > 1;
@@ -499,14 +506,7 @@
 			].every((modelLoaded) => modelLoaded);
 			if (sceneReady) {
 				// Utils
-				raycaster.setFromCamera(
-					new THREE.Vector2(
-						(parameters.cursor.x / innerWidth) * 2 - 1,
-						-(parameters.cursor.y / innerHeight) * 2 + 1
-					),
-					camera
-				);
-				intersect = raycaster.intersectObject(nakedTreeModel);
+
 				if (!nakedTreeRingCreated) {
 					clonedNakedTreeMeshes.forEach((mesh: any, i: any) => {
 						const horizontalOffset = 4;
@@ -563,18 +563,19 @@
 			handleEventListeners('remove');
 			function disposeAll(node: any) {
 				if (node.isMesh || node instanceof THREE.Mesh) {
-					if (node.type === 'SkinnedMesh') {
-						console.log(node);
-						node.material?.map?.dispose();
-					}
+					Object.entries(node.material)
+						.filter(([keys, texture]) => /map$|Map$/.test(keys) && texture)
+						// @ts-ignore
+						.forEach(([_, texture]) => texture?.dispose());
+					// node.material?.map?.dispose();
+					// node.material?.aoMap?.dispose();
+					// node.material?.roughnessMap?.dispose();
+					// node.material?.normalMap?.dispose();
+
 					node.material?.dispose();
-					console.log(node.material);
 					node.geometry?.dispose();
-					console.log(`Disposed ${node.type} G:${node.geometry.type} M:${node.material.type} `);
+					console.log(`Disposed ${node.type} G:${node?.geometry.type} M:${node?.material.type} `);
 				} else if (node.isLight || node instanceof THREE.Light) {
-					node.dispose();
-					console.log(`Disposed ${node.type}`);
-				} else if (node.isTexture || node instanceof THREE.Texture) {
 					node.dispose();
 					console.log(`Disposed ${node.type}`);
 				}
@@ -583,7 +584,7 @@
 			scene.clear();
 			scene.removeFromParent();
 			control.dispose();
-			console.log(`disposed first project allocated resources`, renderer.info);
+			console.log(`disposed resources`, renderer.info);
 			console.log(`GUI destroyed`);
 			console.log(`tickId`, tickId);
 			console.log(`Tick disposed`);
