@@ -69,9 +69,12 @@
 		// Meshes
 		const platform = new THREE.Mesh(
 			new THREE.BoxGeometry(10, 0.1, 10),
-			new THREE.MeshStandardMaterial({ color: parameters.color })
+			new THREE.MeshStandardMaterial({ color: parameters.color, metalness: 0.5, roughness: 0.7 })
 		);
 		platform.receiveShadow = true;
+		const anotherPlatform = platform.clone();
+		anotherPlatform.rotation.y = Math.PI * 0.25;
+		// platform.castShadow = true;
 		// Light
 		const ambientLight = new THREE.AmbientLight('#aaaaaa');
 		const directionalLight = new THREE.DirectionalLight('#ffffff', 3);
@@ -81,7 +84,7 @@
 		// const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight);
 		// Scene
 		const scene = new THREE.Scene();
-		scene.add(platform, ambientLight, directionalLight);
+		scene.add(platform, anotherPlatform, ambientLight, directionalLight);
 		// Camera
 		const camera = new THREE.PerspectiveCamera(75, ASPECT_RATIO);
 		camera.position.set(0, 3, 9);
