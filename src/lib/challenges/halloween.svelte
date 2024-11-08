@@ -1,7 +1,5 @@
 <script lang="ts">
-	console.log(
-		"Note: Three textures remain after disposal. Probably GTLF related but coulnd't fint them yet"
-	);
+	// 'Note: Three textures remain after disposal. Probably GTLF related. It seems to be on the Ankou Model but disposal does not seem to work'
 	import { fade } from 'svelte/transition';
 	import gsap from 'gsap';
 	import { onMount } from 'svelte';
@@ -100,7 +98,12 @@
 		let mixer: any = null;
 		const gltfLoader = new GLTFLoader();
 		gltfLoader.load(parameters.modelsURL.cart, (gltfAnoku) => {
-			gltfAnoku.scene.traverse((node) => {
+			console.log(gltfAnoku);
+			ankouAnimations = gltfAnoku.animations;
+			gltfAnoku.scene.rotation.y = Math.PI * 0.5;
+			ankouModel = gltfAnoku.scene;
+			mixer = new THREE.AnimationMixer(ankouModel);
+			ankouModel.traverse((node: any) => {
 				// @ts-ignore
 				if (node.isMesh) {
 					node.castShadow = true;
@@ -110,12 +113,8 @@
 					node.scale.set(0.01, 0.01, 0.01);
 				}
 			});
-			ankouAnimations = gltfAnoku.animations;
-			mixer = new THREE.AnimationMixer(gltfAnoku.scene);
-			gltfAnoku.scene.rotation.y = Math.PI * 0.5;
-			ankouModel = gltfAnoku.scene;
 			ankouModel.rotation.y = Math.PI * 0.65;
-			scene.add(gltfAnoku.scene);
+			scene.add(ankouModel);
 			ankouReady = true;
 		});
 		gltfLoader.load(parameters.modelsURL.pumpkin, (gltfPumpkin) => {
@@ -388,11 +387,6 @@
 			} else {
 				gsap.to('#TransformFigureIcon', { rotation: 180, opacity: 0.7, duration: 1 });
 
-				// gsap.to('#TransformFigureIcon', {
-				// 	fill: '#' + pointLight.color.getHexString() + 'aa',
-				// 	duration: 1
-				// });
-
 				gsap.to(normalPumpkinMetaGroup.position, { y: 2, x: -4, duration: 0.5, delay: 1 });
 				[nakedTreeModel, bushyTreeModel, pointyTreeModel].forEach((model) => {
 					gsap.to(model.position, { y: 0, duration: 1, delay: 1.25 });
@@ -404,10 +398,6 @@
 				clonedNakedTreeMeshes.forEach((mesh: any, i: any) => {
 					gsap.to(mesh.scale, { x: 0, y: 0, z: 0, duration: 0.5 }).then(() => {
 						const alteredPumpkinPos = new THREE.Vector3(0, 69, 0);
-						// const isFraccionZ = Math.abs(mesh.position.z) < 1;
-						// const isFraccionX = Math.abs(mesh.position.x) < 1;
-						// 						isFraccionX ? mesh.position.x :
-						// isFraccionZ ? mesh.position.z :
 						mesh.position.x = 1 / mesh.position.x;
 						mesh.position.z = 1 / mesh.position.z;
 						mesh.lookAt(alteredPumpkinPos);
@@ -563,14 +553,14 @@
 			handleEventListeners('remove');
 			function disposeAll(node: any) {
 				if (node.isMesh || node instanceof THREE.Mesh) {
-					Object.entries(node.material)
-						.filter(([keys, texture]) => /map$|Map$/.test(keys) && texture)
-						// @ts-ignore
-						.forEach(([_, texture]) => texture?.dispose());
-					// node.material?.map?.dispose();
-					// node.material?.aoMap?.dispose();
-					// node.material?.roughnessMap?.dispose();
-					// node.material?.normalMap?.dispose();
+					// Object.entries(node.material)
+					// 	.filter(([keys, texture]) => /map$|Map$/.test(keys) && texture)
+					// 	// @ts-ignore
+					// 	.forEach(([_, texture]) => texture?.dispose());
+					node.material?.map?.dispose();
+					node.material?.aoMap?.dispose();
+					node.material?.roughnessMap?.dispose();
+					node.material?.normalMap?.dispose();
 
 					node.material?.dispose();
 					node.geometry?.dispose();
