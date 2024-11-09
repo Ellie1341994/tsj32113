@@ -76,11 +76,11 @@
 		const plane = new THREE.Mesh(
 			new THREE.PlaneGeometry(25, 25),
 			new THREE.MeshStandardMaterial({
-				color: '#777777',
-				metalness: 0.3,
-				roughness: 0.4,
+				// color: '#777777',
+				metalness: 0.9,
+				roughness: 0.3,
 				envMap: environmentMapTexture,
-				envMapIntensity: 0.7
+				envMapIntensity: 1
 			})
 		);
 		plane.rotation.set(1.5 * Math.PI, 0, Math.PI * 0);
@@ -112,7 +112,7 @@
 		directionalLight.shadow.camera.bottom = -14;
 		directionalLight.position.set(3, 6, 3);
 		// directionalLight.position.set(0, 9, 0);
-		const ambientLight = new THREE.AmbientLight('#ffffff', 0.7);
+		const ambientLight = new THREE.AmbientLight('#ffffff');
 		// Physics
 		// World
 		const world = new CANNON.World();
@@ -165,7 +165,7 @@
 		scene.add(
 			// sphere,
 			plane,
-			ambientLight,
+			// ambientLight
 			directionalLight
 			// directionalLigherHelper
 			// new THREE.AxesHelper(100)
@@ -195,10 +195,11 @@
 		// createSphere mesh args
 		const sphereGeometry = new THREE.SphereGeometry(1, 20, 20);
 		const sphereMaterial = new THREE.MeshStandardMaterial({
-			color: parameters.color,
+			// color: parameters.color,
 			metalness: 0.3,
 			roughness: 0.4,
-			envMap: environmentMapTexture
+			envMap: environmentMapTexture,
+			envMapIntensity: 0.5
 		});
 		// createSphere body args
 		function createSphere(radius: number, position: { x: number; y: number; z: number }) {
@@ -232,9 +233,9 @@
 		// createBox mesh args
 		const boxGeometry = new THREE.BoxGeometry(2, 2);
 		const boxMaterial = new THREE.MeshStandardMaterial({
-			color: parameters.color,
+			// color: parameters.color,
 			metalness: 0.3,
-			roughness: 0.4,
+			roughness: 0.9,
 			envMap: environmentMapTexture
 		});
 		// createBox body args
