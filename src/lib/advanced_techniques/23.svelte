@@ -10,8 +10,12 @@
 		// Utils
 		const parameters = {
 			color: '#994f7a',
-			width: innerWidth * 0.75,
-			height: innerHeight * 0.75,
+			get width() {
+				return innerWidth * 0.75;
+			},
+			get height() {
+				return innerHeight * 0.75;
+			},
 			get aspect_ratio() {
 				return this.width / this.height;
 			},
@@ -81,13 +85,13 @@
 		gsap.to(scene.rotation, { y: Math.PI, duration: 3.6, repeat: -1, yoyo: true });
 		// Coords
 		let mouse = new THREE.Vector2(0, 0);
-		canvas.addEventListener('mousemove', (event) => {
+		const setMousePosition = (event: MouseEvent) => {
 			mouse.x = ((event.clientX - canvas.offsetLeft) / parameters.width) * 2 - 1;
 			mouse.y = -((event.clientY - canvas.offsetTop) / parameters.height) * 2 + 1;
-		});
-		canvas.addEventListener('mousedown', (event) => {
+		};
+		canvas.addEventListener('mousemove', setMousePosition);
+		const triggerHamburgerAnimation = (event: MouseEvent) => {
 			raycaster.setFromCamera(mouse, camera);
-
 			const intersect = raycaster.intersectObject(hamburgerModel);
 			if (event.button === 0 && hamburgerReady && intersect.length) {
 				gsap.to(hamburgerModel.scale, { x: 2, z: 2, duration: 1 });
@@ -98,7 +102,8 @@
 			} else {
 				gsap.to(camera.rotation, { z: -camera.rotation.z, duration: 0.5 });
 			}
-		});
+		};
+		canvas.addEventListener('mousedown', triggerHamburgerAnimation);
 		// Loader
 		let hamburgerReady = false;
 		const gltfLoader = new GLTFLoader();
@@ -129,6 +134,20 @@
 		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		renderer.setSize(parameters.width, parameters.height);
 		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+		// Extras
+		const setRendererSize = () => {
+			console.log('Window size has changed.');
+			// Camera AR update
+			camera.aspect = parameters.width / parameters.height;
+			camera.updateProjectionMatrix();
+
+			// Renderer
+			renderer.setSize(parameters.width, parameters.height);
+			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
+			renderer.render(scene, camera);
+		};
+		addEventListener('resize', setRendererSize);
 		// Play
 		const clock = new THREE.Clock();
 		let tickId = 0;
@@ -145,6 +164,7 @@
 		tick();
 		// Dispose
 		function disposeScene() {
+			removeEventListener('resize', setRendererSize);
 			console.log(particles);
 			window.cancelAnimationFrame(tickId);
 			function disposeAll(node: any) {
