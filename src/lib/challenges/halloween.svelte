@@ -473,6 +473,43 @@
 			}
 		};
 		handleEventListeners('add');
+		let intervalId = 0;
+		function waitForScene(conditionCallback: Function = () => sceneReady, checkInterval = 100) {
+			return new Promise<void>((resolve) => {
+				function check() {
+					clearInterval(intervalId);
+					if (conditionCallback()) {
+						console.log('sceneReady!');
+						resolve();
+					} else {
+						console.log('waiting!');
+						intervalId = setInterval(check, checkInterval);
+					}
+				}
+				check();
+			});
+		}
+		waitForScene().then(() => {
+			console.log('done');
+			// Utils
+			clonedNakedTreeMeshes.forEach((mesh: any, i: any) => {
+				const horizontalOffset = 4;
+				mesh.position.set(
+					Math.cos((Math.PI * 2 * i) / 7) * horizontalOffset,
+					-2,
+					Math.sin((Math.PI * 2 * i) / 7) * horizontalOffset
+				);
+				mesh.lookAt(pumpkinModel.position);
+				mesh.rotation.x = -Math.PI * 0.4;
+				scene.add(mesh);
+			});
+			// ANKOU ANIMATION
+			let horseWalk = mixer.clipAction(ankouAnimations[2]);
+			horseWalk?.play();
+			let cartMove = mixer.clipAction(ankouAnimations[4]);
+			cartMove.play();
+			renderer.render(scene, camera);
+		});
 		// Play
 		const raycaster = new THREE.Raycaster();
 		let intersect: any = [];
@@ -481,7 +518,6 @@
 		let previousElapsedTime = clock.getElapsedTime();
 		const orbitHorizontalDistance = 4;
 		const orbitVerticalDistance = 4;
-		let nakedTreeRingCreated = false;
 		function tick() {
 			const elapsedTime = clock.getElapsedTime();
 			const deltaTime = elapsedTime - previousElapsedTime;
@@ -495,27 +531,6 @@
 				pointyTreeReady
 			].every((modelLoaded) => modelLoaded);
 			if (sceneReady) {
-				// Utils
-
-				if (!nakedTreeRingCreated) {
-					clonedNakedTreeMeshes.forEach((mesh: any, i: any) => {
-						const horizontalOffset = 4;
-						mesh.position.set(
-							Math.cos((Math.PI * 2 * i) / 7) * horizontalOffset,
-							-2,
-							Math.sin((Math.PI * 2 * i) / 7) * horizontalOffset
-						);
-						mesh.lookAt(pumpkinModel.position);
-						mesh.rotation.x = -Math.PI * 0.4;
-						scene.add(mesh);
-						nakedTreeRingCreated = true;
-					});
-				}
-				// ANKOU ANIMATION
-				let horseWalk = mixer.clipAction(ankouAnimations[2]);
-				horseWalk?.play();
-				let cartMove = mixer.clipAction(ankouAnimations[4]);
-				cartMove.play();
 				mixer.update(deltaTime);
 				// PUMPKIN ANIMATION
 				const valueBetweenAhaldAndNegativeHalf = parameters.cursor.x / parameters.width - 0.5;
