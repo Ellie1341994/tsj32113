@@ -11,12 +11,17 @@
 
 	let canvas: HTMLCanvasElement;
 	let lilGuiPlacer: HTMLSpanElement;
+	const wideScreen = innerWidth > 888;
 	onMount(() => {
 		// Utils
 		const parameters = {
 			s: 0,
-			width: innerWidth * 0.75,
-			height: innerHeight * 0.75,
+			get width() {
+				return innerWidth * 0.75;
+			},
+			get height() {
+				return innerHeight * 0.75;
+			},
 			color: '#997766',
 			get aspectRatio() {
 				return this.width / this.height;
@@ -24,9 +29,22 @@
 		};
 		const gui = new GUI({
 			title: 'Tweaks panel',
-			width: 300,
+			width: wideScreen ? 300 : 340 * 0.75,
 			container: lilGuiPlacer
 		});
+		// Extras
+		const setRendererSize = () => {
+			console.log('Window size has changed.');
+			// Camera AR update
+			camera.aspect = parameters.aspectRatio;
+			camera.updateProjectionMatrix();
+			// lilGuiPlacer.setAttribute('style', `width: ${Math.min(300, innerWidth * 0.75)}px`);
+			// Renderer
+			renderer.setSize(parameters.width, parameters.height);
+			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
+			renderer.render(scene, camera);
+		};
+		addEventListener('resize', setRendererSize);
 		gui.close();
 		// Textures
 		// Cube render target
@@ -134,9 +152,9 @@
 		gui.add(scene, 'environmentIntensity', 0, 10, 0.01);
 		// gui.add(scene, 'backgroundIntensity', 0, 5, 0.01);
 		// gui.add(scene, 'backgroundBlurriness', 0, 1, 0.01);
-		gui
-			.add(scene.backgroundRotation, 'y', 0, Math.PI * 2, Math.PI * 0.01)
-			.name('backgroundRotationY');
+		// gui
+		// 	.add(scene.backgroundRotation, 'y', 0, Math.PI * 2, Math.PI * 0.01)
+		// 	.name('backgroundRotationY');
 		gui
 			.add(scene.environmentRotation, 'y', 0, Math.PI * 2, Math.PI * 0.01)
 			.name('environmentRotationY');
@@ -178,6 +196,14 @@
 	span.lil-gui-placer {
 		position: absolute;
 		top: 16vh;
-		right: 13vw;
+		right: calc(12.5vw + 1vh);
+	}
+	@media (max-width: 666px) {
+		span.lil-gui-placer {
+			position: absolute;
+			top: 19vh;
+			left: calc(12vw + 1.5vh);
+			width: 10vw;
+		}
 	}
 </style>
