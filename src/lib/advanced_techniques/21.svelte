@@ -178,11 +178,11 @@
 <canvas class="webgl" bind:this={canvas}></canvas>
 <span class="lil-gui-placer" bind:this={lilGuiPlacer}></span>
 
-<style>
+<style lang="scss">
 	span.lil-gui-placer {
 		position: absolute;
-		top: 20vh;
-		right: 13.5vw;
+		top: 16vh;
+		right: 13vw;
 	}
 	canvas {
 		border: none;
