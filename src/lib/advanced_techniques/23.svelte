@@ -82,8 +82,13 @@
 		const scene = new THREE.Scene();
 		scene.background = new THREE.Color('#993333');
 		scene.add(dishMesh, particles, ambientLight, directionalLight);
-		gsap.to(scene.rotation, { y: Math.PI, duration: 3.6, repeat: -1, yoyo: true });
-		// Coords
+		gsap.to(scene.rotation, {
+			y: 2 * Math.PI,
+			duration: 3.6 * 2,
+			repeat: -1,
+			ease: 'linear',
+			animationFillMode: 'forwards'
+		});
 		let mouse = new THREE.Vector2(0, 0);
 		const setMousePosition = (event: MouseEvent) => {
 			mouse.x = ((event.clientX - canvas.offsetLeft) / parameters.width) * 2 - 1;
