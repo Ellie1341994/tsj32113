@@ -46,7 +46,7 @@
 	<footer style={/challenges/.test(pathname) ? 'width: 100vw;  position: fixed; bottom: 0vh;' : ''}>
 		<p>
 			Creative practices by <strong
-				><a style="color: black;" href="https://x.com/0E11ie" target="_blank">Ellie Broocks</a
+				><a style="color: black;" href="https://x.com/0E11ie" target="_blank">Elian Broocks</a
 				></strong
 			>
 		</p>
