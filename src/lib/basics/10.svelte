@@ -230,10 +230,18 @@
 <canvas class="webgl" bind:this={canvas}></canvas>
 <span class="lil-gui-placer" bind:this={lilGuiPlacer}></span>
 
-<style>
+<style lang="scss">
 	span.lil-gui-placer {
 		position: absolute;
-		top: 20vh;
-		right: 13.5vw;
+		top: 16vh;
+		right: calc(12.5vw + 1vh);
+	}
+	@media (max-width: 666px) {
+		span.lil-gui-placer {
+			position: absolute;
+			top: 19vh;
+			left: calc(12vw + 1.5vh);
+			width: 10vw;
+		}
 	}
 </style>

@@ -38,7 +38,6 @@
 			// Camera AR update
 			camera.aspect = parameters.aspectRatio;
 			camera.updateProjectionMatrix();
-			// lilGuiPlacer.setAttribute('style', `width: ${Math.min(300, innerWidth * 0.75)}px`);
 			// Renderer
 			renderer.setSize(parameters.width, parameters.height);
 			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering

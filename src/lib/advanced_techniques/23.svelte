@@ -86,8 +86,7 @@
 			y: 2 * Math.PI,
 			duration: 3.6 * 2,
 			repeat: -1,
-			ease: 'linear',
-			animationFillMode: 'forwards'
+			ease: 'linear'
 		});
 		let mouse = new THREE.Vector2(0, 0);
 		const setMousePosition = (event: MouseEvent) => {
