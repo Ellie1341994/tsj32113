@@ -40,6 +40,8 @@
 		justify-content: space-between;
 		height: 100%;
 		overflow: scroll;
+		scrollbar-width: none;
+
 		section {
 			width: 50%;
 			height: 100%;
