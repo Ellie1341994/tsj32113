@@ -77,7 +77,7 @@
 
 		// Meshes
 		const holyDonut = new THREE.Mesh(
-			new THREE.TorusGeometry(21, 1, 12, 6),
+			new THREE.TorusGeometry(15, 1, 12, 6),
 			new THREE.MeshBasicMaterial({ color: new THREE.Color(10, 5, 2) })
 		);
 		holyDonut.layers.enable(1);
@@ -151,6 +151,7 @@
 		const control = new OrbitControls(camera, canvas);
 		// Renderer
 		const renderer = new THREE.WebGLRenderer({ canvas });
+		renderer.setClearAlpha(0.5);
 		renderer.setSize(parameters.width, parameters.height);
 		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
@@ -173,10 +174,10 @@
 <canvas class="webgl" bind:this={canvas}></canvas>
 <span class="lil-gui-placer" bind:this={lilGuiPlacer}></span>
 
-<style>
+<style lang="scss">
 	span.lil-gui-placer {
 		position: absolute;
-		top: 20vh;
-		right: 13.5vw;
+		top: 16vh;
+		right: 13vw;
 	}
 </style>
