@@ -3,7 +3,7 @@ import {
 	PCFSoftShadowMap,
 	PerspectiveCamera,
 	WebGLRenderer,
-	type Scene,
+	type Scene
 } from 'three';
 import type Sizes from './Sizes';
 import type { TCamera } from './Camera';
@@ -20,7 +20,7 @@ export default class Renderer {
 		instance.toneMappingExposure = 1;
 		instance.shadowMap.enabled = true;
 		instance.shadowMap.type = PCFSoftShadowMap;
-		instance.setClearColor('#dddddd');
+		instance.setClearColor('#333333');
 		this.resize();
 		this.update();
 		console.log('renderer', this);

@@ -16,7 +16,7 @@ export default class Camera {
 	}
 	setPerspectiveCamera() {
 		this.instance = new PerspectiveCamera(75, this.sizes.aspectRatio, 1, 100);
-		this.instance.position.z = 5;
+		this.instance.position.set(0, 5, 9);
 	}
 	setOrbitControls() {
 		this.#controls = new OrbitControls(this.instance!, this.canvas);

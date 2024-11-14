@@ -22,8 +22,7 @@ export default class Experience {
 		public resources = new Resources(sources),
 		public camera = new Camera(sizes, canvas),
 		public renderer = new Renderer(canvas, scene, sizes, camera.instance),
-		public world = new World(scene),
-		public environment = new Environment(scene)
+		public world = new World(scene, resources)
 	) {
 		// Checks
 		if (!canvas) {
@@ -45,7 +44,6 @@ export default class Experience {
 		window.experience = this;
 	}
 	resize() {
-		// console.log('Resize triggered');
 		this.sizes.updateAll();
 		this.camera.resize();
 		this.renderer.resize();
