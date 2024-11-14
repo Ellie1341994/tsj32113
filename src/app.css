@@ -112,18 +112,7 @@ canvas {
 	margin: 0;
 	
 }
-/* white rounded box at the top left corner */
-/* main::before {
-	content: "";
-	position: absolute;
-	top: 17.5vh;
-	left: 12.5vw;
-	width: 5vh;
-	height: 5vh;
-	background-color: var(--color-theme-4);
-	border-radius: 15px;
-} */
- 
+
 .visually-hidden {
 	border: 0;
 	clip: rect(0 0 0 0);
