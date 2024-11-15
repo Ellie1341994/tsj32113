@@ -1,3 +1,4 @@
+// # This is Bruno Simon's class from its ThreeJS Journey Course updated to properly work with TS
 export default class EventEmitter {
 	constructor(public callbacks: { [key: string]: { [key: string]: Function[] } } = { base: {} }) {}
 
@@ -31,7 +32,6 @@ export default class EventEmitter {
 			// Add callback
 			this.callbacks[name.namespace][name.value].push(callback);
 		});
-
 		return this;
 	}
 
@@ -87,7 +87,6 @@ export default class EventEmitter {
 				}
 			}
 		});
-
 		return this;
 	}
 

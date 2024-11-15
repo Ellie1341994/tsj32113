@@ -3,8 +3,7 @@ import Camera from './utils/Camera.ts';
 import Renderer from './utils/Renderer.ts';
 import Sizes from './utils/Sizes.ts';
 import Time from './utils/Time.ts';
-import { Scene } from 'three';
-import Environment from './world/Environment.ts';
+import { Mesh, Scene } from 'three';
 import Resources from './utils/Resources.ts';
 import sources from './sources.ts';
 
@@ -12,7 +11,7 @@ declare const window: Window & {
 	experience?: Experience;
 };
 
-let singletonInstance: Experience | null = null;
+let singletonExperienceInstance: Experience | null = null;
 export default class Experience {
 	constructor(
 		public canvas: HTMLCanvasElement,
@@ -28,11 +27,12 @@ export default class Experience {
 		if (!canvas) {
 			throw new Error('Corrupted or missing HTMLCanvasElement');
 		}
-		if (singletonInstance) {
-			return singletonInstance;
+		if (singletonExperienceInstance) {
+			return singletonExperienceInstance;
 		}
-		singletonInstance = this;
+		singletonExperienceInstance = this;
 		//  Setup
+		// EventEmitter
 		sizes.on('resize', () => {
 			this.resize();
 		});

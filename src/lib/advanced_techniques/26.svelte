@@ -1,11 +1,14 @@
 <script lang="ts">
 	import Experience from './26/Experience.ts';
 	import { onMount } from 'svelte';
-	import * as THREE from 'three';
+	import Gui from './26/utils/Gui.ts';
 
 	let canvas: HTMLCanvasElement;
 	let lilGuiPlacer: HTMLSpanElement;
 	onMount(() => {
+		if (location.hash === '#devMode') {
+			new Gui(lilGuiPlacer);
+		}
 		new Experience(canvas);
 	});
 </script>
