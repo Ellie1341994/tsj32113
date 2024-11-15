@@ -23,10 +23,7 @@ export default class Resources extends EventEmitter {
 
 	load() {
 		for (const { path, type, name } of this.sources) {
-			console.log(`${name} ${type} ${path}`);
 			this.loaders[type].load(path as any, (file) => {
-				console.log(`loading`);
-
 				this.items[name] = file;
 				this.loaded++;
 				const allSourcesLoaded = this.loaded === this.sources.length;

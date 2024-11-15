@@ -41,7 +41,7 @@ export default class Floor {
 		this.#textures.color.wrapS = RepeatWrapping;
 		this.#textures.color.wrapT = RepeatWrapping;
 		//  Normal
-		this.#textures.normal = this.resources.items.grassColorTexture;
+		this.#textures.normal = this.resources.items.grassNormalTexture;
 		this.#textures.normal.repeat.setScalar(1.5);
 		this.#textures.normal.wrapS = RepeatWrapping;
 		this.#textures.normal.wrapT = RepeatWrapping;

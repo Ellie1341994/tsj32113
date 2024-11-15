@@ -22,7 +22,7 @@ export default class Experience {
 		public resources = new Resources(sources),
 		public camera = new Camera(sizes, canvas),
 		public renderer = new Renderer(canvas, scene, sizes, camera.instance),
-		public world = new World(scene, resources)
+		public world = new World(scene, resources, time)
 	) {
 		// Checks
 		if (!canvas) {
@@ -51,6 +51,7 @@ export default class Experience {
 	update() {
 		// console.log('Tick update');
 		this.camera.update();
+		this.world.update();
 		this.renderer.update();
 	}
 }

@@ -23,7 +23,6 @@ export default class Renderer {
 		instance.setClearColor('#333333');
 		this.resize();
 		this.update();
-		console.log('renderer', this);
 	}
 	resize() {
 		this.instance.setSize(this.sizes.width, this.sizes.height);
