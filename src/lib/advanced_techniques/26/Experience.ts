@@ -3,9 +3,10 @@ import Camera from './utils/Camera.ts';
 import Renderer from './utils/Renderer.ts';
 import Sizes from './utils/Sizes.ts';
 import Time from './utils/Time.ts';
-import { Mesh, Scene } from 'three';
+import { Scene } from 'three';
 import Resources from './utils/Resources.ts';
 import sources from './sources.ts';
+import Gui from './utils/Gui.ts';
 
 declare const window: Window & {
 	experience?: Experience;
@@ -31,7 +32,6 @@ export default class Experience {
 			return singletonExperienceInstance;
 		}
 		singletonExperienceInstance = this;
-		//  Setup
 		// EventEmitter
 		sizes.on('resize', () => {
 			this.resize();
@@ -39,7 +39,6 @@ export default class Experience {
 		time.on('tick', () => {
 			this.update();
 		});
-
 		// Browser access
 		window.experience = this;
 	}
@@ -49,9 +48,19 @@ export default class Experience {
 		this.renderer.resize();
 	}
 	update() {
-		// console.log('Tick update');
 		this.camera.update();
 		this.world.update();
 		this.renderer.update();
+	}
+	destroy() {
+		this.sizes.off('resize');
+		this.time.off('tick');
+		this.time.destroy();
+		new Gui()?.instance?.destroy();
+		this.world.destroy();
+		this.camera.destroy();
+		this.renderer.instance.dispose();
+		let { geometries, textures } = this.renderer.instance.info.memory;
+		console.log(`geometries: ${geometries} textures: ${textures}`);
 	}
 }

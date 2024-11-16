@@ -1,6 +1,7 @@
 import EventEmitter from './EventEmitter';
 
 export default class Time extends EventEmitter {
+	#tickId = 0;
 	constructor(
 		public start = Date.now(),
 		public current = start,
@@ -16,8 +17,12 @@ export default class Time extends EventEmitter {
 		this.delta = Date.now() - this.current;
 		this.current = this.delta + this.current;
 		this.elapsed = this.current - this.start;
-
+		console.log('ticking');
+		// @ts-ignore
 		this.trigger('tick');
-		requestAnimationFrame(this.tick);
+		this.#tickId = requestAnimationFrame(this.tick);
+	}
+	destroy() {
+		cancelAnimationFrame(this.#tickId);
 	}
 }

@@ -71,9 +71,15 @@ export default class Wolf {
 			setInterval(loopAnimateWolf, 2500);
 		}
 	}
-	// setAnimation() {
-	// }
 	update(delta: number) {
 		this.animationSetup.mixer?.update(delta * 0.001);
+	}
+	destroy() {
+		const meshes = this.model.getObjectsByProperty('isMesh', true);
+		meshes.forEach((mesh: any) => {
+			mesh.geometry.dispose();
+			mesh.material.dispose();
+			console.log(mesh.material);
+		});
 	}
 }

@@ -1,5 +1,4 @@
 import {
-	BoxGeometry,
 	CircleGeometry,
 	DoubleSide,
 	Mesh,
@@ -10,29 +9,19 @@ import {
 	type Scene
 } from 'three';
 import type Resources from '../utils/Resources';
-
+type FloorMesh = Mesh<CircleGeometry, MeshStandardMaterial>;
 export default class Floor {
 	#geometry = new CircleGeometry(5, 64);
 	#textures = { color: {} as Texture, normal: {} as Texture };
 	#material = new MeshStandardMaterial();
-	#mesh = new Mesh();
 	constructor(
 		private scene: Scene,
-		private resources: Resources
+		private resources: Resources,
+		public instance = new Mesh()
 	) {
-		// let floorMesh = new Mesh(
-		// 	new BoxGeometry(5, 1, 5),
-		// 	new MeshStandardMaterial({ color: '#ff3399', envMap: resources.items.environmentMapTexture })
-		// );
-		// floorMesh.position.y = -1;
-		// scene.add(floorMesh);
-		// this.setGeometry();
 		this.setTextures();
-		this.setMaterial();
 		this.setMesh();
 	}
-	// setGeometry() {
-	// }
 	setTextures() {
 		// Color
 		this.#textures.color = this.resources.items.grassColorTexture;
@@ -45,17 +34,25 @@ export default class Floor {
 		this.#textures.normal.repeat.setScalar(1.5);
 		this.#textures.normal.wrapS = RepeatWrapping;
 		this.#textures.normal.wrapT = RepeatWrapping;
-	}
-	setMaterial() {
+		// Setup
 		this.#material.map = this.#textures.color;
 		this.#material.normalMap = this.#textures.normal;
 	}
+
 	setMesh() {
-		this.#mesh.geometry = this.#geometry;
-		this.#mesh.material = this.#material;
-		this.#mesh.rotation.x = -Math.PI * 0.5;
-		this.#mesh.material.side = DoubleSide;
-		this.#mesh.receiveShadow = true;
-		this.scene.add(this.#mesh);
+		this.instance.name = 'Floor';
+		this.instance.geometry = this.#geometry;
+		this.instance.material = this.#material;
+		this.instance.material.side = DoubleSide;
+		this.instance.rotation.x = -Math.PI * 0.5;
+		this.instance.receiveShadow = true;
+		this.scene.add(this.instance);
+	}
+	destroy() {
+		const renderedMesh = this.scene.getObjectByName('Floor') as FloorMesh;
+		renderedMesh.geometry.dispose();
+		renderedMesh.material.map?.dispose();
+		renderedMesh.material.normalMap?.dispose();
+		renderedMesh.material.dispose();
 	}
 }

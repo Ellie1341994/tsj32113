@@ -29,4 +29,7 @@ export default class Camera {
 	update() {
 		this.#controls?.update();
 	}
+	destroy() {
+		this.#controls?.dispose();
+	}
 }

@@ -1,6 +1,5 @@
 import {
 	DirectionalLight,
-	DirectionalLightHelper,
 	type Scene,
 	Texture,
 	SRGBColorSpace,
@@ -33,16 +32,12 @@ export default class Environment {
 		this.#sunlight.shadow.camera.top = 25;
 		this.#sunlight.shadow.camera.bottom = -25;
 		this.updateMaterials = this.updateMaterials.bind(this);
-		this.scene.add(
-			this.#sunlight
-			// new DirectionalLightHelper(this.#sunlight)
-		);
+		this.scene.add(this.#sunlight);
 	}
 	setEnvironmentMap() {
 		this.#environmentMap.texture = this.resources.items.environmentMapTexture;
 		this.#environmentMap.texture.colorSpace = SRGBColorSpace;
 		this.scene.environment = this.#environmentMap.texture;
-		// this.scene.background = this.#environmentMap.texture;
 		if (location.hash === '#devMode') {
 			const gui = new Gui().instance;
 			const shadowParams = { shadowMapSizeOption: 512 * 4 };
@@ -77,5 +72,9 @@ export default class Environment {
 				node.material.needsUpdate = true;
 			}
 		});
+	}
+	destroy() {
+		this.#sunlight.dispose();
+		this.scene.environment?.dispose();
 	}
 }
