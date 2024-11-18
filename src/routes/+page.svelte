@@ -13,7 +13,7 @@
 		align-items: center;
 		justify-content: space-around;
 		h1 {
-			font-size: 4em;
+			font-size: min(5vh, 5vw);
 			a {
 				text-decoration: none;
 				text-transform: capitalize;
@@ -22,11 +22,17 @@
 				sup {
 					color: var(--color-text);
 				}
-				// .disabled-link {
-				// 	pointer-events: none;
-				// }
+
 				&:hover:not(.disabled-link) {
-					text-shadow: #70577a 3px 4px 5px;
+					--shadow-color: white;
+					text-shadow:
+						0vh 0vh 0.1vh #000,
+						0vh 0vh 10vh var(--shadow-color),
+						0vh 0vh 10vh var(--shadow-color),
+						0vh 0vh 10vh var(--shadow-color),
+						0vh 0vh 15vh var(--shadow-color),
+						0vh 0vh 20vh var(--shadow-color),
+						0vh 0vh 25vh var(--shadow-color);
 				}
 			}
 		}
