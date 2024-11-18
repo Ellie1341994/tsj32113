@@ -23,12 +23,12 @@
 			<li aria-current={/advanced_techniques/.test(module) ? 'page' : undefined}>
 				<a href="/advanced_techniques/">Advanced</a>
 			</li>
-			<li aria-current={/shaders/.test(module) ? 'page' : undefined}>
+			<!-- <li aria-current={/shaders/.test(module) ? 'page' : undefined}>
 				<a href="/shaders/">Shaders</a>
 			</li>
 			<li aria-current={/extra/.test(module) ? 'page' : undefined}>
-				<a href="/extra/">Extra</a>
-			</li>
+				<a href="/extra/">Extra</a> -->
+			<!-- </li> -->
 		</ul>
 		<svg viewBox="0 0 2 3" aria-hidden="true">
 			<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
