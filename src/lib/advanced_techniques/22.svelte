@@ -86,7 +86,7 @@
 		const gltfLoader = new GLTFLoader();
 		const dracoLoader = new DRACOLoader();
 		gltfLoader.setDRACOLoader(dracoLoader);
-		dracoLoader.setDecoderPath('../../node_modules/three/examples/jsm/libs/draco/');
+		dracoLoader.setDecoderPath('/assets/draco/');
 		gltfLoader.load(
 			// `${parameters.assets_path}/Duck/glTF/Duck.gltf`,
 			// `${ASSETS_PATH}/Duck/glTF-Binary/Duck.glb`,

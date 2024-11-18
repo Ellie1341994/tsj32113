@@ -67,9 +67,7 @@
 		const castleNorTexture = textureLoader.load(
 			'/assets/advanced/25/textures/castle_brick_broken_06/castle_brick_broken_06_nor_gl_1k.png'
 		);
-
 		// Loader
-
 		// HDRI (RGBE Equirectangular)
 		const rgbeLoader = new RGBELoader();
 		rgbeLoader.load('/assets/advanced/25/environmentMaps/0/2k.hdr', (environmentMap) => {
@@ -77,7 +75,6 @@
 			scene.background = environmentMap;
 			scene.environment = environmentMap;
 		});
-
 		// Meshes
 		const woodPlane = new THREE.Mesh(
 			new THREE.PlaneGeometry(32, 32),
@@ -90,6 +87,7 @@
 				side: THREE.DoubleSide
 			})
 		);
+		woodPlane.name = 'woodPlane';
 		woodPlane.receiveShadow = true;
 		woodPlane.rotation.x = -Math.PI * 0.5;
 		const castlePlane = new THREE.Mesh(
@@ -103,6 +101,7 @@
 				side: THREE.DoubleSide
 			})
 		);
+		castlePlane.name = 'castlePlane';
 		castlePlane.position.z = -16;
 		castlePlane.position.y = 16;
 		castlePlane.receiveShadow = true;
@@ -170,21 +169,13 @@
 		const directionalLightShadowHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
 		directionalLightShadowHelper.visible = false;
 		gui.add(directionalLightShadowHelper, 'visible').name('directionalLightShadowHelper visbility');
-		// // Scene
+		// Scene
 		const scene = new THREE.Scene();
-		scene.add(
-			// torusKnotMesh,
-			directionalLight,
-			woodPlane,
-			castlePlane,
-			directionalLightShadowHelper
-		);
-
+		scene.add(directionalLight, woodPlane, castlePlane, directionalLightShadowHelper);
 		// Camera
 		// Cube camera
 		// Normal
 		const camera = new THREE.PerspectiveCamera(75, parameters.aspectRatio);
-
 		camera.position.set(0, 35, 35);
 		const control = new OrbitControls(camera, canvas);
 		// Renderer
@@ -218,6 +209,54 @@
 		}
 		tick();
 		// Dispose
+		function disposeScene() {
+			removeEventListener('resize', setRendererSize);
+			cancelAnimationFrame(tickId);
+			function disposeAll(node: any) {
+				if (node instanceof THREE.Mesh || node instanceof THREE.Points) {
+					// node.material.normalMap;
+					// node.material.aoMap?.dispose();
+					// node.material.metalnessMap?.dispose();
+					// node.material.roughnessMap?.dispose();
+					// node.material.map?.dispose();
+					for (const key in node.material) {
+						if (node.material[key] && typeof node.material[key].dispose === 'function') {
+							node.material[key].dispose();
+							console.log(`${key} disposed`);
+						}
+					}
+					node.material?.dispose();
+					node.geometry?.dispose();
+					console.log(
+						`Disposed ${node.name} ${node.type} G:${node.geometry.type} M:${node.material.type} `
+					);
+				} else if (node instanceof THREE.Light || node instanceof THREE.CameraHelper) {
+					node.dispose();
+					console.log(`Disposed ${node.type}`);
+				} else if (node instanceof THREE.Texture) {
+					node.dispose();
+					console.log(`Disposed ${node.type}`);
+				} else {
+					console.log('NOT DISPOSED', node);
+				}
+			}
+			woodARMTexture.dispose();
+			woodDiffTexture.dispose();
+			woodNorTexture.dispose();
+			castleARMTexture.dispose();
+			castleDiffTexture.dispose();
+			castleNorTexture.dispose();
+			directionalLightShadowHelper.dispose();
+			dracoLoader.dispose();
+			control.dispose();
+			scene.environment?.dispose;
+			scene.traverse(disposeAll);
+			gui.destroy();
+			renderer.dispose();
+			console.log(`Experience ended`, renderer.info);
+		}
+		// console.log(renderer.info.memory);
+		return disposeScene;
 	});
 </script>
 

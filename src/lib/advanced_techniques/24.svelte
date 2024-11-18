@@ -5,8 +5,6 @@
 	import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 	import GUI from 'lil-gui';
-	import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
-	// import { EXRLoader } from 'three/addons/loaders/EXRLoader.js';
 	import { GroundedSkybox } from 'three/addons/objects/GroundedSkybox.js';
 
 	let canvas: HTMLCanvasElement;
@@ -49,7 +47,7 @@
 		// Cube render target
 		const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256, { type: THREE.HalfFloatType });
 		// Loader
-		const cubeTextureLoader = new THREE.CubeTextureLoader();
+		// const cubeTextureLoader = new THREE.CubeTextureLoader();
 		//  Low Dynamic Range LDR Cube texture
 		// const environmentMap = cubeTextureLoader.load([
 		// 	'/assets/advanced/24/environmentMaps/2/px.png',
@@ -61,7 +59,7 @@
 		// ]);
 
 		// HDRI (RGBE Equirectangular)
-		const rgbeLoader = new RGBELoader();
+		// const rgbeLoader = new RGBELoader();
 		// rgbeLoader.load(
 		// 	'/assets/advanced/24/environmentMaps/customEnvMapLightsBlender-2k.hdr',
 		// 	(environmentMap) => {
@@ -184,7 +182,46 @@
 			tickId = requestAnimationFrame(tick);
 		}
 		tick();
-		// Dispose
+		function disposeScene() {
+			removeEventListener('resize', setRendererSize);
+			cancelAnimationFrame(tickId);
+			function disposeAll(node: any) {
+				if (node instanceof THREE.Mesh || node instanceof THREE.Points) {
+					// node.material.normalMap;
+					// node.material.aoMap?.dispose();
+					// node.material.metalnessMap?.dispose();
+					// node.material.roughnessMap?.dispose();
+					// node.material.map?.dispose();
+					for (const key in node.material) {
+						if (node.material[key] && typeof node.material[key].dispose === 'function') {
+							node.material[key].dispose();
+						}
+					}
+					node.material?.dispose();
+					node.geometry?.dispose();
+					console.log(
+						`Disposed ${node.name} ${node.type} G:${node.geometry.type} M:${node.material.type} `
+					);
+				} else if (node instanceof THREE.Light || node instanceof THREE.CameraHelper) {
+					node.dispose();
+					console.log(`Disposed ${node.type}`);
+				} else if (node instanceof THREE.Texture) {
+					node.dispose();
+					console.log(`Disposed ${node.type}`);
+				} else {
+					console.log('NOT DISPOSED', node);
+				}
+			}
+			cubeRenderTarget.dispose();
+			environmentMap.dispose();
+			control.dispose();
+			scene.environment?.dispose;
+			scene.traverse(disposeAll);
+			gui.destroy();
+			renderer.dispose();
+			console.log(`Experience ended`, renderer.info);
+		}
+		return disposeScene;
 	});
 </script>
 
