@@ -25,13 +25,16 @@ export default class Experience {
 		public world = new World(scene, resources, time)
 	) {
 		// Checks
-		if (!canvas) {
+		if (!(canvas instanceof HTMLCanvasElement)) {
 			throw new Error('Corrupted or missing HTMLCanvasElement');
 		}
 		if (singletonExperienceInstance) {
 			return singletonExperienceInstance;
 		}
+		// Init
 		singletonExperienceInstance = this;
+		this.destroy = this.destroy.bind(this);
+
 		// EventEmitter
 		sizes.on('resize', () => {
 			this.resize();

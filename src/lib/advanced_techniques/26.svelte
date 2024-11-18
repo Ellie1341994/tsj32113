@@ -9,7 +9,8 @@
 		if (location.hash === '#devMode') {
 			new Gui(lilGuiPlacer);
 		}
-		new Experience(canvas);
+		const { destroy } = new Experience(canvas);
+		return destroy;
 	});
 </script>
 
