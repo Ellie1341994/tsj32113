@@ -16,7 +16,9 @@
 			<h3>{i + 1} ~ {subtitle}</h3>
 			<ul style={!tweaks.length ? 'display: flex; justify-content: start;' : ''}>
 				{#each tweaks as tweak, i2 (i2 + i)}
-					<li style="list-style-type: '★'; padding: 1%;">{tweak}</li>
+					<li style={`list-style-type: '★'; padding: 1%;`}>
+						{tweak}
+					</li>
 				{:else}
 					<li style="list-style-type: '★'; padding: 1%;">
 						<strong>Soon... </strong><Icon
@@ -31,6 +33,7 @@
 	{/each}
 </article>
 
+<!-- display: flex; justify-content: start; ${!(i2 % 2) ? 'justify-self: start;' : 'justify-self: end;'} -->
 <style lang="scss">
 	article {
 		width: 100%;
@@ -45,6 +48,9 @@
 		section {
 			width: 50%;
 			height: 100%;
+			&:nth-child(odd) {
+				margin-left: 75%;
+			}
 		}
 	}
 	h2 {
