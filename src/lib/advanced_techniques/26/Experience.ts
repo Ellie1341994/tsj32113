@@ -56,6 +56,7 @@ export default class Experience {
 		this.renderer.update();
 	}
 	destroy() {
+		singletonExperienceInstance = null;
 		this.sizes.off('resize');
 		this.time.off('tick');
 		this.time.destroy();
