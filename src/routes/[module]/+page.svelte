@@ -33,7 +33,6 @@
 	{/each}
 </article>
 
-<!-- display: flex; justify-content: start; ${!(i2 % 2) ? 'justify-self: start;' : 'justify-self: end;'} -->
 <style lang="scss">
 	article {
 		width: 100%;
