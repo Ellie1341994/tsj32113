@@ -1,0 +1,12 @@
+Switch between two modes
+ - Halloween clock
+ - Normal clock
+
+ Character enters the scene from a far fog towards the center at 0 in all dimensions
+
+ Overall scene animation to show the right time for each mode, character has no rotating animation so animating the "clock" would look better.
+
+ Character pumpkin head could float around the body and move alognside mouse cursor movements.
+
+ Flip base to shown a happy farm ankou with its head intact and normal pumpkins
+ 
