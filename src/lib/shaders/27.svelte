@@ -4,12 +4,12 @@
 	import gsap from 'gsap';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 	import GUI from 'lil-gui';
-	// import testVertexShadow from './27/colorInterpolationTerrain/vertex.vert';
-	// import testFragmentShader from './27/colorInterpolationTerrain/fragment.frag';
-	import testVertexShadow from './27/deformation/vertex.vert';
-	import testFragmentShader from './27/deformation/fragment.frag';
-	import anotherVertexShadow from './27/nonRawShader/vertex.vert';
-	import anotherFragmentShader from './27/nonRawShader/fragment.frag';
+	// import testVertexShadow from './27/colorInterpolationTerrain/vertex.vert?raw';
+	// import testFragmentShader from './27/colorInterpolationTerrain/fragment.frag?raw';
+	import testVertexShadow from './27/deformation/vertex.vert?raw';
+	import testFragmentShader from './27/deformation/fragment.frag?raw';
+	import anotherVertexShadow from './27/nonRawShader/vertex.vert?raw';
+	import anotherFragmentShader from './27/nonRawShader/fragment.frag?raw';
 	let canvas: HTMLCanvasElement;
 	let lilGuiPlacer: HTMLSpanElement;
 	const wideScreen = innerWidth > 888;
@@ -113,7 +113,7 @@
 		camera.position.set(0, 0, 2);
 		const control = new OrbitControls(camera, canvas);
 		// Renderer
-		const renderer = new THREE.WebGLRenderer({ canvas });
+		const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
 		renderer.shadowMap.enabled = true;
 		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -181,6 +181,10 @@
 		position: absolute;
 		top: 16vh;
 		right: calc(12.5vw + 1vh);
+	}
+	canvas {
+		border: none;
+		box-shadow: none;
 	}
 	@media (max-width: 666px) {
 		span.lil-gui-placer {
