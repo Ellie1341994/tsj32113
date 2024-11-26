@@ -4,8 +4,8 @@
 	import gsap from 'gsap';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 	import GUI from 'lil-gui';
-	// import testVertexShadow from './27/colorInterpolationTerrain/vertex.vert?raw';
-	// import testFragmentShader from './27/colorInterpolationTerrain/fragment.frag?raw';
+	import vertexShader from './28/A/vertex.glsl?raw';
+	import fragmentShader from './28/A/fragment.glsl?raw';
 	let canvas: HTMLCanvasElement;
 	let lilGuiPlacer: HTMLSpanElement;
 	const wideScreen = innerWidth > 888;
@@ -44,36 +44,30 @@
 		// Textures
 		// Loader
 		const textureLoader = new THREE.TextureLoader();
-		// Meshes
-		const box = new THREE.Mesh(
-			new THREE.BoxGeometry(1, 1, 1),
-			new THREE.MeshStandardMaterial({ color: parameters.color })
-		);
-		const geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
 
-		const count = geometry.attributes.position.count;
-		const randoms = new Float32Array(count);
-		for (let i = 0; i < count; i++) {
-			randoms[i] = Math.random();
-		}
-		console.log(geometry);
-		geometry.setAttribute('aRandom', new THREE.BufferAttribute(randoms, 1));
+		const geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
 		// Shaders
 		// Materials
-
+		const material = new THREE.ShaderMaterial({
+			vertexShader,
+			fragmentShader,
+			side: THREE.DoubleSide
+		});
+		// Meshes
+		const mesh = new THREE.Mesh(geometry, material);
 		// Lights
-		const abmbientLight = new THREE.AmbientLight('#ffffff', 6);
+		const ambientLight = new THREE.AmbientLight('#ffffff', 6);
 		// Scene
 		const scene = new THREE.Scene();
-		scene.add(abmbientLight);
+		scene.add(ambientLight, mesh);
 		// Camera
 		// Cube camera
 		// Normal
 		const camera = new THREE.PerspectiveCamera(75, parameters.aspectRatio);
-		camera.position.set(0, 0, 2);
+		camera.position.set(0, 0, 1);
 		const control = new OrbitControls(camera, canvas);
 		// Renderer
-		const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+		const renderer = new THREE.WebGLRenderer({ canvas, alpha: false });
 		renderer.shadowMap.enabled = true;
 		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
