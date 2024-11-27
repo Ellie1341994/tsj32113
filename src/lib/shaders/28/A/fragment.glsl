@@ -48,17 +48,137 @@ void main(){
     //     );
     
     // P7
-    // P6
-    float halfCircle = 3.14;
-    float cycles = 10.0 * uVv.y;
+    // P8
+    // float halfCircle = 3.14;
+    // float cycles = 10.0 * uVv.y;
     // float val = abs(sin( cycles * halfCircle));
-    float v = mod(cycles, 1.0);
+    // float v = mod(cycles, 1.0);
 
     // float val = sin( cycles * halfCircle) ;
+    // gl_FragColor = vec4(
+    //     v,
+    //     v,
+    //     v,
+    //     1.0
+    //     );
+    // P9
+    // float halfCircle = 3.14;
+    // float cycles = 10.0 * uVv.y ;
+    // float v = sin( cycles * halfCircle * 2.0);
+    // float v = mod(cycles, 1.0) > 0.5 ? 1.0 : 0.0;
+    // float val = sin( cycles * halfCircle) ;
+    // gl_FragColor = vec4(
+    //     v,
+    //     v,
+    //     v,
+    //     1.0
+    //     );
+    // P10
+    // float horizontalLines = 10.0 * uVv.x ;
+    // float verticalLines = 10.0 * uVv.y ;
+    // float v = mod(horizontalLines, 1.0) > 0.9 || mod(verticalLines, 1.0) > 0.9  ? 1.0 : 0.0;
+    // gl_FragColor = vec4(
+    //     v,
+    //     v,
+    //     v,
+    //     1.0
+    //     );
+    // P11
+    // float horizontalLines = 10.0 * uVv.x ;
+    // float verticalLines = 10.0 * uVv.y ;
+    // float v = mod(horizontalLines, 1.0) > 0.9 || mod(verticalLines, 1.0) > 0.9  ? 1.0 : 0.0;
+    // gl_FragColor = vec4(
+    //     v,
+    //     v,
+    //     v,
+    //     1.0
+    //     );  
+    // P12
+    // float horizontalLines = 10.0 * uVv.x ;
+    // float verticalLines = 10.0 * uVv.y ;
+    // float v = mod(horizontalLines, 1.0) > 0.75 && mod(verticalLines, 1.0) > 0.75  ? 1.0 : 0.0;
+    // gl_FragColor = vec4(
+    //     v,
+    //     v,
+    //     v,
+    //     1.0
+    //     );
+    // P13
+    // float horizontalLines = 10.0 * uVv.x ;
+    // float verticalLines = 10.0 * uVv.y ;
+    // float v = mod(horizontalLines, 1.0) > 0.5 && mod(verticalLines, 1.0) > 0.75  ? 1.0 : 0.0;
+    // gl_FragColor = vec4(
+    //     v,
+    //     v,
+    //     v,
+    //     1.0
+    //     );  
+    // P14
+    // float horizontalLines = 10.0 * uVv.x ;
+    // float verticalLines = 10.0 * uVv.y ;
+    // float v = mod(horizontalLines, 1.0) > 0.5 && mod(verticalLines, 1.0) > 0.75 
+    //         || mod(horizontalLines, 1.0) > 0.75 && mod(verticalLines, 1.0) > 0.5 ? 1.0 : 0.0;
+    // gl_FragColor = vec4(
+    //     v,
+    //     v,
+    //     v,
+    //     1.0
+    //     );  
+    // P15 A
+    // float horizontalLines = 10.0 * uVv.x ;
+    // float verticalLines = 10.0 * uVv.y ;
+    // float v = 
+    // mod(horizontalLines, 1.0) > 0.25 && mod(verticalLines, 1.0) > 0.40 &&
+    // mod(horizontalLines, 1.0) < 0.75 && mod(verticalLines, 1.0) < 0.60 
+    // || (
+    //     mod(horizontalLines, 1.0) > 0.4 && mod(verticalLines, 1.0) > 0.25 &&
+    //     mod(horizontalLines, 1.0) < 0.6 && mod(verticalLines, 1.0) < 0.75
+    //     )
+    // ? 1.0 : 0.0;
+    // gl_FragColor = vec4(
+    //     v,
+    //     v,
+    //     v,
+    //     1.0
+    //     );  
+    // P15 B
+    float horizontalLines = 10.0 * uVv.x ;
+    float verticalLines = 10.0 * uVv.y ;
+    float v = 
+    mod(horizontalLines, 1.0) > 0.65 && mod(verticalLines, 1.0) > 0.85 || 
+    mod(horizontalLines, 1.0) > 0.85 && mod(verticalLines, 1.0) > 0.65 ||
+
+    mod(horizontalLines, 1.0) < 0.35 && mod(verticalLines, 1.0) < 0.15 || 
+    mod(horizontalLines, 1.0) < 0.15 && mod(verticalLines, 1.0) < 0.35 ||
+
+
+    mod(horizontalLines, 1.0) < 0.35 && mod(verticalLines, 1.0) > 0.85 || 
+    mod(horizontalLines, 1.0) < 0.15 && mod(verticalLines, 1.0) > 0.65 || 
+
+    mod(horizontalLines, 1.0) > 0.65 && mod(verticalLines, 1.0) < 0.15 || 
+    mod(horizontalLines, 1.0) > 0.85 && mod(verticalLines, 1.0) < 0.35 
+    ? 1.0 : 0.0;
     gl_FragColor = vec4(
         v,
         v,
         v,
         1.0
-        );
+        );  
+
+
+
+
+    // Other
+    // float horizontalLines = 10.0 * uVv.x ;
+    // float verticalLines = 10.0 * uVv.y ;
+    // vec2 center = vec2(0.5, 0.5);
+    // vec2 uvPoint = vec2(mod(horizontalLines, 1.0), mod(verticalLines, 1.0));
+    // float d = distance(uvPoint, center);
+    // float v = d > 0.5 ? 1.0 : 0.0;
+    //     gl_FragColor = vec4(
+    //     v,
+    //     v,
+    //     v,
+    //     1.0
+    //     );  
 }
