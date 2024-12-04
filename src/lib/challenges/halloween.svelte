@@ -7,11 +7,11 @@
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 	import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 	import dateStore from '$lib/dateStore.ts';
-	import SquaredSpiral from '$lib/challenges/icons/SquaredSpiral.svelte';
-	import LightIcon from '$lib/challenges/icons/Light.svelte';
-	import PumpkinIcon from '$lib/challenges/icons/Pumpkin.svelte';
-	import BranchIcon from '$lib/challenges/icons/Branch.svelte';
-	import TransformFigure from '$lib/challenges/icons/TransformFigure.svelte';
+	import SquaredSpiral from '$lib/challenges/halloween/icons/SquaredSpiral.svelte';
+	import LightIcon from '$lib/challenges/halloween/icons/Light.svelte';
+	import PumpkinIcon from '$lib/challenges/halloween/icons/Pumpkin.svelte';
+	import BranchIcon from '$lib/challenges/halloween/icons/Branch.svelte';
+	import TransformFigure from '$lib/challenges/halloween/icons/TransformFigure.svelte';
 	$: now = new Date();
 	$: isHalloween = now === new Date(now.getFullYear(), 9, 31);
 	const clock = dateStore();
