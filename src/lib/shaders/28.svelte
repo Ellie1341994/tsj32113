@@ -45,13 +45,12 @@
 		// Loader
 		const textureLoader = new THREE.TextureLoader();
 
-		const geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
+		const geometry = new THREE.BoxGeometry(1, 1, 1);
 		// Shaders
 		// Materials
 		const material = new THREE.ShaderMaterial({
 			vertexShader,
-			fragmentShader,
-			side: THREE.DoubleSide
+			fragmentShader
 		});
 		// Meshes
 		const mesh = new THREE.Mesh(geometry, material);
@@ -64,10 +63,10 @@
 		// Cube camera
 		// Normal
 		const camera = new THREE.PerspectiveCamera(75, parameters.aspectRatio);
-		camera.position.set(0, 0, 1);
+		camera.position.set(1, 1, 1);
 		const control = new OrbitControls(camera, canvas);
 		// Renderer
-		const renderer = new THREE.WebGLRenderer({ canvas, alpha: false });
+		const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
 		renderer.shadowMap.enabled = true;
 		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 

@@ -333,14 +333,13 @@ void main(){
     // P49
     // float v = sin(cnoise(vUv * 10.0) * 20.0);
     // P50
-    vec4 asd = vec4(vUv.yx, 1.0);
     float v = step(0.9, sin(cnoise(vUv * 10.0) * 20.0));
-   vec3 blackColor = vec3(0.0);
-   vec3 uvColor = vec3(vUv, 1.0);
-   vec3 mixedColor = mix(blackColor, uvColor, v);
+   vec3 baseColor = vec3(0.0);
+   vec3 uvColor = vec3(vUv, 0.75);
+   vec3 mixedColor = mix(baseColor, uvColor, v);
     gl_FragColor = vec4(
     mixedColor,
-    1.0
+    v < 0.1  ? 0.25 : 1.0
     );  
 
     // Other
