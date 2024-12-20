@@ -52,10 +52,6 @@
 		const flagTexture = textureLoader.load('/assets/shaders/27/textures/arg-flag.jpg');
 		const anotherFlagTexture = textureLoader.load('/assets/shaders/27/textures/flatargflag.jpg');
 		// Meshes
-		const box = new THREE.Mesh(
-			new THREE.BoxGeometry(1, 1, 1),
-			new THREE.MeshStandardMaterial({ color: parameters.color })
-		);
 		const geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
 
 		const count = geometry.attributes.position.count;
@@ -80,8 +76,8 @@
 		});
 		gui.add(material.uniforms.uFrequency.value, 'x', -20, 20, 0.01).name('uniform_uFrequency');
 		gui.add(material.uniforms.uFrequency.value, 'y', -20, 20, 0.01).name('uniform_uFrequency');
-		const customMeshRaw = new THREE.Mesh(geometry, material);
-		customMeshRaw.scale.y = 0.66;
+		const realisticFlag = new THREE.Mesh(geometry, material);
+		realisticFlag.scale.set(1.5, 1, 1.5);
 
 		// anotherMesh
 		const anotherGeometry = new THREE.PlaneGeometry(1, 1, 32, 32);
@@ -96,16 +92,21 @@
 			},
 			side: THREE.DoubleSide
 		});
-		const customMesh = new THREE.Mesh(anotherGeometry, anotherMaterial);
-		customMesh.scale.y = 0.66;
-		customMesh.position.y = -0.5;
-		customMeshRaw.position.y = 0.5;
+		const unrealisticFlag = new THREE.Mesh(anotherGeometry, anotherMaterial);
+		unrealisticFlag.scale.set(1.5, 1, 1.5);
 
 		// Lights
 		const abmbientLight = new THREE.AmbientLight('#ffffff', 6);
 		// Scene
 		const scene = new THREE.Scene();
-		scene.add(abmbientLight, customMeshRaw, customMesh);
+		unrealisticFlag.visible = false;
+		gui
+			.add(unrealisticFlag, 'visible')
+			.name('Swap flags')
+			.onChange(() => {
+				realisticFlag.visible = !realisticFlag.visible;
+			});
+		scene.add(abmbientLight, realisticFlag, unrealisticFlag);
 		// Camera
 		// Cube camera
 		// Normal
