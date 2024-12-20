@@ -3,7 +3,6 @@
 	import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 	import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 	// import typefaceFont from 'three/examples/fonts/helvetiker_regular.typeface.json'
-	import gsap from 'gsap';
 	import GUI from 'lil-gui';
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
