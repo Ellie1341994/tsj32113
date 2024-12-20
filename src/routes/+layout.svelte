@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 	import Icon from '$lib/icon.svelte';
+	import Footer from '$lib/Footer.svelte';
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	function capitalize(s: string) {
@@ -43,14 +44,7 @@
 		>
 	{/if}
 	<slot />
-	<footer style={/challenges/.test(pathname) ? 'width: 100vw;  position: fixed; bottom: 0vh;' : ''}>
-		<p>
-			Creative practices by <strong
-				><a style="color: black;" href="https://x.com/0E11ie" target="_blank">Elian Broocks</a
-				></strong
-			>
-		</p>
-	</footer>
+	<Footer pathname={$page.url.pathname}></Footer>
 </div>
 
 <style lang="scss">
@@ -70,18 +64,5 @@
 		flex-direction: column;
 		justify-content: space-between;
 		height: 100vh;
-	}
-
-	footer {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		height: 10vh;
-	}
-
-	@media (min-width: 480px) {
-		footer {
-			padding: 12px 0;
-		}
 	}
 </style>
