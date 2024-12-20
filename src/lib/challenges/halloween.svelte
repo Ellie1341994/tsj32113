@@ -418,8 +418,11 @@
 		const playMicrointeraction = (event: MouseEvent) => {
 			const colorsLength = parameters.colors.length;
 			const colorSelection = parameters.colors[wheelPressedCount];
+			const leftClick = 0;
+			const middleClick = 1;
+			const rightClick = 2;
 			switch (event.button) {
-				case 0:
+				case leftClick:
 					raycaster.setFromCamera(
 						new THREE.Vector2(
 							(parameters.cursor.x / innerWidth) * 2 - 1,
@@ -439,14 +442,14 @@
 						});
 					}
 					break;
-				case 1:
+				case middleClick:
 					ambientLight.color = new THREE.Color(colorSelection);
 					gsap.to('#LightIcon', { fill: colorSelection, opacity: 0.7, duration: 1 });
 					gsap.to('#halloween-title', { color: colorSelection, duration: 1 });
 
 					wheelPressedCount += wheelPressedCount !== colorsLength ? 1 : -colorsLength;
 					break;
-				case 2:
+				case rightClick:
 					pointLight.color = new THREE.Color(colorSelection);
 					gsap.to('#PumpkinIcon path', {
 						stroke: colorSelection,
