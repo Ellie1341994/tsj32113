@@ -3,8 +3,8 @@
 	import * as THREE from 'three';
 	import gsap from 'gsap';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-	import vertexShader from './28/A/vertex.glsl?raw';
-	import fragmentShader from './28/A/fragment.glsl?raw';
+	import vertexShader from './28/vertex.glsl?raw';
+	import fragmentShader from './28/fragment.glsl?raw';
 	let canvas: HTMLCanvasElement;
 	let lilGuiPlacer: HTMLSpanElement;
 	const wideScreen = innerWidth > 888;
