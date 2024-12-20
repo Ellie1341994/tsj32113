@@ -3,7 +3,6 @@
 	import * as THREE from 'three';
 	import gsap from 'gsap';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-	import GUI from 'lil-gui';
 	import vertexShader from './28/A/vertex.glsl?raw';
 	import fragmentShader from './28/A/fragment.glsl?raw';
 	let canvas: HTMLCanvasElement;
@@ -24,11 +23,7 @@
 				return this.width / this.height;
 			}
 		};
-		const gui = new GUI({
-			title: 'Tweaks panel',
-			width: wideScreen ? 300 : 340 * 0.75,
-			container: lilGuiPlacer
-		});
+
 		// Extras
 		const setRendererSize = () => {
 			// Camera AR update
@@ -40,7 +35,6 @@
 			renderer.render(scene, camera);
 		};
 		addEventListener('resize', setRendererSize);
-		gui.close();
 		// Textures
 		// Loader
 		const textureLoader = new THREE.TextureLoader();
@@ -59,6 +53,7 @@
 		// Scene
 		const scene = new THREE.Scene();
 		scene.add(ambientLight, mesh);
+		gsap.to(scene.rotation, { y: 2 * Math.PI, duration: 2 * 3.6, repeat: -1, ease: 'linear' });
 		// Camera
 		// Cube camera
 		// Normal
@@ -116,7 +111,6 @@
 			control.dispose();
 			scene.environment?.dispose;
 			scene.traverse(disposeAll);
-			gui.destroy();
 			renderer.dispose();
 			console.log(`Experience ended`, renderer.info);
 		}
