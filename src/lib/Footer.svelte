@@ -2,7 +2,16 @@
 	export let pathname: string = '';
 	// const style = /challenges/.test(pathname) ? 'width: 100vw;  position: fixed; bottom: 0vh;' : ''
 	const isChristmasChallenge = /christmas/.test(pathname);
-	const style = `width: 100vw;  position: fixed; bottom: 0vh; ${isChristmasChallenge ? 'color: white;' : ''}`;
+	const isChallenge = /challenge/.test(pathname);
+	const isProject = /\d{1,2}/.test(pathname);
+	const isRoot = /\/$/.test(pathname);
+
+	const style =
+		isChallenge || isRoot
+			? `width: 100vw;  position: fixed; bottom: 0vh; ${isChristmasChallenge ? 'color: white;' : ''}`
+			: isProject
+				? ''
+				: 'visibility: hidden;';
 </script>
 
 <footer {style}>
