@@ -40,18 +40,20 @@
 			renderer.render(scene, camera);
 		};
 		addEventListener('resize', setRendererSize);
-		addEventListener('mousemove', ({ clientX, clientY }) => {
+		const setMouseCoordinates = ({ clientX, clientY }: MouseEvent) => {
 			parameters.cursor.x = (clientX / innerWidth) * 2 - 1;
 			parameters.cursor.y = -((clientY / innerHeight) * 2 - 1);
-		});
-		addEventListener('mousedown', ({ button }) => {
+		};
+		addEventListener('mousemove', setMouseCoordinates);
+		const navegateToSelectedPath = ({ button }: MouseEvent) => {
 			const leftClick = 0;
 			if (button === leftClick) {
 				const [{ object = { name: '' } } = {}] = parameters?.intersections;
 				/challenges|basics/.test(object.name) && goto(`/${object.name}`);
 				console.log(object);
 			}
-		});
+		};
+		addEventListener('mousedown', navegateToSelectedPath);
 		// Textures
 		// Lights
 		const light = new THREE.HemisphereLight('#ffffff', 9);
@@ -59,6 +61,7 @@
 		const scene = new THREE.Scene();
 		// Loader
 		const fontLoader = new FontLoader();
+		const disposeablesStore: any = [];
 		fontLoader.load('fonts/optimer_regular.typeface.json', (font) => {
 			console.log('loaded');
 			// Geometries
@@ -89,8 +92,6 @@
 			// Materials
 			const challengesTextMaterial = new THREE.MeshStandardMaterial({
 				color: '#ff6699'
-				// metalness: 0.3
-				// roughness: 0.9
 			});
 			const projectsTextMaterial = new THREE.MeshStandardMaterial({
 				color: '#ff6699',
@@ -108,6 +109,12 @@
 			challengesText.rotation.y = Math.PI * 0.15;
 			projectsText.rotation.y = -challengesText.rotation.y;
 			scene.add(challengesText, projectsText);
+			disposeablesStore.push(
+				challengesTextGeometry,
+				challengesTextMaterial,
+				projectsTextGeometry,
+				projectsTextMaterial
+			);
 		});
 		scene.add(light);
 		// Raycaster
@@ -162,47 +169,31 @@
 			tickId = requestAnimationFrame(tick);
 		}
 		tick();
+		function disposeResources() {
+			for (let disposable of disposeablesStore) {
+				disposable.dispose();
+			}
+			control.dispose();
+			console.log(`disposed first project allocated resources`, renderer.info);
+			console.log('tickId', tickId);
+			cancelAnimationFrame(tickId);
+			removeEventListener('resize', setRendererSize);
+			removeEventListener('mousemove', setMouseCoordinates);
+			removeEventListener('mousedown', navegateToSelectedPath);
+			console.log('Tick disposed');
+			renderer.clear();
+			renderer.dispose();
+			console.log('Renderer cleared and diposed');
+		}
+		return disposeResources;
 	});
 </script>
 
 <canvas class="webgl" bind:this={canvas}></canvas>
-
-<!-- <div>
-	<h1>
-		<a class="" href="/challenges"> Challenges</a>
-	</h1>
-	<h1><a href="/basics">Projects</a></h1>
-</div> -->
 
 <style lang="scss">
 	canvas {
 		border: none;
 		box-shadow: none;
 	}
-	// div {
-	// 	height: 100%;
-	// 	// width: 100%;
-	// 	display: flex;
-	// 	align-items: center;
-	// 	justify-content: space-around;
-	// 	h1 {
-	// 		font-size: min(5vh, 5vw);
-	// 		a {
-	// 			text-decoration: none;
-	// 			text-transform: capitalize;
-	// 			color: var(--color-theme-3);
-	// 			&:hover:not(.disabled-link) {
-	// 				--shadow-color: white;
-	// 				text-shadow:
-	// 					0vh 0vh 0.1vh #000,
-	// 					0vh 0vh 10vh var(--shadow-color),
-	// 					0vh 0vh 10vh var(--shadow-color),
-	// 					0vh 0vh 10vh var(--shadow-color),
-	// 					0vh 0vh 15vh var(--shadow-color),
-	// 					0vh 0vh 20vh var(--shadow-color),
-	// 					0vh 0vh 25vh var(--shadow-color);
-	// 			}
-	// 		}
-	// 	}
-	// }
 </style>
