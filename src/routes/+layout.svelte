@@ -44,7 +44,9 @@
 		>
 	{/if}
 	<slot />
-	<Footer pathname={$page.url.pathname}></Footer>
+	{#key $page.url.pathname}
+		<Footer pathname={$page.url.pathname}></Footer>
+	{/key}
 </div>
 
 <style lang="scss">
