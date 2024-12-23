@@ -6,7 +6,7 @@
 	import * as THREE from 'three';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 	import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-	import dateStore from '$lib/dateStore.ts';
+	import dateStore from '$lib/challenges/halloween/dateStore';
 	import SquaredSpiral from '$lib/challenges/halloween/icons/SquaredSpiral.svelte';
 	import LightIcon from '$lib/challenges/halloween/icons/Light.svelte';
 	import PumpkinIcon from '$lib/challenges/halloween/icons/Pumpkin.svelte';
