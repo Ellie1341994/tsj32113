@@ -3,6 +3,9 @@
 	import * as THREE from 'three';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 	import GUI from 'lil-gui';
+	import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+	import { text } from '@sveltejs/kit';
+	import { normalMap } from 'three/webgpu';
 	let canvas: HTMLCanvasElement;
 	let lilGuiPlacer: HTMLSpanElement;
 	const wideScreen = innerWidth > 888;
@@ -39,25 +42,50 @@
 		addEventListener('resize', setRendererSize);
 		gui.close();
 		// Textures
+		// Manager
+		const manager = new THREE.LoadingManager();
 		// Loader
-		const textureLoader = new THREE.TextureLoader();
+		const textureLoader = new THREE.TextureLoader(manager);
+		const snowTextureNormal = textureLoader.load('/christmas/textures/snow/Snow_NORM.jpg');
+		const snowTextureColor = textureLoader.load('/christmas/textures/snow/Snow_COLOR.jpg');
+		const snowTextureDisplacement = textureLoader.load('/christmas/textures/snow/Snow_DISP.png');
+		const snowTextureRoughness = textureLoader.load('/christmas/textures/snow/Snow_ROUGH.jpg');
+		const snowTextureAmbientOcclusion = textureLoader.load('/christmas/textures/snow/Snow_OCC.jpg');
+
 		// Geometry
-		const geometry = new THREE.BoxGeometry(1, 1, 1);
+		const geometry = new THREE.BoxGeometry(1, 0.1, 1);
 		// Materials
-		const material = new THREE.MeshBasicMaterial({ color: '#993333' });
+		const material = new THREE.MeshStandardMaterial({
+			// color: '#993333',
+			map: snowTextureColor,
+			normalMap: snowTextureNormal,
+			bumpMap: snowTextureDisplacement,
+			aoMap: snowTextureAmbientOcclusion,
+			roughnessMap: snowTextureRoughness
+		});
 		// Meshes
 		const sampleBoxMesh = new THREE.Mesh(geometry, material);
+		sampleBoxMesh.scale.setScalar(2);
 		// Lights
+		const light = new THREE.SpotLight();
 		// const abmbientLight = new THREE.AmbientLight('#ffffff', 6);
 		// Scene
 		const scene = new THREE.Scene();
+		//  External Meshes
+		// Loader
+		const gltfLoader = new GLTFLoader();
+		gltfLoader.load('/christmas/models/santas-hat/scene.gltf', (asset) => {
+			asset.scene.position.y = 0;
+			asset.scene.scale.setScalar(0.25);
+			scene.add(asset.scene);
+		});
 
-		scene.add(sampleBoxMesh);
+		scene.add(sampleBoxMesh, light);
 		// Camera
 		// Cube camera
 		// Normal
 		const camera = new THREE.PerspectiveCamera(75, parameters.aspectRatio);
-		camera.position.set(0, 0, 2);
+		camera.position.set(0, 1, 2);
 		const control = new OrbitControls(camera, canvas);
 		// Renderer
 		const renderer = new THREE.WebGLRenderer({ canvas });
