@@ -41,6 +41,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@dimforge/rapier3d": "^0.14.0",
 		"cannon-es": "^0.20.0",
 		"gsap": "^3.12.5",
 		"lil-gui": "^0.19.2",
