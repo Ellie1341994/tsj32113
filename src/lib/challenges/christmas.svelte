@@ -5,10 +5,11 @@
 	import GUI from 'lil-gui';
 	import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 	import SnowflakeIcon from '$lib/challenges/christmas/SnowflakeIcon.svelte';
+	import dateStore from './christmas/dateStore';
 	let canvas: HTMLCanvasElement;
-	let lilGuiPlacer: HTMLSpanElement;
 	let showSnowflake = false;
 	let playScene = false;
+	const clock = dateStore();
 	const bodyElement: HTMLBodyElement = document.getElementsByTagName('body')[0];
 	bodyElement.setAttribute(
 		'style',
@@ -17,7 +18,7 @@
 	const wideScreen = innerWidth > 888;
 	onMount(() => {
 		// Utils
-		// return 0;
+		return 0;
 		const parameters = {
 			s: 0,
 			get width() {
@@ -184,7 +185,10 @@
 </script>
 
 <canvas class="webgl" bind:this={canvas}></canvas>
-<SnowflakeIcon visible={showSnowflake} />
+<div>
+	<SnowflakeIcon visible={showSnowflake} />
+	<h1>Christmas: {$clock}</h1>
+</div>
 
 <style lang="scss">
 	canvas {
