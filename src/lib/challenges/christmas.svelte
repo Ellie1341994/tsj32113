@@ -4,13 +4,20 @@
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 	import GUI from 'lil-gui';
 	import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-	import { text } from '@sveltejs/kit';
-	import { normalMap } from 'three/webgpu';
+	import SnowflakeIcon from '$lib/challenges/christmas/SnowflakeIcon.svelte';
 	let canvas: HTMLCanvasElement;
 	let lilGuiPlacer: HTMLSpanElement;
+	let showSnowflake = false;
+	let playScene = false;
+	const bodyElement: HTMLBodyElement = document.getElementsByTagName('body')[0];
+	bodyElement.setAttribute(
+		'style',
+		'background-color: #114477; background-image: radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0) 100%);'
+	);
 	const wideScreen = innerWidth > 888;
 	onMount(() => {
 		// Utils
+		// return 0;
 		const parameters = {
 			s: 0,
 			get width() {
@@ -26,8 +33,7 @@
 		};
 		const gui = new GUI({
 			title: 'Tweaks panel',
-			width: wideScreen ? 300 : 340 * 0.75,
-			container: lilGuiPlacer
+			width: wideScreen ? 300 : 340 * 0.75
 		});
 		const setRendererSize = () => {
 			// console.log('Window size has changed.');
@@ -44,6 +50,34 @@
 		// Textures
 		// Manager
 		const manager = new THREE.LoadingManager();
+		manager.onStart = function (url, itemsLoaded, itemsTotal) {
+			showSnowflake = true;
+			console.log(
+				'Started loading file: ' +
+					url +
+					'.\nLoaded ' +
+					itemsLoaded +
+					' of ' +
+					itemsTotal +
+					' files.'
+			);
+		};
+
+		manager.onLoad = function () {
+			console.log('Loading complete!');
+			playScene = true;
+			showSnowflake = false;
+		};
+		manager.onProgress = function (url, itemsLoaded, itemsTotal) {
+			console.log(
+				'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.'
+			);
+		};
+
+		manager.onError = function (url) {
+			console.log('There was an error loading ' + url);
+		};
+
 		// Loader
 		const textureLoader = new THREE.TextureLoader(manager);
 		const snowTextureNormal = textureLoader.load('/christmas/textures/snow/Snow_NORM.jpg');
@@ -53,10 +87,9 @@
 		const snowTextureAmbientOcclusion = textureLoader.load('/christmas/textures/snow/Snow_OCC.jpg');
 
 		// Geometry
-		const geometry = new THREE.BoxGeometry(1, 0.1, 1);
+		const geometry = new THREE.BoxGeometry(1, 0.01, 1);
 		// Materials
 		const material = new THREE.MeshStandardMaterial({
-			// color: '#993333',
 			map: snowTextureColor,
 			normalMap: snowTextureNormal,
 			bumpMap: snowTextureDisplacement,
@@ -73,7 +106,7 @@
 		const scene = new THREE.Scene();
 		//  External Meshes
 		// Loader
-		const gltfLoader = new GLTFLoader();
+		const gltfLoader = new GLTFLoader(manager);
 		gltfLoader.load('/christmas/models/santas-hat/scene.gltf', (asset) => {
 			asset.scene.position.y = 0;
 			asset.scene.scale.setScalar(0.25);
@@ -88,8 +121,8 @@
 		camera.position.set(0, 1, 2);
 		const control = new OrbitControls(camera, canvas);
 		// Renderer
-		const renderer = new THREE.WebGLRenderer({ canvas });
-		renderer.setClearColor('#11111ff', 0.5);
+		const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+		// renderer.setClearColor('#11111ff', 0.5);
 		renderer.shadowMap.enabled = true;
 		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -105,7 +138,9 @@
 			// Update
 			control.update();
 			// Render
-			renderer.render(scene, camera);
+			if (playScene) {
+				renderer.render(scene, camera);
+			}
 			tickId = requestAnimationFrame(tick);
 		}
 		tick();
@@ -142,30 +177,18 @@
 			gui.destroy();
 			renderer.dispose();
 			console.log(`Experience ended`, renderer.info);
+			bodyElement.setAttribute('style', '');
 		}
 		return disposeScene;
 	});
 </script>
 
 <canvas class="webgl" bind:this={canvas}></canvas>
-<span class="lil-gui-placer" bind:this={lilGuiPlacer}></span>
+<SnowflakeIcon visible={showSnowflake} />
 
 <style lang="scss">
-	span.lil-gui-placer {
-		position: absolute;
-		top: 16vh;
-		right: calc(12.5vw + 1vh);
-	}
 	canvas {
 		border: none;
 		box-shadow: none;
-	}
-	@media (max-width: 666px) {
-		span.lil-gui-placer {
-			position: absolute;
-			top: 19vh;
-			left: calc(12vw + 1.5vh);
-			width: 10vw;
-		}
 	}
 </style>
