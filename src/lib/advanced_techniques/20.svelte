@@ -1,12 +1,8 @@
 <script lang="ts">
-	import gsap from 'gsap';
-	// import { page } from `$app/stores`;
-	// import gsap from `gsap`;
 	import GUI from 'lil-gui';
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-	// @ts-ignore
 	import * as CANNON from 'cannon-es';
 	let canvas: HTMLCanvasElement;
 	let lilGuiPlacer: HTMLSpanElement;
