@@ -27,7 +27,7 @@ function getTimeUntilNextChristmas() {
 		days -= 31; // This is a simplification; months aren't always 31 days
 		months++;
 	}
-	const daysCorrectionFromMonthSimplification = 7;
+	const daysCorrectionFromMonthSimplification = 6;
 	return `${months}M ${days + daysCorrectionFromMonthSimplification}D ${hours}h ${minutes}m ${seconds}s`;
 	// return {
 	//   months: months,

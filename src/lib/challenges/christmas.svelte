@@ -18,7 +18,7 @@
 	const wideScreen = innerWidth > 888;
 	onMount(() => {
 		// Utils
-		return 0;
+		// return 0;
 		const parameters = {
 			s: 0,
 			get width() {
@@ -184,13 +184,36 @@
 	});
 </script>
 
-<canvas class="webgl" bind:this={canvas}></canvas>
-<div>
+<div id="chirstmast-clock-container">
 	<SnowflakeIcon visible={showSnowflake} />
-	<h1>Christmas: {$clock}</h1>
+	<h1>Next <b>Christmas</b> in {$clock}</h1>
 </div>
+<canvas class="webgl" bind:this={canvas}></canvas>
 
 <style lang="scss">
+	@font-face {
+		font-family: 'SnowdemChristmasRegular';
+		src: url('$lib/fonts/SnowdemChristmas/SnowdemChristmasRegular.otf');
+	}
+	@font-face {
+		font-family: 'SnowdemChristmasScript';
+		src: url('$lib/fonts/SnowdemChristmas/SnowdemChristmasScript.otf');
+	}
+	#chirstmast-clock-container {
+		font-family: 'SnowdemChristmasRegular';
+		position: fixed;
+		top: 0;
+		width: 100vw;
+		h1 {
+			font-size: 9em;
+			b {
+				text-decoration: underline;
+				text-decoration-style: double;
+				text-decoration-skip-ink: auto;
+				text-decoration-thickness: 3px;
+			}
+		}
+	}
 	canvas {
 		border: none;
 		box-shadow: none;
