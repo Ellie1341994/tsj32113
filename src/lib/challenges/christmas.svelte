@@ -13,7 +13,7 @@
 	const bodyElement: HTMLBodyElement = document.getElementsByTagName('body')[0];
 	bodyElement.setAttribute(
 		'style',
-		'background-color: #114477; background-image: radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0) 100%);'
+		'background-color: #114477; background-image: radial-gradient(75% 75% at 50% 50%, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 75%);'
 	);
 	const wideScreen = innerWidth > 888;
 	onMount(() => {
@@ -47,7 +47,7 @@
 			renderer.render(scene, camera);
 		};
 		addEventListener('resize', setRendererSize);
-		gui.close();
+		// gui.close();
 		// Textures
 		// Manager
 		const manager = new THREE.LoadingManager();
@@ -81,6 +81,7 @@
 
 		// Loader
 		const textureLoader = new THREE.TextureLoader(manager);
+
 		const snowTextureNormal = textureLoader.load('/christmas/textures/snow/Snow_NORM.jpg');
 		const snowTextureColor = textureLoader.load('/christmas/textures/snow/Snow_COLOR.jpg');
 		const snowTextureDisplacement = textureLoader.load('/christmas/textures/snow/Snow_DISP.png');
@@ -88,38 +89,38 @@
 		const snowTextureAmbientOcclusion = textureLoader.load('/christmas/textures/snow/Snow_OCC.jpg');
 
 		// Geometry
-		const geometry = new THREE.BoxGeometry(1, 0.01, 1);
+		const geometry = new THREE.SphereGeometry(2, 64, 32);
 		// Materials
 		const material = new THREE.MeshStandardMaterial({
 			map: snowTextureColor,
 			normalMap: snowTextureNormal,
-			bumpMap: snowTextureDisplacement,
+			displacementMap: snowTextureDisplacement,
 			aoMap: snowTextureAmbientOcclusion,
-			roughnessMap: snowTextureRoughness
+			roughnessMap: snowTextureRoughness,
+			displacementBias: 0.5
 		});
 		// Meshes
-		const sampleBoxMesh = new THREE.Mesh(geometry, material);
-		sampleBoxMesh.scale.setScalar(2);
+		const testMesh = new THREE.Mesh(geometry, material);
 		// Lights
 		const light = new THREE.SpotLight();
-		// const abmbientLight = new THREE.AmbientLight('#ffffff', 6);
+		const abmbientLight = new THREE.AmbientLight('#ffffff', 1);
 		// Scene
 		const scene = new THREE.Scene();
 		//  External Meshes
 		// Loader
 		const gltfLoader = new GLTFLoader(manager);
 		gltfLoader.load('/christmas/models/santas-hat/scene.gltf', (asset) => {
-			asset.scene.position.y = 0;
-			asset.scene.scale.setScalar(0.25);
+			asset.scene.position.y = 2;
 			scene.add(asset.scene);
+			gui.add(asset.scene.position, 'y', -10, 10, 0.1).name('Hat Pos');
 		});
 
-		scene.add(sampleBoxMesh, light);
+		scene.add(testMesh, abmbientLight);
 		// Camera
 		// Cube camera
 		// Normal
 		const camera = new THREE.PerspectiveCamera(75, parameters.aspectRatio);
-		camera.position.set(0, 1, 2);
+		camera.position.set(0, 1, 20);
 		const control = new OrbitControls(camera, canvas);
 		// Renderer
 		const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
