@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import { page } from '$app/stores';
 	import { differences } from '../../lib/lesson/content/differences';
 	import information from '$lib/lesson/content/info';
@@ -58,4 +58,4 @@
 	h3 {
 		font-size: 18px;
 	}
-</style>
+</style> -->
