@@ -1,13 +1,31 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import Header from '../../lib/Header.svelte';
-	// import { fade, fly } from 'svelte/transition';
-	$: module = $page.params.module as any;
+	$: module = $page.params.module as keyof typeof information;
 	$: lesson = parseInt($page.params.lesson);
+	import { goto } from '$app/navigation';
+	// import { browser } from '$app/environment';
+	import information from '$lib/lesson/content/info';
+	import { lessonGroupIndexes } from '$lib/lessonGroupIndexes';
+	import { onMount } from 'svelte';
+	onMount(() => {
+		function redirect() {
+			console.log('redirection on');
+			if (!lesson) {
+				const dif =
+					lessonGroupIndexes[module].endLessonIndex - lessonGroupIndexes[module].startLessonIndex;
+				const randomIndex =
+					lessonGroupIndexes[module].startLessonIndex + Math.floor(Math.random() * dif);
+
+				goto(`/${module}/${randomIndex}`);
+			}
+		}
+		let intervalExitCode = setInterval(redirect, 250);
+		return () => clearInterval(intervalExitCode);
+	});
 </script>
 
 {#key module || lesson}
-	<!-- <span in:fade={{ delay: 1000, duration: 1000 }} out:fade={{ duration: 500 }}><slot /></span> -->
 	<Header {lesson} {module} />
 
 	<main>
