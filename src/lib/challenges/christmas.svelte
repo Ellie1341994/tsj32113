@@ -47,7 +47,7 @@
 			renderer.render(scene, camera);
 		};
 		addEventListener('resize', setRendererSize);
-		// gui.close();
+		gui.hide();
 		// Textures
 		// Manager
 		const manager = new THREE.LoadingManager();
@@ -112,7 +112,7 @@
 		gltfLoader.load('/christmas/models/santas-hat/scene.gltf', (asset) => {
 			asset.scene.position.y = 2;
 			scene.add(asset.scene);
-			gui.add(asset.scene.position, 'y', -10, 10, 0.1).name('Hat Pos');
+			// gui.add(asset.scene.position, 'y', -10, 10, 0.1).name('Hat Pos');
 		});
 
 		scene.add(testMesh, abmbientLight);
