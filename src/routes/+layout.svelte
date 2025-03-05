@@ -16,7 +16,7 @@
 
 	$: titleText = `T.J.S. ${$page.params.module ? 'Projects' : 'Challenges ' + capitalize($page.params.challenge)}`;
 	$: pathname = $page.url.pathname;
-	$: href = pathname?.split('/').toSpliced(-1).join('/') || '/';
+	$: href = '/';
 	$: height = 15;
 	$: width = 15;
 	onMount(() => {
