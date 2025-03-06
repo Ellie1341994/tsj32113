@@ -1,6 +1,5 @@
 <script lang="ts">
 	import gsap from 'gsap';
-	// import { page } from `$app/stores`;
 	// BIG NOTE: REMAINING MEMORY ALLOCATED SEEMS TO BE INTERNAT TO THREE.JS
 	// import gsap from `gsap`;
 	import GUI from 'lil-gui';
