@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
+	let { children } = $props();
 	import Header from '../../lib/Header.svelte';
-	$: module = $page.params.module as keyof typeof information;
-	$: lesson = parseInt($page.params.lesson);
+	const module = $derived(page.params.module) as keyof typeof information;
+	const lesson = $derived(parseInt(page.params.lesson));
 	import { goto } from '$app/navigation';
 	// import { browser } from '$app/environment';
 	import information from '$lib/lesson/content/info';
@@ -29,7 +30,7 @@
 	<Header {lesson} {module} />
 
 	<main>
-		<slot />
+		{@render children()}
 	</main>
 {/key}
 

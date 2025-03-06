@@ -1,13 +1,15 @@
 <script lang="ts">
-	export let width: number = 800;
-	export let height: number = 800;
-	export let style: string = '';
-	export let colored: boolean = false;
-	export let purpleLeafs = true;
-	export let leafColors: Partial<typeof defaultColors> = purpleLeafs
-		? { bottom: '#994f7a', top: '#D876B6', left: '#BB5992', right: '#A75484' }
-		: {};
 	const defaultColors = { top: '#C6D9B0', right: '#A0BF7C', bottom: '#B3CC96', left: '#788F5D' };
+	let {
+		width = 10,
+		height = 10,
+		style = '',
+		colored = false,
+		purpleLeafs = true,
+		leafColors = purpleLeafs
+			? { bottom: '#994f7a', top: '#D876B6', left: '#BB5992', right: '#A75484' }
+			: {}
+	} = $props();
 	const { top, right, bottom, left } = {
 		...defaultColors,
 		...leafColors
@@ -19,11 +21,9 @@
 	height={`${height}px`}
 	width={`${width}px`}
 	{style}
-	version="1.1"
-	id="Layer_1"
 	xmlns="http://www.w3.org/2000/svg"
 	xmlns:xlink="http://www.w3.org/1999/xlink"
-	viewBox="0 0 512.007 512.007"
+	viewBox="0 0 1028 512"
 	xml:space="preserve"
 >
 	{#if colored}

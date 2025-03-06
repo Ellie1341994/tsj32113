@@ -2,28 +2,21 @@
 	import '../app.css';
 	import Icon from '$lib/icon.svelte';
 	import Footer from '$lib/Footer.svelte';
-	import { page } from '$app/stores';
-	import { onMount } from 'svelte';
-	function capitalize(s: string) {
+	import { page } from '$app/state';
+	const href = '/';
+	let { children } = $props();
+	function capitalize(string: string) {
 		let newString = '';
-		if (s) {
-			const [c, ...ss] = s as unknown as [string, string[]];
-			newString = '> ' + c.toUpperCase() + ss.join('');
+		if (string) {
+			const [char, ...subString] = string as unknown as [string, string[]];
+			newString = char.toUpperCase() + subString.join('');
 		}
-		console.log('r is', newString);
 		return newString;
 	}
 
-	$: titleText = `T.J.S. ${$page.params.module ? 'Projects' : 'Challenges ' + capitalize($page.params.challenge)}`;
-	$: pathname = $page.url.pathname;
-	$: href = '/';
-	$: height = 15;
-	$: width = 15;
-	onMount(() => {
-		height = innerHeight * 0.04;
-		width = innerHeight * 0.04;
-	});
-	console.log('challengeVar', $page.params);
+	let titleText = $derived(
+		`T.J.S. ${capitalize(page.params.module).replace(/_.*/, '') || capitalize(page.params.challenge) || (page.url.pathname === href ? 'Home' : 'Challenges')}`
+	);
 </script>
 
 <svelte:head>
@@ -33,19 +26,14 @@
 </svelte:head>
 
 <div class="app">
-	{#if pathname !== href && !$page.params.challenge}
-		<a id="main-nav-icon" {href}
-			><Icon
-				colored={true}
-				style={`transform: rotate(${new Date().getHours() * 0.25}turn);`}
-				{height}
-				{width}
-			/></a
-		>
+	{#if page.url.pathname !== href}
+		<a id="main-nav-icon" {href}>
+			<Icon colored={true} style={`height: 5vh; width: 5vw; `} />
+		</a>
 	{/if}
-	<slot />
-	{#key $page.url.pathname}
-		<Footer pathname={$page.url.pathname}></Footer>
+	{@render children()}
+	{#key page.url.pathname}
+		<Footer pathname={page.url.pathname}></Footer>
 	{/key}
 </div>
 
@@ -53,13 +41,9 @@
 	#main-nav-icon {
 		position: fixed;
 		top: 0vh;
-		left: 1vh;
-		height: 5vh;
-		padding: 0;
-		margin: 0;
-		display: flex;
-		align-items: center;
-		// border-bottom: 1px solid black;
+		left: 0vh;
+		padding: 5px;
+		margin: 5px;
 	}
 	.app {
 		display: flex;

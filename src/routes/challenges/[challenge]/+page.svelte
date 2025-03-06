@@ -1,12 +1,13 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	$: challenge = $page.params.challenge;
+	import { page } from '$app/state';
+	const challenge = $derived(page.params.challenge);
 </script>
 
 {#await import(`../../../lib/challenges/${challenge}.svelte`)}
 	<strong>...</strong>
-{:then challenge}
-	<svelte:component this={challenge.default} />
+{:then { default: Challenge }}
+	<!-- <svelte:component this={challenge.default} /> -->
+	<Challenge />
 {/await}
 
 <style lang="scss">

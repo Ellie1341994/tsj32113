@@ -1,17 +1,17 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import Icon from '$lib/icon.svelte';
 	import { submodules } from '../../../lib/lesson/content/info';
-	let titlePlacer: HTMLSpanElement;
-	$: lesson = parseInt($page.params.lesson);
-	$: module = $page.params.module;
+	let { titlePlacer = $bindable() } = $props();
+	let lesson = $derived(parseInt(page.params.lesson));
+	let module = $derived(page.params.module);
 </script>
 
 {#await import(`../../../lib/${module}/${lesson}.svelte`)}
 	<Icon />
-{:then Scene}
+{:then { default: Scene }}
 	{@const title = submodules[lesson - 1]}
-	<svelte:component this={Scene.default} />
+	<Scene />
 	{#if lesson > 2}
 		<span bind:this={titlePlacer} class={`lesson-title-placer`}>{title}</span>
 

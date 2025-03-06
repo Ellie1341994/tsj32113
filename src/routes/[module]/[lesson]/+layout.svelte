@@ -1,5 +1,5 @@
 <script>
-	console.log('checking for duplicated execution: basics lesson');
+	let { children } = $props();
 </script>
 
-<slot />
+{@render children()}

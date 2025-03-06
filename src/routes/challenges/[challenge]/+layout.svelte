@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	$: challenge = $page.params.challenge as any;
+	import { page } from '$app/state';
+	$: challenge = page.params.challenge as any;
 </script>
 
 {#key challenge}
