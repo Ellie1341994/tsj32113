@@ -24,24 +24,19 @@
 		gltfLoader.load(
 			`${ASSETS_PATH}/cinemaChair.glb`,
 			(gltf) => {
-				// @ts-ignore
-				gltf.scene.children[0].children[0].material.metalness = 0.5;
-				gltf.scene.children[0].children[0].scale.set(5, 10, 5);
-				gltf.scene.traverse((node) => {
-					// @ts-ignore
-					if (node.isMesh) {
-						node.receiveShadow = true;
-						node.castShadow = true;
-					}
-				});
-				const originalMesh = gltf.scene.children[0].children[0];
-				// @ts-ignore
+				// Set Cinema Chairs
+				const originalMesh = gltf.scene.children[0].children[0] as THREE.Mesh;
 				const geometry = originalMesh.geometry;
-				// @ts-ignore
-				const material = originalMesh.material;
-				const instanceCount = 18;
+				const material = originalMesh.material as THREE.MeshStandardMaterial;
+				material.metalness = 0.5; // Ambient light won't work on materials fully metallic
+				const instanceCount = 18; // Equals chair count
 				const instancedMesh = new THREE.InstancedMesh(geometry, material, instanceCount);
+				instancedMesh.receiveShadow = true;
 				const matrix = new THREE.Matrix4();
+				// Rotation
+				const eulerRotation = new THREE.Euler(0, Math.PI, 0);
+				matrix.makeRotationFromEuler(eulerRotation);
+				// Position
 				for (
 					let chairIndex = 0, chairPosX = -5, chairPosZ = 0;
 					chairIndex < instanceCount;
@@ -54,9 +49,12 @@
 						chairPosX = -5;
 					}
 					matrix.setPosition(chairPosX, 0, chairPosZ); // Set position for each instance
+
 					instancedMesh.setMatrixAt(chairIndex, matrix);
 				}
+				// Add Chairs
 				scene.add(instancedMesh);
+
 				sceneReady = true;
 				console.log(gltf.scene);
 				console.log('loaded');
@@ -70,6 +68,11 @@
 		);
 		// Meshes
 		const axis = new THREE.AxesHelper(5);
+		const geometry = new THREE.PlaneGeometry(2, 8);
+		const material = new THREE.MeshStandardMaterial({ color: '#661111', side: THREE.DoubleSide });
+		const carpetPlaceholderMesh = new THREE.Mesh(geometry, material);
+		carpetPlaceholderMesh.rotateX(Math.PI * 0.5);
+		carpetPlaceholderMesh.position.set(0, -0.5, 0);
 		// Light
 		const ambientLight = new THREE.AmbientLight('#aaaaaa', 6);
 		const directionalLight = new THREE.DirectionalLight('#ffffff', 3);
@@ -79,10 +82,10 @@
 		directionalLight.position.set(3, 3, 6);
 		// Scene
 		const scene = new THREE.Scene();
-		scene.add(ambientLight, axis);
+		scene.add(directionalLight, carpetPlaceholderMesh);
 		// Camera
 		const camera = new THREE.PerspectiveCamera(75, ASPECT_RATIO);
-		camera.position.set(0, 3, 9);
+		camera.position.set(0, 1, 6);
 		const control = new OrbitControls(camera, canvas);
 		control.enableDamping = true;
 
