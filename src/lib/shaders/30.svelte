@@ -13,6 +13,7 @@
 		// Size fix on toggle off
 		const setCanvasSize = () => {
 			// Update camera
+			camera.aspect = sizes.width / sizes.height;
 			camera.updateProjectionMatrix();
 
 			// Update renderer

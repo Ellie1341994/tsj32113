@@ -11,16 +11,19 @@
 
 		// Resizing feature
 		const setCanvasSize = () => {
-			console.log('Window size has changed.');
-			// Scene size update
-			(sizes.width = window.innerWidth * 0.75), (sizes.height = window.innerHeight * 0.75);
-			// Camera AR update
+			// Update camera
 			camera.aspect = sizes.width / sizes.height;
 			camera.updateProjectionMatrix();
 
-			// Renderer
-			renderer.setSize(sizes.width, sizes.height);
-			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
+			// Update renderer
+			if (document.fullscreenElement) {
+				renderer.setSize(innerWidth, innerHeight);
+				canvas.setAttribute('style', 'border: none;');
+			} else {
+				canvas.setAttribute('style', 'border: 1vh solid var(--color-theme-4);');
+				renderer.setSize(sizes.width, sizes.height);
+			}
+			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 		};
 		window.addEventListener('resize', setCanvasSize);
 

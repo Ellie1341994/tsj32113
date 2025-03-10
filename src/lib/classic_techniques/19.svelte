@@ -6,8 +6,7 @@
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
 	// import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-	let canvas: HTMLCanvasElement;
-	let lilGuiPlacer: HTMLSpanElement;
+	let { canvas = $bindable(), lilGuiPlacer = $bindable() } = $props();
 	interface HTMLSpanElementExtended extends HTMLSpanElement {
 		scrollTopMax?: number;
 	}
@@ -31,10 +30,17 @@
 		// Size fix on toggle off
 		const setCanvasSize = () => {
 			// Update camera
+			camera.aspect = sizes.width / sizes.height;
 			camera.updateProjectionMatrix();
 
 			// Update renderer
-			renderer.setSize(sizes.width, sizes.height);
+			if (document.fullscreenElement) {
+				renderer.setSize(innerWidth, innerHeight);
+				gui.hide();
+			} else {
+				gui.show();
+				renderer.setSize(sizes.width, sizes.height);
+			}
 			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 		};
 		window.addEventListener(`resize`, setCanvasSize);

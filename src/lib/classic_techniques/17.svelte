@@ -86,7 +86,13 @@
 			camera.updateProjectionMatrix();
 
 			// Update renderer
-			renderer.setSize(sizes.width, sizes.height);
+			if (document.fullscreenElement) {
+				renderer.setSize(innerWidth, innerHeight);
+				canvas.setAttribute('style', 'border: none;');
+			} else {
+				canvas.setAttribute('style', 'border: 1vh solid var(--color-theme-4);');
+				renderer.setSize(sizes.width, sizes.height);
+			}
 			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 		};
 		window.addEventListener(`resize`, setCanvasSize);
