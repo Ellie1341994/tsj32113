@@ -43,14 +43,14 @@
 				canvas.setAttribute('style', 'border: 1vh solid var(--color-theme-4);');
 				renderer.setSize(sizes.width, sizes.height);
 			}
-			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+			renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 		};
-		window.addEventListener('resize', setCanvasSize);
+		addEventListener('resize', setCanvasSize);
 		// Full screen support feature
 		const toggleFullscreen = () => {
 			document.fullscreenElement ? document.exitFullscreen() : canvas?.requestFullscreen();
 		};
-		window.addEventListener('dblclick', toggleFullscreen);
+		addEventListener('dblclick', toggleFullscreen);
 		/**
 		 * Lights
 		 */
@@ -155,8 +155,8 @@
 		 * Sizes
 		 */
 		const sizes = {
-			width: window.innerWidth * 0.75,
-			height: window.innerHeight * 0.75
+			width: innerWidth * 0.75,
+			height: innerHeight * 0.75
 		};
 
 		/**
@@ -182,7 +182,7 @@
 		renderer.shadowMap.enabled = false;
 		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		renderer.setSize(sizes.width, sizes.height);
-		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+		renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 
 		/**
 		 * Animate
@@ -207,7 +207,7 @@
 			renderer.render(scene, camera);
 
 			// Call tick again on the next frame
-			tickId = window.requestAnimationFrame(tick);
+			tickId = requestAnimationFrame(tick);
 		};
 
 		tick();
@@ -234,9 +234,9 @@
 			gui.destroy();
 			console.log('GUI destroyed');
 			console.log('tickId', tickId);
-			window.cancelAnimationFrame(tickId);
-			window.removeEventListener('resize', setCanvasSize);
-			window.removeEventListener('dbclick', toggleFullscreen);
+			cancelAnimationFrame(tickId);
+			removeEventListener('resize', setCanvasSize);
+			removeEventListener('dbclick', toggleFullscreen);
 			console.log('Tick disposed');
 			renderer.clear();
 			renderer.dispose();

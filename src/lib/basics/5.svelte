@@ -97,7 +97,7 @@
 		//     // group.rotation.y += 0.01;
 		//     // Render
 		//     renderer.render(scene, camera);
-		//     window.requestAnimationFrame(Tick);
+		//     requestAnimationFrame(Tick);
 		// }
 
 		// Tick();
@@ -123,7 +123,7 @@
 		//     // group.rotation.y += 0.01;
 		//     // Render
 		//     renderer.render(scene, camera);
-		//     window.requestAnimationFrame(Tick);
+		//     requestAnimationFrame(Tick);
 		// }
 
 		// Tick();
@@ -146,7 +146,7 @@
 			console.log('tick');
 			//     // Render
 			renderer.render(scene, camera);
-			tickId = window.requestAnimationFrame(Tick);
+			tickId = requestAnimationFrame(Tick);
 		};
 
 		console.log(tickId);
@@ -164,7 +164,7 @@
 			scene.removeFromParent();
 			console.log('disposed first project allocated resources', renderer.info);
 			console.log('tickId', tickId);
-			window.cancelAnimationFrame(tickId);
+			cancelAnimationFrame(tickId);
 			renderer.clear();
 			renderer.dispose();
 			console.log('Renderer cleared and diposed');

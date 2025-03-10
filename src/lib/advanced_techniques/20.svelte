@@ -14,7 +14,7 @@
 			z: (Math.random() - 0.5) * 12.5
 		});
 		let parameters = {
-			sizes: { width: window.innerWidth * 0.75, height: window.innerHeight * 0.75 },
+			sizes: { width: innerWidth * 0.75, height: innerHeight * 0.75 },
 			color: '#994f7a',
 			createSphere: () => createSphere(Math.random() * 2 + 0.2, randomPositionWithinPlane()),
 			createBox: () => createBox(Math.random() * 2 + 0.2, randomPositionWithinPlane()),
@@ -175,7 +175,7 @@
 		const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
 		renderer.shadowMap.enabled = true;
 		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+		renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 		renderer.setSize(parameters.sizes.width, parameters.sizes.height);
 		// renderer.render(scene, camera);
 		// Utils
@@ -286,7 +286,7 @@
 			// Other updates
 			control.update();
 			renderer.render(scene, camera);
-			tickId = window.requestAnimationFrame(tick);
+			tickId = requestAnimationFrame(tick);
 		}
 
 		tick();
@@ -319,7 +319,7 @@
 			gui.destroy();
 			console.log(`GUI destroyed`);
 			console.log(`tickId`, tickId);
-			window.cancelAnimationFrame(tickId);
+			cancelAnimationFrame(tickId);
 			console.log(`Tick removed`);
 			console.log('Scene disposal end', renderer.info);
 			renderer.dispose();

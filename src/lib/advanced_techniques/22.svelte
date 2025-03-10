@@ -112,7 +112,7 @@
 		// Renderer
 		const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
 		renderer.setSize(parameters.width, parameters.height);
-		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+		renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 		// Play
 		const clock = new THREE.Clock();
 		let currentIntersect: any = null;

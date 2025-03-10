@@ -19,7 +19,7 @@
 			CURSOR.y = event.clientY / sizes.height - 0.5;
 			// console.log(`x:${CURSOR.x} y:${CURSOR.y}`);
 		};
-		window.addEventListener('mousemove', setCursorCoordinates);
+		addEventListener('mousemove', setCursorCoordinates);
 
 		// Scene
 		const scene = new THREE.Scene();
@@ -98,7 +98,7 @@
 		//     );
 		//     camera.lookAt(group.position);
 		//     renderer.render(scene, camera);
-		//     window.requestAnimationFrame(tick);
+		//     requestAnimationFrame(tick);
 		// }
 
 		// tick();
@@ -107,7 +107,7 @@
 			group.rotation.x += 0.01;
 			control.update();
 			renderer.render(scene, camera);
-			window.requestAnimationFrame(tick);
+			requestAnimationFrame(tick);
 		};
 
 		tick();
@@ -124,10 +124,10 @@
 			control.dispose();
 			console.log('disposed first project allocated resources', renderer.info);
 			console.log('tickId', tickId);
-			window.cancelAnimationFrame(tickId);
+			cancelAnimationFrame(tickId);
 			renderer.clear();
 			renderer.dispose();
-			window.removeEventListener('mousemove', setCursorCoordinates);
+			removeEventListener('mousemove', setCursorCoordinates);
 			console.log('Renderer cleared and diposed');
 		}
 		return disposeScene;

@@ -14,14 +14,14 @@
 	onMount(() => {
 		// Constants
 		const ASSETS_BASE_PATH = '/assets/classic/19/textures';
-		const sizes = { width: window.innerWidth * 0.75, height: innerHeight * 0.75 };
+		const sizes = { width: innerWidth * 0.75, height: innerHeight * 0.75 };
 		const ASPECT_RATIO = sizes.width / sizes.height;
 		const parameters = { materialColor: '#994f7a', autoScroll: true, scrollOffset: -2 };
 		const meshDistance = 6;
 		// Features
 		// Feature: Fullscreen
 		let cursor = { x: 0, y: 0, ratioX: 0, ratioY: 0 };
-		window.addEventListener('mousemove', (event) => {
+		addEventListener('mousemove', (event) => {
 			cursor.x = event.clientX;
 			cursor.y = event.clientY;
 			cursor.ratioX = event.clientX / sizes.width - 0.5;
@@ -41,24 +41,24 @@
 				gui.show();
 				renderer.setSize(sizes.width, sizes.height);
 			}
-			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+			renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 		};
-		window.addEventListener(`resize`, setCanvasSize);
+		addEventListener(`resize`, setCanvasSize);
 		// Full screen support
 		const toggleFullscreen = () => {
 			const withinCanvasArea =
-				window.innerHeight * 0.15 <= cursor.y &&
-				cursor.y <= window.innerHeight * 0.75 &&
-				window.innerWidth * 0.125 <= cursor.x &&
-				cursor.x <= window.innerWidth * 0.875;
-			console.log(`WH${window.innerHeight * 0.15} cursor.y ${cursor.y}`);
+				innerHeight * 0.15 <= cursor.y &&
+				cursor.y <= innerHeight * 0.75 &&
+				innerWidth * 0.125 <= cursor.x &&
+				cursor.x <= innerWidth * 0.875;
+			console.log(`WH${innerHeight * 0.15} cursor.y ${cursor.y}`);
 			if (document.fullscreenElement) {
 				document.exitFullscreen();
 			} else if (withinCanvasArea) {
 				canvas?.requestFullscreen();
 			}
 		};
-		window.addEventListener(`dblclick`, toggleFullscreen);
+		addEventListener(`dblclick`, toggleFullscreen);
 		// GUI
 		const gui = new GUI({
 			title: 'Tweaks panel | Press SPACE to hide',
@@ -72,7 +72,7 @@
 		const hideGui = (event: any) => {
 			event.key === ' ' && gui.show(gui._hidden);
 		};
-		window.addEventListener('keydown', hideGui);
+		addEventListener('keydown', hideGui);
 		// Textures
 		const textureLoader = new THREE.TextureLoader();
 		const gradientTexture = textureLoader.load(`${ASSETS_BASE_PATH}/gradients/3.jpg`);
@@ -147,7 +147,7 @@
 		// Renderer
 		const renderer = new THREE.WebGLRenderer({ canvas, alpha: true }); // alpha makes canvas background transparent
 		renderer.setSize(sizes.width, sizes.height);
-		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+		renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 		renderer.setClearAlpha(0);
 
 		// renderer.render(scene, camera);
@@ -207,7 +207,7 @@
 			cameraGroup.position.x += (parallaxX - cameraGroup.position.x) * lerpingFactor * deltaTime;
 			cameraGroup.position.y += (parallaxY - cameraGroup.position.y) * lerpingFactor * deltaTime;
 			renderer.render(scene, camera);
-			tickId = window.requestAnimationFrame(tick);
+			tickId = requestAnimationFrame(tick);
 		}
 		tick();
 		// Resources Management
@@ -232,10 +232,10 @@
 			gui.destroy();
 			console.log(`GUI destroyed`);
 			console.log(`tickId`, tickId);
-			window.cancelAnimationFrame(tickId);
-			window.removeEventListener(`resize`, setCanvasSize);
-			window.removeEventListener(`dbclick`, toggleFullscreen);
-			window.removeEventListener(`keydown`, hideGui);
+			cancelAnimationFrame(tickId);
+			removeEventListener(`resize`, setCanvasSize);
+			removeEventListener(`dbclick`, toggleFullscreen);
+			removeEventListener(`keydown`, hideGui);
 			console.log(`Tick disposed`);
 			renderer.clear();
 			renderer.dispose();

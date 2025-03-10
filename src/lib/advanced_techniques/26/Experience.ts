@@ -43,7 +43,7 @@ export default class Experience {
 			this.update();
 		});
 		// Browser access
-		window.experience = this;
+		experience = this;
 	}
 	resize() {
 		this.sizes.updateAll();

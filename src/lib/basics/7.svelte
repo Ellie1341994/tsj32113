@@ -5,8 +5,8 @@
 	let canvas: HTMLCanvasElement;
 	onMount(() => {
 		const sizes = {
-			width: window.innerWidth * 0.75,
-			height: window.innerHeight * 0.75
+			width: innerWidth * 0.75,
+			height: innerHeight * 0.75
 		};
 
 		// Resizing feature
@@ -23,9 +23,9 @@
 				canvas.setAttribute('style', 'border: 1vh solid var(--color-theme-4);');
 				renderer.setSize(sizes.width, sizes.height);
 			}
-			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+			renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 		};
-		window.addEventListener('resize', setCanvasSize);
+		addEventListener('resize', setCanvasSize);
 
 		// Full screen support feature
 		// Note: Safari may not have current support for this native js features and may need custom code to handle fullscreen support
@@ -43,7 +43,7 @@
 			// document.exitFullscreen();
 			// }
 		};
-		window.addEventListener('dblclick', toggleFullscreen);
+		addEventListener('dblclick', toggleFullscreen);
 
 		// Scene
 		const scene = new THREE.Scene();
@@ -106,7 +106,7 @@
 		// Renderer
 
 		const renderer = new THREE.WebGLRenderer({ canvas });
-		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
+		renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
 		renderer.setSize(sizes.width, sizes.height);
 
 		// OrbitControl
@@ -126,7 +126,7 @@
 		//     );
 		//     camera.lookAt(group.position);
 		//     renderer.render(scene, camera);
-		//     window.requestAnimationFrame(tick);
+		//     requestAnimationFrame(tick);
 		// }
 
 		// tick();
@@ -135,7 +135,7 @@
 			group.rotation.x += 0.01;
 			control.update();
 			renderer.render(scene, camera);
-			tickId = window.requestAnimationFrame(tick);
+			tickId = requestAnimationFrame(tick);
 		};
 
 		tick();
@@ -152,11 +152,11 @@
 			control.dispose();
 			console.log('disposed first project allocated resources', renderer.info);
 			console.log('tickId', tickId);
-			window.cancelAnimationFrame(tickId);
+			cancelAnimationFrame(tickId);
 			renderer.clear();
 			renderer.dispose();
-			window.removeEventListener('resize', setCanvasSize);
-			window.removeEventListener('dbclick', toggleFullscreen);
+			removeEventListener('resize', setCanvasSize);
+			removeEventListener('dbclick', toggleFullscreen);
 			console.log('Renderer cleared and diposed');
 		}
 		return disposeScene;

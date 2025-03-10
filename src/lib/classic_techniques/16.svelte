@@ -29,7 +29,7 @@
 		const openGui = (event: any) => {
 			event.key === 'h' && gui.show(gui._hidden);
 		};
-		window.addEventListener('keydown', openGui);
+		addEventListener('keydown', openGui);
 		// Scene
 		const scene = new THREE.Scene();
 		// scene.fog = new THREE.Fog("#34343f", 0, 27);
@@ -46,14 +46,14 @@
 				canvas.setAttribute('style', 'border: 1vh solid var(--color-theme-4);');
 				renderer.setSize(sizes.width, sizes.height);
 			}
-			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+			renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 		};
-		window.addEventListener(`resize`, setCanvasSize);
+		addEventListener(`resize`, setCanvasSize);
 		// Full screen support feature
 		const toggleFullscreen = () => {
 			document.fullscreenElement ? document.exitFullscreen() : canvas?.requestFullscreen();
 		};
-		window.addEventListener(`dblclick`, toggleFullscreen);
+		addEventListener(`dblclick`, toggleFullscreen);
 
 		/**
 		 * Textures
@@ -369,7 +369,7 @@
 		const levitateGravesByKeyPress = (event: any) => {
 			event.key === ' ' && graveyardAnimations.levitateGraves();
 		};
-		window.addEventListener('keydown', levitateGravesByKeyPress);
+		addEventListener('keydown', levitateGravesByKeyPress);
 		const graveyardAnimations: any = {};
 		graveyardAnimations.levitateGraves = () => {
 			gravesState.floating = !gravesState.floating;
@@ -411,8 +411,8 @@
 		 * Sizes
 		 */
 		const sizes = {
-			width: window.innerWidth * 0.75,
-			height: window.innerHeight * 0.75
+			width: innerWidth * 0.75,
+			height: innerHeight * 0.75
 		};
 
 		/**
@@ -498,7 +498,7 @@
 			canvas: canvas
 		});
 		renderer.setSize(sizes.width, sizes.height);
-		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+		renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 		renderer.shadowMap.enabled = true;
 		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		// renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -531,7 +531,7 @@
 			// Render
 			renderer.render(scene, camera);
 			// Call tick again on the next frame
-			tickId = window.requestAnimationFrame(tick);
+			tickId = requestAnimationFrame(tick);
 		};
 		gsap.to(roof.rotation, { y: 3, duration: 6, repeat: -1, yoyo: true });
 		tick();
@@ -566,9 +566,9 @@
 			gui.destroy();
 			console.log(`GUI destroyed`);
 			console.log(`tickId`, tickId);
-			window.cancelAnimationFrame(tickId);
-			window.removeEventListener(`resize`, setCanvasSize);
-			window.removeEventListener(`dbclick`, toggleFullscreen);
+			cancelAnimationFrame(tickId);
+			removeEventListener(`resize`, setCanvasSize);
+			removeEventListener(`dbclick`, toggleFullscreen);
 			console.log(`Tick disposed`);
 			renderer.clear();
 			renderer.dispose();

@@ -36,8 +36,8 @@
 		const parameters = {
 			point3d: new THREE.Vector3(0, 0, 5),
 			cursor: { x: 0, y: 0 },
-			width: window.innerWidth,
-			height: window.innerHeight,
+			width: innerWidth,
+			height: innerHeight,
 			color: '#999999',
 			colors: [
 				'#ffffff',
@@ -324,7 +324,7 @@
 		renderer.shadowMap.enabled = true;
 		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		renderer.setSize(parameters.width, parameters.height);
-		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+		renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 
 		// Listener actions
 		const setMousePosition = (event: MouseEvent) => {
@@ -347,7 +347,7 @@
 
 			// Renderer
 			renderer.setSize(parameters.width, parameters.height);
-			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
+			renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
 			renderer.render(scene, camera);
 		};
 		let previousExecutionTimestamp = 0;
@@ -567,7 +567,7 @@
 		// Dispose
 		function disposeScene() {
 			bodyElement.setAttribute('style', '');
-			window.cancelAnimationFrame(tickId);
+			cancelAnimationFrame(tickId);
 			handleEventListeners('remove');
 			function disposeAll(node: any) {
 				if (node.isMesh || node instanceof THREE.Mesh) {

@@ -37,7 +37,7 @@
 		const openGui = (event: any) => {
 			event.key === 'h' && gui.show(gui._hidden);
 		};
-		window.addEventListener('keydown', openGui);
+		addEventListener('keydown', openGui);
 
 		const debugObject = {
 			color: new THREE.Color(0x888888),
@@ -50,8 +50,8 @@
 		// Sizes
 
 		const sizes = {
-			width: window.innerWidth * 0.75,
-			height: window.innerHeight * 0.75
+			width: innerWidth * 0.75,
+			height: innerHeight * 0.75
 		};
 
 		// Resizing feature
@@ -68,15 +68,15 @@
 				canvas.setAttribute('style', 'border: 1vh solid var(--color-theme-4);');
 				renderer.setSize(sizes.width, sizes.height);
 			}
-			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+			renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 		};
-		window.addEventListener('resize', setCanvasSize);
+		addEventListener('resize', setCanvasSize);
 
 		// Full screen support feature
 		const toggleFullscreen = () => {
 			document.fullscreenElement ? document.exitFullscreen() : canvas?.requestFullscreen();
 		};
-		window.addEventListener('dblclick', toggleFullscreen);
+		addEventListener('dblclick', toggleFullscreen);
 
 		// Scene
 		const scene = new THREE.Scene();
@@ -301,7 +301,7 @@
 		// Renderer
 
 		const renderer = new THREE.WebGLRenderer({ canvas });
-		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
+		renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
 		renderer.setSize(sizes.width, sizes.height);
 
 		// OrbitControl
@@ -314,7 +314,7 @@
 			group.rotation.z += 0.01;
 			control.update();
 			renderer.render(scene, camera);
-			tickId = window.requestAnimationFrame(tick);
+			tickId = requestAnimationFrame(tick);
 		};
 		console.log(renderer.info);
 		tick();
@@ -352,10 +352,10 @@
 			gui.destroy();
 			console.log('GUI destroyed');
 			console.log('tickId', tickId);
-			window.cancelAnimationFrame(tickId);
-			window.removeEventListener('resize', setCanvasSize);
-			window.removeEventListener('dbclick', toggleFullscreen);
-			window.removeEventListener('keydown', openGui);
+			cancelAnimationFrame(tickId);
+			removeEventListener('resize', setCanvasSize);
+			removeEventListener('dbclick', toggleFullscreen);
+			removeEventListener('keydown', openGui);
 			console.log('Tick disposed');
 			renderer.clear();
 			renderer.dispose();

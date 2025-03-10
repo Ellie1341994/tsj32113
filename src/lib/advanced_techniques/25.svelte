@@ -39,7 +39,7 @@
 			camera.updateProjectionMatrix();
 			// Renderer
 			renderer.setSize(parameters.width, parameters.height);
-			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
+			renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); // avoid pixel ratios above 2 ( or 3) due to over rendering
 			renderer.render(scene, camera);
 		};
 		addEventListener('resize', setRendererSize);
@@ -184,7 +184,7 @@
 		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 		renderer.setSize(parameters.width, parameters.height);
-		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+		renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 		//  Tone mapping
 		renderer.toneMapping = THREE.ReinhardToneMapping;
 		renderer.toneMappingExposure = 1;

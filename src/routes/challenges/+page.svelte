@@ -10,8 +10,8 @@
 		// Utils
 		let sceneReady = false;
 		const parameters = {
-			width: window.innerWidth * 1,
-			height: window.innerHeight * 1,
+			width: innerWidth * 1,
+			height: innerHeight * 1,
 			color: '#999999'
 		};
 		const ASPECT_RATIO = parameters.width / parameters.height;
@@ -94,7 +94,7 @@
 		renderer.shadowMap.enabled = true;
 		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		renderer.setSize(parameters.width, parameters.height);
-		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+		renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 
 		// Play
 		// gsap.to(scene.rotation, { y: Math.PI * 2, duration: 15, repeat: -1, yoyo: true });
@@ -109,7 +109,7 @@
 			control.update();
 
 			sceneReady && renderer.render(scene, camera);
-			tickId = window.requestAnimationFrame(tick);
+			tickId = requestAnimationFrame(tick);
 		}
 		tick();
 		// Dispose
@@ -141,7 +141,7 @@
 			console.log(`disposed first project allocated resources`, renderer.info);
 			console.log(`GUI destroyed`);
 			console.log(`tickId`, tickId);
-			window.cancelAnimationFrame(tickId);
+			cancelAnimationFrame(tickId);
 			console.log(`Tick disposed`);
 			renderer.clear();
 			renderer.dispose();

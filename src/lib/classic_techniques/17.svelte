@@ -11,7 +11,7 @@
 	onMount(() => {
 		// Constants
 
-		const sizes = { width: window.innerWidth * 0.75, height: window.innerHeight * 0.75 };
+		const sizes = { width: innerWidth * 0.75, height: innerHeight * 0.75 };
 		const ASPECT_RATIO = sizes.width / sizes.height;
 		const ASSETS_BASE_PATH = '/assets/classic/17/textures';
 		const gui = new GUI({
@@ -93,18 +93,18 @@
 				canvas.setAttribute('style', 'border: 1vh solid var(--color-theme-4);');
 				renderer.setSize(sizes.width, sizes.height);
 			}
-			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+			renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 		};
-		window.addEventListener(`resize`, setCanvasSize);
+		addEventListener(`resize`, setCanvasSize);
 		// Full screen support
 		const toggleFullscreen = () => {
 			document.fullscreenElement ? document.exitFullscreen() : canvas?.requestFullscreen();
 		};
-		window.addEventListener(`dblclick`, toggleFullscreen);
+		addEventListener(`dblclick`, toggleFullscreen);
 		// Renderer
 		const renderer = new THREE.WebGLRenderer({ canvas });
 		renderer.setSize(sizes.width, sizes.height);
-		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+		renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 
 		// Play
 		// const timer = new Timer();
@@ -135,7 +135,7 @@
 			// const elapsedTime = timer.getElapsed();
 			control.update();
 			renderer.render(scene, camera);
-			tickId = window.requestAnimationFrame(tick);
+			tickId = requestAnimationFrame(tick);
 		}
 		tick();
 		function disposeScene() {
@@ -160,9 +160,9 @@
 			gui.destroy();
 			console.log(`GUI destroyed`);
 			console.log(`tickId`, tickId);
-			window.cancelAnimationFrame(tickId);
-			window.removeEventListener(`resize`, setCanvasSize);
-			window.removeEventListener(`dbclick`, toggleFullscreen);
+			cancelAnimationFrame(tickId);
+			removeEventListener(`resize`, setCanvasSize);
+			removeEventListener(`dbclick`, toggleFullscreen);
 			console.log(`Tick disposed`);
 			renderer.clear();
 			renderer.dispose();
