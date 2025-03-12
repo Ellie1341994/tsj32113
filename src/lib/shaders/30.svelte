@@ -6,6 +6,8 @@
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+	import vertexShader from './30/vertex.glsl?raw';
+	import fragmentShader from './30/fragment.glsl?raw';
 	let { canvas = $bindable(), lilGuiPlacer = $bindable() } = $props();
 	onMount(() => {
 		// Other features
@@ -117,12 +119,12 @@
 			geometry.setAttribute('position', new THREE.BufferAttribute(vertices, dimensions));
 			geometry.setAttribute('color', new THREE.BufferAttribute(colors, dimensions));
 
-			material = new THREE.PointsMaterial({
-				size: parameters.size,
-				sizeAttenuation: true,
+			material = new THREE.ShaderMaterial({
 				depthWrite: false,
 				blending: THREE.AdditiveBlending,
-				vertexColors: true
+				vertexColors: true,
+				vertexShader,
+				fragmentShader
 			});
 
 			points = new THREE.Points(geometry, material);
