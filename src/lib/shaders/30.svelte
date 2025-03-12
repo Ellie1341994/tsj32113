@@ -54,12 +54,12 @@
 		);
 		// Galaxy Gen
 		const parameters = {
-			count: 100000,
-			size: 0.01,
+			count: 200000,
+			size: 2.0,
 			radius: 5,
 			branches: 3,
-			spin: 3,
-			randomness: 0.2,
+			spin: 0,
+			randomness: 0.5,
 			randomnessPower: 3,
 			insideColor: '#ff6030',
 			outsideColor: '#1b3984'
@@ -78,6 +78,8 @@
 			const dimensions = 3;
 			const vertices = new Float32Array(parameters.count * dimensions);
 			const colors = new Float32Array(parameters.count * dimensions);
+			const scales = new Float32Array(parameters.count);
+			const randomness = new Float32Array(parameters.count * dimensions);
 			for (let p = 0; p < parameters.count; p++) {
 				const p3 = p * dimensions;
 				const radius = Math.random() * parameters.radius;
@@ -100,12 +102,15 @@
 					parameters.randomness *
 					radius;
 				// all x
-				vertices[p3] = Math.cos(branchAngle + spinAngle) * radius + randomX;
+				vertices[p3] = Math.cos(branchAngle + spinAngle) * radius;
 				// all y
-				vertices[p3 + 1] = randomY;
+				vertices[p3 + 1] = 0;
 				// all z
-				vertices[p3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
-
+				vertices[p3 + 2] = Math.sin(branchAngle + spinAngle) * radius;
+				//  Randomness
+				randomness[p3] = randomX;
+				randomness[p3 + 1] = randomY;
+				randomness[p3 + 2] = randomZ;
 				// Colors
 
 				const colorInside = new THREE.Color(parameters.insideColor);
@@ -115,29 +120,31 @@
 				colors[p3] = mixedColor.r;
 				colors[p3 + 1] = mixedColor.g;
 				colors[p3 + 2] = mixedColor.b;
+				// Scales
+				scales[p] = Math.random();
 			}
+			console.log(scales.length);
 			geometry.setAttribute('position', new THREE.BufferAttribute(vertices, dimensions));
 			geometry.setAttribute('color', new THREE.BufferAttribute(colors, dimensions));
+			geometry.setAttribute('aScale', new THREE.BufferAttribute(scales, 1));
+			geometry.setAttribute('aRandomness', new THREE.BufferAttribute(randomness, dimensions));
 
 			material = new THREE.ShaderMaterial({
 				depthWrite: false,
 				blending: THREE.AdditiveBlending,
 				vertexColors: true,
 				vertexShader,
-				fragmentShader
+				fragmentShader,
+				uniforms: {
+					uTime: { value: 0 },
+					uSize: { value: 21 * renderer.getPixelRatio() }
+				}
 			});
 
 			points = new THREE.Points(geometry, material);
 			scene.add(points);
-			gsap.fromTo(
-				points.rotation,
-				{ y: points.rotation },
-				{ y: 9, duration: 6, repeat: -1, yoyo: true }
-			);
 		}
 		// Organization
-		// scene.add(cube);
-		generateGalaxy();
 		gui.add(parameters, 'count', 100, 100000, 100).name('Particles').onFinishChange(generateGalaxy);
 		gui.add(parameters, 'size', 0.001, 0.1, 0.001).name('P. Size').onFinishChange(generateGalaxy);
 		gui.add(parameters, 'radius', 0.01, 20, 0.01).name('P. Radius').onFinishChange(generateGalaxy);
@@ -160,8 +167,7 @@
 
 		// Cam
 		const camera = new THREE.PerspectiveCamera(75, ASPECT_RATIO);
-		camera.position.z = 7;
-		camera.position.y = 6;
+		camera.position.set(0, 3, 3);
 		const control = new OrbitControls(camera, canvas);
 		// Renderer
 		const renderer = new THREE.WebGLRenderer({ canvas });
@@ -169,9 +175,12 @@
 
 		renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 		// Play
-
+		generateGalaxy();
+		const clock = new THREE.Clock();
 		let tickId: number = 0;
 		function tick() {
+			const elapsedTime = clock.getElapsedTime();
+			material.uniforms.uTime.value = elapsedTime;
 			control.update();
 			renderer.render(scene, camera);
 			tickId = requestAnimationFrame(tick);
