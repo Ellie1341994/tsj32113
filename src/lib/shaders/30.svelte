@@ -34,12 +34,12 @@
 			document.fullscreenElement ? document.exitFullscreen() : canvas?.requestFullscreen();
 		};
 		addEventListener(`dblclick`, toggleFullscreen);
-		// Teaks panel
+		// Tweaks panel
 		const gui = new GUI({
 			width: 300,
 			container: lilGuiPlacer,
 			closeFolders: true,
-			title: 'Galaxy Teaks'
+			title: 'Galaxy Tweaks'
 		});
 		// Constants
 		const sizes = { width: innerWidth * 0.75, height: innerHeight * 0.75 };
