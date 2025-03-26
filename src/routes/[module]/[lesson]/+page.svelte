@@ -3,14 +3,18 @@
 	import Icon from '$lib/icon.svelte';
 	import Wip from '$lib/Wip.svelte';
 	import { submodules } from '../../../lib/lesson/content/info';
-	let { titlePlacer = $bindable() } = $props();
+	let {
+		titlePlacer = $bindable(),
+		height = innerHeight * 0.25,
+		width = innerWidth * 0.25
+	} = $props();
 	let lesson = $derived(parseInt(page.params.lesson));
 	let module = $derived(page.params.module);
 	console.log('lesson page loading');
 </script>
 
 {#await import(`../../../lib/${module}/${lesson}.svelte`)}
-	<Icon />
+	<Icon {width} {height} style="border-bottom: 1vh solid #573A32" />
 {:then { default: Scene }}
 	{@const title = submodules[lesson - 1]}
 	<Scene />

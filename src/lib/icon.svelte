@@ -21,10 +21,8 @@
 	height={`${height}px`}
 	width={`${width}px`}
 	{style}
-	xmlns="http://www.w3.org/2000/svg"
-	xmlns:xlink="http://www.w3.org/1999/xlink"
-	viewBox="0 0 1028 512"
-	xml:space="preserve"
+	viewBox="-256 0 1028 512"
+	preserveAspectRatio="xMidYMid meet"
 >
 	{#if colored}
 		<path
