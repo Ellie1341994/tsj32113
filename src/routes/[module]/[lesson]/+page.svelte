@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import Icon from '$lib/icon.svelte';
+	import Wip from '$lib/Wip.svelte';
 	import { submodules } from '../../../lib/lesson/content/info';
 	let { titlePlacer = $bindable() } = $props();
 	let lesson = $derived(parseInt(page.params.lesson));
 	let module = $derived(page.params.module);
+	console.log('lesson page loading');
 </script>
 
 {#await import(`../../../lib/${module}/${lesson}.svelte`)}
@@ -29,4 +31,6 @@
 			}
 		</style>
 	{/if}
+{:catch issue}
+	<Wip />
 {/await}
