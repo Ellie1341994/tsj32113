@@ -43,6 +43,7 @@
 		top: 0vh;
 		left: 0vh;
 		margin: 2.5vh 0;
+		z-index: 1;
 	}
 	.app {
 		display: flex;
