@@ -28,7 +28,7 @@
 <div class="app">
 	{#if page.url.pathname !== href}
 		<a id="main-nav-icon" {href}>
-			<Icon colored={true} style={`height: 5vh; width: 5vw; `} />
+			<Icon colored={true} stem={false} style={`height: 5vh; width: 5vw;`} pathShadow={true} />
 		</a>
 	{/if}
 	{@render children()}
@@ -42,8 +42,7 @@
 		position: fixed;
 		top: 0vh;
 		left: 0vh;
-		padding: 5px;
-		margin: 5px;
+		margin: 2.5vh 0;
 	}
 	.app {
 		display: flex;
