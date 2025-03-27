@@ -58,14 +58,14 @@
 			// console.log('font loaded');
 			let TEXT_GEOMETRY_OPTIONS = {
 				font,
-				size: 1,
+				size: 1.5,
 				depth: 0,
-				curveSegments: 12,
+				curveSegments: 8,
 				bevelEnabled: true,
-				bevelThickness: 0.73,
+				bevelThickness: 0.1,
 				bevelSize: 0.1,
 				bevelOffset: 0,
-				bevelSegments: 9
+				bevelSegments: 3
 			};
 			let TEXT_GEOMETRY: any = new TextGeometry('Work in progress', TEXT_GEOMETRY_OPTIONS);
 			TEXT_GEOMETRY.computeBoundingBox();
@@ -74,7 +74,7 @@
 				-(TEXT_GEOMETRY.boundingBox.max.y - TEXT_GEOMETRY_OPTIONS.bevelSize) * 0.5,
 				-(TEXT_GEOMETRY.boundingBox.max.z - TEXT_GEOMETRY_OPTIONS.bevelThickness) * 0.5
 			);
-			const TEXT_MATERIAL = new THREE.MeshToonMaterial({ color: '#994f7a' });
+			const TEXT_MATERIAL = new THREE.MeshToonMaterial({ color: '#994f7a', wireframe: true });
 			let TEXT = new THREE.Mesh(TEXT_GEOMETRY, TEXT_MATERIAL);
 			TEXT.receiveShadow = true;
 			TEXT.position.set(0, 1, 0);
@@ -89,7 +89,7 @@
 		gtlfLoader.load('/assets/utils/keyboard.gltf', (gltf) => {
 			// Model
 			// const mesh = gltf.scene.children[0] as THREE.Mesh;
-			gltf.scene.position.set(3, 0, 0);
+			gltf.scene.position.set(3, -0.8, 0);
 			gltf.scene.rotation.x = Math.PI * 0.5;
 			const [_case, cable, caps] = gltf.scene.children;
 			console.log(gltf.scene);
