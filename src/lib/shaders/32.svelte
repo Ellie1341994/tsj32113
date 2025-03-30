@@ -7,6 +7,9 @@
 	import * as THREE from 'three';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 	import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+	import vertexShader from './32/vertex.glsl?raw';
+	import fragmentShader from './32/fragment.glsl?raw';
+	import { text } from '@sveltejs/kit';
 	let { canvas = $bindable(), lilGuiPlacer = $bindable() } = $props();
 	onMount(() => {
 		// Other features
@@ -46,10 +49,12 @@
 		gui.hide();
 		//  Loaders
 		const gtlfLoader = new GLTFLoader();
+		const textureLoader = new THREE.TextureLoader();
 		/**
 		 * Utils
 		 */
-
+		// Texture
+		const uPerlinTexture = textureLoader.load('/assets/shaders/32/textures/perlin.png');
 		// Material
 
 		//  Models
@@ -59,24 +64,36 @@
 			const mesh = gltf.scene;
 			scene.add(mesh);
 		});
-		// Meshes
+		//
 
 		// Lights
 		// const ambientLight = new THREE.AmbientLight('#ffffff', 3);
 		//  Mesh
-
+		const planeGeometry = new THREE.PlaneGeometry(1, 1, 16, 64);
+		planeGeometry.translate(0, 0.5, 0);
+		planeGeometry.scale(1.5, 6, 1.5);
+		const planeMaterial = new THREE.ShaderMaterial({
+			vertexShader,
+			fragmentShader,
+			uniforms: {
+				uTime: new THREE.Uniform(0),
+				uPerlinTexture: new THREE.Uniform(uPerlinTexture)
+			},
+			side: THREE.DoubleSide,
+			transparent: true
+			// wireframe: true
+		});
+		const smokeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+		smokeMesh.position.y = 1.83;
 		// Scene
 		const scene = new THREE.Scene();
+		scene.add(smokeMesh);
 		// Cam
 		const camera = new THREE.PerspectiveCamera(75, ASPECT_RATIO);
 		camera.position.set(0, 6, 9);
 		const control = new OrbitControls(camera, canvas);
 		// Renderer
 		const renderer = new THREE.WebGLRenderer({ canvas });
-		renderer.shadowMap.enabled = true;
-		renderer.shadowMap.type = THREE.PCFShadowMap;
-		renderer.toneMapping = THREE.ACESFilmicToneMapping;
-		renderer.toneMappingExposure = 1;
 		renderer.setSize(sizes.width, sizes.height);
 		renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 		// Play
@@ -85,6 +102,7 @@
 		function tick() {
 			// Update material
 			const elapsedTime = clock.getElapsedTime();
+			planeMaterial.uniforms.uTime.value = elapsedTime;
 			// Update controls
 			control.update();
 			renderer.render(scene, camera);
