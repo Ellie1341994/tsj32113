@@ -41,7 +41,7 @@
 			width: 300,
 			container: lilGuiPlacer,
 			closeFolders: true,
-			title: 'LPS Model Teaks'
+			title: 'Panel Tweaks'
 		});
 		//  Loaders
 		const textureLoader = new THREE.TextureLoader();
