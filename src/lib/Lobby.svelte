@@ -1,5 +1,5 @@
 <script lang="ts">
-	import gsap from 'gsap';
+	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -8,6 +8,8 @@
 	import { RectAreaLightHelper } from 'three/addons/helpers/RectAreaLightHelper.js';
 	import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
 	import GUI from 'lil-gui';
+	import gsap from 'gsap';
+	import { sign } from 'three/webgpu';
 	// import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 	let canvas: HTMLCanvasElement;
 	onMount(() => {
@@ -41,7 +43,6 @@
 				const geometry = originalMesh.geometry as THREE.BufferGeometry;
 				const material = originalMesh.material as THREE.MeshStandardMaterial;
 				material.metalness = 0.5; // Ambient light won't work on materials fully metallic
-				console.log('geo', geometry);
 				// rowks and columns should be even numbers
 				const rows = 8;
 				const columns = 12;
@@ -85,7 +86,6 @@
 				scene.add(instancedMesh);
 
 				sceneReady = true;
-				console.log(gltf.scene);
 				console.log('loaded');
 			},
 			() => {
@@ -95,6 +95,25 @@
 				console.log('load error');
 			}
 		);
+
+		// Textures
+
+		// const halloweenTexture = textureLoader.load('/assets/halloween/thumbnail/pumpkinHead.png');
+		// const halloweenTexture = textureLoader.load(
+		// 	'/assets/halloween/thumbnail/grokHalloweenPoster.jpg'
+		// );
+		// halloweenTexture.colorSpace = THREE.SRGBColorSpace;
+		// gui
+		// 	.add(halloweenTexture, 'colorSpace', [
+		// 		THREE.SRGBColorSpace,
+		// 		THREE.NoColorSpace,
+		// 		THREE.LinearDisplayP3ColorSpace,
+		// 		THREE.LinearSRGBColorSpace,
+		// 		THREE.DisplayP3ColorSpace
+		// 	])
+		// 	.onChange(() => {
+		// 		halloweenTexture.needsUpdate = true;
+		// 	});
 		const wallNormalTexture = textureLoader.load(
 			`/assets/lobby/textures/Wood_Wicker/Wood_Wicker_002_normal.jpg`
 		);
@@ -110,6 +129,7 @@
 		const wallColorTexture = textureLoader.load(
 			`/assets/lobby/textures/Wood_Wicker/Wood_Wicker_002_basecolor.jpg`
 		);
+		wallColorTexture.colorSpace = THREE.SRGBColorSpace;
 
 		const floorNormalTexture = textureLoader.load(`/assets/lobby/textures/Wood_Floor/normal.png`);
 		const floorHeightTexture = textureLoader.load(`/assets/lobby/textures/Wood_Floor/height.png`);
@@ -118,6 +138,8 @@
 			`/assets/lobby/textures/Wood_Floor/roughness.png`
 		);
 		const floorColorTexture = textureLoader.load(`/assets/lobby/textures/Wood_Floor/color.png`);
+		floorColorTexture.colorSpace = THREE.SRGBColorSpace;
+
 		[
 			floorColorTexture,
 			floorRoughnessTexture,
@@ -147,18 +169,61 @@
 		});
 		const wallVerticalPos = wallGeometry.parameters.height / 2;
 		const westWall = new THREE.Mesh(wallGeometry, wallMaterial);
+		const eastWall = new THREE.Mesh(wallGeometry, wallMaterial);
+		const northWall = new THREE.Mesh(wallGeometry, wallMaterial);
+		const southWall = new THREE.Mesh(wallGeometry, wallMaterial);
+		westWall.receiveShadow = true;
+		eastWall.receiveShadow = true;
+		northWall.receiveShadow = true;
+		southWall.receiveShadow = true;
 		westWall.position.set(-9, wallVerticalPos, 0);
 		westWall.rotateY(Math.PI * 0.5);
-		const eastWall = new THREE.Mesh(wallGeometry, wallMaterial);
 		eastWall.position.set(9, wallVerticalPos, 0);
 		eastWall.rotateY(-Math.PI * 0.5);
-		const northWall = new THREE.Mesh(wallGeometry, wallMaterial);
 		northWall.position.set(0, wallVerticalPos, -9);
-		const southWall = new THREE.Mesh(wallGeometry, wallMaterial);
 		southWall.position.set(0, wallVerticalPos, 9);
 		southWall.rotateY(-Math.PI);
 		const wallGroup = new THREE.Group();
 		wallGroup.add(westWall, eastWall, southWall, northWall);
+		// Wall Decoration
+		const wallDecoDepth = 0.25;
+		const wallDecoHeight = 1;
+		const wallDecoGeometry = new RoundedBoxGeometry(2 * 9, wallDecoHeight, wallDecoDepth, 32, 1);
+		const wallDecoMaterial = new THREE.MeshStandardMaterial({
+			color: '#222244',
+			roughness: 0.5
+		});
+		const wallDecoVerticalPos = wallDecoHeight / 2;
+		const westDecoWall = new THREE.Mesh(wallDecoGeometry, wallDecoMaterial);
+		const eastDecoWall = new THREE.Mesh(wallDecoGeometry, wallDecoMaterial);
+		const northDecoWall = new THREE.Mesh(wallDecoGeometry, wallDecoMaterial);
+		const southDecoWall = new THREE.Mesh(wallDecoGeometry, wallDecoMaterial);
+		[westDecoWall, eastDecoWall, southDecoWall].forEach((wall) => wall.scale.set(1, 4, 1));
+		westDecoWall.position.set(wallDecoDepth / 2 - 9, wallDecoVerticalPos, 0);
+		westDecoWall.rotateY(Math.PI * 0.5);
+		eastDecoWall.position.set(9 - wallDecoDepth / 2, wallDecoVerticalPos, 0);
+		eastDecoWall.rotateY(-Math.PI * 0.5);
+		northDecoWall.position.set(0, wallDecoVerticalPos, wallDecoDepth / 2 - 9);
+		southDecoWall.position.set(0, wallDecoVerticalPos, 9 - wallDecoDepth / 2);
+		southDecoWall.rotateY(-Math.PI);
+		const wallDecoGroup = new THREE.Group();
+		wallDecoGroup.add(westDecoWall, eastDecoWall, southDecoWall, northDecoWall);
+		// Challenge Cinema Poster
+		const challengePosterGeometry = new THREE.PlaneGeometry(
+			wallGeometry.parameters.width / 6,
+			wallGeometry.parameters.height / 2
+		);
+		const challengePosterMaterial = new THREE.MeshStandardMaterial({
+			// map: halloweenTexture,
+			side: THREE.DoubleSide
+		});
+		const challengePoster = new THREE.Mesh(challengePosterGeometry, challengePosterMaterial);
+		challengePoster.name = 'halloween';
+		// gui.add(challengePoster.material, 'metalness', 0, 1, 0.1).name('poster metalness');
+		// gui.add(challengePoster.material, 'roughness', 0, 1, 0.1).name('poster roughness');
+		challengePoster.receiveShadow = true;
+		challengePoster.position.set(-8.9, wallGeometry.parameters.height * 0.65, 0);
+		challengePoster.rotateY(Math.PI * 0.5);
 		// Floor
 		const floorGeometry = new THREE.PlaneGeometry(2 * 9, 2 * 9);
 		const floorMaterial = new THREE.MeshStandardMaterial({
@@ -191,17 +256,22 @@
 		bigCinemaScreen.position.set(0, 4.5, -8.75);
 		// Carpet
 		const geometry = new THREE.PlaneGeometry(2, 8);
-		const material = new THREE.MeshStandardMaterial({ color: '#661111', side: THREE.DoubleSide });
+		const material = new THREE.MeshStandardMaterial({
+			color: '#661111',
+			side: THREE.DoubleSide,
+			roughness: 0.75
+		});
 		const carpetPlaceholderMesh = new THREE.Mesh(geometry, material);
 		carpetPlaceholderMesh.rotateX(Math.PI * 0.5);
 		carpetPlaceholderMesh.position.set(0, 0.01, 0);
 		// Light
 		const ambientLight = new THREE.AmbientLight('#aaaaaa', 0.25);
-		const directionalLight = new THREE.DirectionalLight('#ffffff', 1);
-
+		const directionalLight = new THREE.DirectionalLight('#ffffff', 2);
+		// directionalLight.
 		directionalLight.castShadow = true;
 		directionalLight.shadow.mapSize.set(1024, 1024);
-		directionalLight.position.set(3, 9, 6);
+		directionalLight.position.set(10, 15, 5);
+		// directionalLight.lookAt(challengePoster.position);
 		RectAreaLightUniformsLib.init();
 		const rAreaLight = new THREE.RectAreaLight(
 			'#ffffff',
@@ -228,30 +298,65 @@
 			carpetPlaceholderMesh,
 			floor,
 			wallGroup,
-			bigCinemaScreen
+			wallDecoGroup,
+			bigCinemaScreen,
+			challengePoster
 		);
 		// Camera
 		const camera = new THREE.PerspectiveCamera(75, parameters.aspect_ratio);
-		camera.position.set(0, 1, 6);
+		camera.position.set(5, 1, 6);
 		const control = new OrbitControls(camera, canvas);
+		control.enabled = false;
+		// control.enableRotate = false;
+		// control.enableZoom = false;
+		// control.enablePan = false;
 		control.enableDamping = true;
+		gui.add(control, 'enabled').name('Camera movement');
 
 		// Renderer
 		const renderer = new THREE.WebGLRenderer({ canvas, alpha: false });
 		renderer.shadowMap.enabled = true;
-		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+		// renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		renderer.setSize(parameters.width, parameters.height);
 		renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 
 		// Play
-		// gsap.to(scene.rotation, { y: Math.PI * 2, duration: 15, repeat: -1, yoyo: true });
 		const clock = new THREE.Clock();
 		let previousElapsedTime = clock.getElapsedTime();
 		let tickId = 0;
+		const raycaster = new THREE.Raycaster();
+
+		const pointer = new THREE.Vector2();
+		function onPointerMove(event: PointerEvent) {
+			// calculate pointer position in normalized device coordinates
+			// (-1 to +1) for both components
+
+			pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+			pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+			// console.log(pointer);
+		}
+		const onPosterClick = ({ button }: MouseEvent) => {
+			const leftMouseClick = 0;
+			console.log('button', button);
+			if (button === leftMouseClick) {
+				raycaster.setFromCamera(pointer, camera);
+				const [intersection] = raycaster.intersectObject(challengePoster);
+				if (intersection) {
+					console.log(intersection);
+					gsap.to(rAreaLight, { intensity: 1, duration: 1 });
+					gsap.to(directionalLight, { intensity: 0, duration: 1 }).then(() => {
+						goto(`/challenges/${intersection.object.name}`);
+					});
+				}
+			}
+		};
+		addEventListener('pointermove', onPointerMove);
+		addEventListener('mousedown', onPosterClick);
 		function tick() {
+			// time
 			const elapsedTime = clock.getElapsedTime();
 			previousElapsedTime = elapsedTime;
-
+			// raycast
 			// Control
 			control.update();
 
@@ -261,6 +366,8 @@
 		tick();
 		// Dispose
 		function disposeScene() {
+			removeEventListener('pointermove', onPointerMove);
+			removeEventListener('mousedown', onPosterClick);
 			function disposeAll(node: any) {
 				if (node.isMesh || node instanceof THREE.Mesh) {
 					// node.material?.envMap?.dispose();
