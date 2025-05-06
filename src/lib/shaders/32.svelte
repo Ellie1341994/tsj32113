@@ -7,8 +7,8 @@
 	import * as THREE from 'three';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 	import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-	import vertexShader from './32/vertex.glsl?raw';
-	import fragmentShader from './32/fragment.glsl?raw';
+	import vertexShader from './32/vertex.glsl';
+	import fragmentShader from './32/fragment.glsl';
 	let { canvas = $bindable(), lilGuiPlacer = $bindable() } = $props();
 	onMount(() => {
 		// Other features
