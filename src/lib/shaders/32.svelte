@@ -9,7 +9,6 @@
 	import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 	import vertexShader from './32/vertex.glsl?raw';
 	import fragmentShader from './32/fragment.glsl?raw';
-	import { text } from '@sveltejs/kit';
 	let { canvas = $bindable(), lilGuiPlacer = $bindable() } = $props();
 	onMount(() => {
 		// Other features
@@ -55,6 +54,8 @@
 		 */
 		// Texture
 		const uPerlinTexture = textureLoader.load('/assets/shaders/32/textures/perlin.png');
+		uPerlinTexture.wrapS = THREE.RepeatWrapping;
+		uPerlinTexture.wrapT = THREE.RepeatWrapping;
 		// Material
 
 		//  Models
@@ -80,7 +81,8 @@
 				uPerlinTexture: new THREE.Uniform(uPerlinTexture)
 			},
 			side: THREE.DoubleSide,
-			transparent: true
+			transparent: true,
+			depthWrite: false
 			// wireframe: true
 		});
 		const smokeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
