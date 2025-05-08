@@ -13,6 +13,7 @@
 		// Other features
 		// Feature: Fullscreen
 		// Size fix on toggle off
+		let rendererParameters = { clearColor: '#444d7e' };
 		const setCanvasSize = () => {
 			// Update camera
 			camera.aspect = sizes.width / sizes.height;
@@ -47,6 +48,25 @@
 		// gui.hide();
 		// Scene
 		const scene = new THREE.Scene();
+		// Material
+		const materialParameters = { color: '#aa3333' };
+		gui.addColor(materialParameters, 'color').onChange(() => {
+			material.uniforms.uColor.value = new THREE.Color(materialParameters.color);
+		});
+		const material = new THREE.ShaderMaterial({
+			vertexShader,
+			fragmentShader,
+			uniforms: {
+				uTime: { value: 0 },
+				uColor: new THREE.Uniform(new THREE.Color(materialParameters.color)),
+				uGlitchDirectionUp: new THREE.Uniform(false)
+			},
+			transparent: true,
+			side: THREE.DoubleSide,
+			depthWrite: false,
+			blending: THREE.AdditiveBlending
+		});
+		// Meshes
 		//  Loaders
 		const rgbeLoader = new RGBELoader();
 		rgbeLoader.load('/assets/advanced/24/environmentMaps/1/2k.hdr', (texture) => {
@@ -57,10 +77,19 @@
 			scene.environment = envMap;
 		});
 		const gtlfLoader = new GLTFLoader();
+		let star: THREE.Object3D;
 		gtlfLoader.load('/assets/shaders/33/star.glb', (gltf) => {
-			gltf.scene.rotateY(Math.PI * 0.5);
-			gltf.scene.position.y = 1;
-			// scene.add(gltf.scene);
+			star = gltf.scene;
+			star.rotateY(Math.PI * 0.5);
+			star.position.x = -3;
+			star.position.y = -1;
+			// console.log(star);
+			star.traverse((node) => {
+				if (node instanceof THREE.Mesh) {
+					node.material = material;
+				}
+			});
+			scene.add(star);
 		});
 		let suzanne: THREE.Object3D;
 		gtlfLoader.load('/assets/shaders/33/suzanne.glb', (gltf) => {
@@ -73,24 +102,6 @@
 			scene.add(gltf.scene);
 		});
 
-		// Material
-		const materialParameters = { color: '#78c1ff' };
-		gui.addColor(materialParameters, 'color').onChange(() => {
-			material.uniforms.uColor.value = new THREE.Color(materialParameters.color);
-		});
-		const material = new THREE.ShaderMaterial({
-			vertexShader,
-			fragmentShader,
-			uniforms: {
-				uTime: { value: 0 },
-				uColor: new THREE.Uniform(new THREE.Color('red'))
-			},
-			transparent: true,
-			side: THREE.DoubleSide,
-			depthWrite: false,
-			blending: THREE.AdditiveBlending
-		});
-		// Meshes
 		const torusKnot = new THREE.Mesh(new THREE.TorusKnotGeometry(0.6, 0.25, 128, 32), material);
 		torusKnot.position.x = 3;
 		// Sphere
@@ -104,12 +115,14 @@
 		scene.add(
 			new THREE.AmbientLight('#ffffff', 4),
 			bulbLight,
-			sphere,
 			torusKnot
+			// sphere
 			// new THREE.PointLightHelper(bulbLight)
 			// new THREE.Mesh(new THREE.BoxGeometry(2, 2), new THREE.MeshStandardMaterial())
 		);
 
+		gui.add(sphere, 'hide');
+		gui.add(torusKnot, 'hide');
 		// Cam
 		const camera = new THREE.PerspectiveCamera(75, ASPECT_RATIO);
 		camera.position.set(0, 3, 6);
@@ -119,7 +132,6 @@
 		renderer.setSize(sizes.width, sizes.height);
 		renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 		// Gui
-		let rendererParameters = { clearColor: '#444d7e' };
 		renderer.setClearColor(rendererParameters.clearColor);
 
 		gui.addColor(rendererParameters, 'clearColor').onChange(() => {
@@ -132,8 +144,9 @@
 			// Update material
 			const elapsedTime = clock.getElapsedTime();
 			material.uniforms.uTime.value = elapsedTime;
-			if (suzanne) {
+			if (suzanne && star) {
 				suzanne.rotation.y = elapsedTime * 0.2;
+				star.rotation.y = elapsedTime * 0.2;
 				// suzanne.rotation.set(-elapsedTime * 0.1, elapsedTime * 0.2, elapsedTime * 0.3);
 			}
 			// sphere.rotation.set(-elapsedTime * 0.1, elapsedTime * 0.2, elapsedTime * 0.3);
