@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
-	let canvas: HTMLCanvasElement;
+	let { canvas = $bindable() } = $props();
 	onMount(() => {
 		// Utils
 		const sizes = {
@@ -46,4 +46,4 @@
 	});
 </script>
 
-<canvas class="webgl" bind:this={canvas} />
+<canvas class="webgl" bind:this={canvas}></canvas>
