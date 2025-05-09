@@ -5,10 +5,24 @@
 	onMount(() => {
 		// Utils
 		const sizes = {
-			width: innerWidth * 0.75,
-			height: innerHeight * 0.75
+			get width() {
+				return innerWidth * 0.75;
+			},
+			get height() {
+				return innerHeight * 0.75;
+			}
 		};
+		const setCanvasSize = () => {
+			// Update camera
+			camera.aspect = sizes.width / sizes.height;
+			camera.updateProjectionMatrix();
 
+			// Update renderer
+			renderer.setSize(sizes.width, sizes.height);
+			renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+			renderer.render(scene, camera);
+		};
+		addEventListener(`resize`, setCanvasSize);
 		const scene = new THREE.Scene();
 		// Objects
 		// const sphereGeometry = new THREE.SphereGeometry(1.5,32,32);
