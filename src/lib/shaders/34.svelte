@@ -18,7 +18,7 @@
 			resolution: new THREE.Vector2(),
 			pixelRatio: Math.min(window.devicePixelRatio, 2)
 		};
-		sizes.resolution.set(sizes.width, sizes.height);
+		sizes.resolution.set(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio);
 		const ASPECT_RATIO = sizes.width / sizes.height;
 		let rendererParameters = { clearColor: '#444d7e' };
 		// Other features
@@ -26,7 +26,7 @@
 			// Update camera
 			camera.aspect = sizes.width / sizes.height;
 			camera.updateProjectionMatrix();
-			sizes.resolution.set(sizes.width, sizes.height);
+			sizes.resolution.set(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio);
 			sizes.pixelRatio = Math.min(window.devicePixelRatio, 2);
 
 			console.log(sizes);
@@ -56,8 +56,26 @@
 		gui.hide();
 		// Scene
 		const scene = new THREE.Scene();
+		// Loader
+		const textureLoader = new THREE.TextureLoader();
+		const particleTextures = [
+			textureLoader.load('/assets/shaders/34/particles/1.png'),
+			textureLoader.load('/assets/shaders/34/particles/2.png'),
+			textureLoader.load('/assets/shaders/34/particles/3.png'),
+			textureLoader.load('/assets/shaders/34/particles/4.png'),
+			textureLoader.load('/assets/shaders/34/particles/5.png'),
+			textureLoader.load('/assets/shaders/34/particles/6.png'),
+			textureLoader.load('/assets/shaders/34/particles/7.png'),
+			textureLoader.load('/assets/shaders/34/particles/8.png')
+		];
+
 		// Fireworks
-		const createFirework = (count = 100, position = new THREE.Vector3(), size = 0.5) => {
+		const createFirework = (
+			count = 100,
+			position = new THREE.Vector3(),
+			size = 0.5,
+			texture = particleTextures[7]
+		) => {
 			const dimensions = 3;
 			const positionsArray = new Float32Array(count * dimensions);
 			for (let i = 0; i < count; i++) {
@@ -70,12 +88,17 @@
 			const geometry = new THREE.BufferGeometry();
 			geometry.setAttribute('position', new THREE.Float32BufferAttribute(positionsArray, 3));
 			// Material
+			texture.flipY = false;
 			const material = new THREE.ShaderMaterial({
 				vertexShader,
 				fragmentShader,
+				transparent: true,
+				depthWrite: false,
+				blending: THREE.AdditiveBlending,
 				uniforms: {
 					uSize: new THREE.Uniform(size),
-					uResolution: new THREE.Uniform(sizes.resolution)
+					uResolution: new THREE.Uniform(sizes.resolution),
+					uTexture: new THREE.Uniform(texture)
 				}
 			});
 			// Points
