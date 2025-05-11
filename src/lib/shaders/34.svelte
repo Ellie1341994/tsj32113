@@ -5,6 +5,8 @@
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 	import vertexShader from './34/vertex.glsl';
 	import fragmentShader from './34/fragment.glsl';
+	import gsap from 'gsap';
+	import { Sky } from 'three/addons/objects/Sky.js';
 	let { canvas = $bindable(), lilGuiPlacer = $bindable() } = $props();
 	onMount(() => {
 		// Constants
@@ -73,20 +75,47 @@
 		const createFirework = (
 			count = 100,
 			position = new THREE.Vector3(),
-			size = 0.5,
-			texture = particleTextures[7]
+			size = 0.25,
+			texture = particleTextures[7],
+			radius = 1.0,
+			color = new THREE.Color('#8affff')
 		) => {
 			const dimensions = 3;
 			const positionsArray = new Float32Array(count * dimensions);
+			const sizesArray = new Float32Array(count);
+			const timeMultipliersArray = new Float32Array(count);
+			const sphericalPosition = new THREE.Vector3();
+			let spherical = new THREE.Spherical(
+				radius * Math.random() * 0.5,
+				Math.random() * Math.PI,
+				Math.random() * Math.PI * 2
+			);
+			const vectors = [];
+			let i3 = dimensions;
 			for (let i = 0; i < count; i++) {
-				const i3 = i * dimensions;
-				positionsArray[i3 + 0] = Math.random() - 0.5;
-				positionsArray[i3 + 1] = Math.random() - 0.5;
-				positionsArray[i3 + 2] = Math.random() - 0.5;
+				i3 = i * dimensions;
+				spherical.set(radius, Math.random() * Math.PI, Math.random() * Math.PI * 2);
+				sphericalPosition.setFromSpherical(spherical);
+				positionsArray[i3 + 0] = sphericalPosition.x;
+				positionsArray[i3 + 1] = sphericalPosition.y;
+				positionsArray[i3 + 2] = sphericalPosition.z;
+
+				sizesArray[i] = Math.random();
+
+				timeMultipliersArray[i] = 1 + Math.random();
 			}
+
 			// Geometry
 			const geometry = new THREE.BufferGeometry();
-			geometry.setAttribute('position', new THREE.Float32BufferAttribute(positionsArray, 3));
+			geometry.setAttribute(
+				'position',
+				new THREE.Float32BufferAttribute(positionsArray, dimensions)
+			);
+			geometry.setAttribute('aSize', new THREE.Float32BufferAttribute(positionsArray, 1));
+			geometry.setAttribute(
+				'aTimeMultiplier',
+				new THREE.Float32BufferAttribute(timeMultipliersArray, 1)
+			);
 			// Material
 			texture.flipY = false;
 			const material = new THREE.ShaderMaterial({
@@ -98,20 +127,62 @@
 				uniforms: {
 					uSize: new THREE.Uniform(size),
 					uResolution: new THREE.Uniform(sizes.resolution),
-					uTexture: new THREE.Uniform(texture)
+					uTexture: new THREE.Uniform(texture),
+					uColor: new THREE.Uniform(color),
+					uProgress: new THREE.Uniform(0)
 				}
 			});
 			// Points
 			const firework = new THREE.Points(geometry, material);
 			firework.position.copy(position);
 			scene.add(firework);
+			// Dispose
+			const disposeFirework = () => {
+				scene.remove(firework);
+				geometry.dispose();
+				material.dispose();
+			};
+			// Animation
+			gsap.to(material.uniforms.uProgress, {
+				value: 1,
+				duration: 3,
+				ease: 'linear',
+				onComplete: disposeFirework
+			});
 		};
-		createFirework();
-		// Animation
-		// Loaders
-		// Meshes
-		// const torusKnot = new THREE.Mesh(new THREE.TorusKnotGeometry(0.6, 0.25, 128, 32), material);
-		// Lights
+		const createRandomFirework = (event: MouseEvent) => {
+			event.screenX;
+			const count = Math.round(400 + Math.random() * 1000);
+			const position = new THREE.Vector3(
+				5 * ((event.screenX - innerWidth * 0.125 - sizes.width / 2) / sizes.width),
+				-5 * ((event.screenY - innerHeight * 0.125 - sizes.height / 2) / sizes.height),
+				0
+				// (Math.random() - 0.5) * 2,
+				// Math.random(),
+				// (Math.random() - 0.5) * 2
+			);
+			console.log(position);
+			console.log(event.screenX);
+			console.log(event.screenX - innerWidth * 0.125);
+			const size = 0.1 + Math.random() * 0.1;
+			const texture = particleTextures[Math.floor(Math.random() * particleTextures.length)];
+			const radius = Math.random() / 2 + 0.5;
+			const color = new THREE.Color();
+			color.setHSL(Math.random(), 1, 0.7);
+
+			createFirework(count, position, size, texture, radius, color);
+		};
+		canvas.addEventListener('click', createRandomFirework);
+		// Sly
+		const sky = new Sky();
+		sky.material.uniforms[`turbidity`].value = 5;
+		sky.material.uniforms[`rayleigh`].value = 1;
+		sky.material.uniforms[`mieCoefficient`].value = 0.95;
+		sky.material.uniforms[`mieDirectionalG`].value = 0.75;
+		sky.material.uniforms[`sunPosition`].value.set(10, 0.003, -15);
+		sky.scale.set(100, 100, 100);
+		scene.add(sky);
+
 		// Scene
 		// Cam
 		const camera = new THREE.PerspectiveCamera(75, ASPECT_RATIO);
