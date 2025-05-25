@@ -34,7 +34,7 @@
 		const toggleFullscreen = () => {
 			document.fullscreenElement ? document.exitFullscreen() : canvas?.requestFullscreen();
 		};
-		addEventListener(`dblclick`, toggleFullscreen);
+		// addEventListener(`dblclick`, toggleFullscreen);
 		// Constants
 		const sizes = { width: innerWidth * 0.75, height: innerHeight * 0.75 };
 		const ASPECT_RATIO = sizes.width / sizes.height;
@@ -59,7 +59,7 @@
 			uniforms: {
 				uTime: { value: 0 },
 				uColor: new THREE.Uniform(new THREE.Color(materialParameters.color)),
-				uGlitchDirectionUp: new THREE.Uniform(false)
+				drawCallIterationId: new THREE.Uniform(1)
 			},
 			transparent: true,
 			side: THREE.DoubleSide,
@@ -121,8 +121,8 @@
 			// new THREE.Mesh(new THREE.BoxGeometry(2, 2), new THREE.MeshStandardMaterial())
 		);
 
-		gui.add(sphere, 'hide');
-		gui.add(torusKnot, 'hide');
+		// gui.add(sphere, 'hide');
+		// gui.add(torusKnot, 'hide');
 		// Cam
 		const camera = new THREE.PerspectiveCamera(75, ASPECT_RATIO);
 		camera.position.set(0, 3, 6);
@@ -144,6 +144,8 @@
 			// Update material
 			const elapsedTime = clock.getElapsedTime();
 			material.uniforms.uTime.value = elapsedTime;
+			material.uniforms.drawCallIterationId.value++;
+
 			if (suzanne && star) {
 				suzanne.rotation.y = elapsedTime * 0.2;
 				star.rotation.y = elapsedTime * 0.2;
@@ -160,6 +162,9 @@
 			tickId = requestAnimationFrame(tick);
 		}
 		tick();
+		// addEventListener('click', () => {
+		// 	tickId = requestAnimationFrame(tick);
+		// });
 
 		// Resources Management
 		function disposeScene() {
