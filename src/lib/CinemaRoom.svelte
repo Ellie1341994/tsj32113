@@ -98,10 +98,10 @@
 		// Textures
 
 		// const halloweenTexture = textureLoader.load('/assets/halloween/thumbnail/pumpkinHead.png');
-		// const halloweenTexture = textureLoader.load(
-		// 	'/assets/halloween/thumbnail/grokHalloweenPoster.jpg'
-		// );
-		// halloweenTexture.colorSpace = THREE.SRGBColorSpace;
+		const halloweenTexture = textureLoader.load(
+			'/assets/halloween/thumbnail/grokHalloweenPoster.jpg'
+		);
+		halloweenTexture.colorSpace = THREE.SRGBColorSpace;
 		// gui
 		// 	.add(halloweenTexture, 'colorSpace', [
 		// 		THREE.SRGBColorSpace,
@@ -213,7 +213,7 @@
 			wallGeometry.parameters.height / 2
 		);
 		const challengePosterMaterial = new THREE.MeshStandardMaterial({
-			// map: halloweenTexture,
+			map: halloweenTexture,
 			side: THREE.DoubleSide
 		});
 		const challengePoster = new THREE.Mesh(challengePosterGeometry, challengePosterMaterial);
