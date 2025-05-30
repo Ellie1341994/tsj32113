@@ -9,7 +9,6 @@
 	import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
 	import GUI from 'lil-gui';
 	import gsap from 'gsap';
-	import { sign } from 'three/webgpu';
 	// import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 	let canvas: HTMLCanvasElement;
 	onMount(() => {
