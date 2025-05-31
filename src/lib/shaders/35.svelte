@@ -6,14 +6,14 @@
 	import * as THREE from 'three';
 	import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 	import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-	// import vertexShader from './33/hologramVertex.glsl';
+	import vertexShader from './35/vertex.glsl';
 	import fragmentShader from './35/fragment.glsl';
 	let { canvas = $bindable(), lilGuiPlacer = $bindable() } = $props();
 	onMount(() => {
 		// Other features
 		// Feature: Fullscreen
 		// Size fix on toggle off
-		let rendererParameters = { clearColor: '#444d7e' };
+		let rendererParameters = { clearColor: '#000' };
 		const setCanvasSize = () => {
 			// Update camera
 			camera.aspect = sizes.width / sizes.height;
@@ -49,12 +49,20 @@
 		// Scene
 		const scene = new THREE.Scene();
 		// Material
-		const materialParameters = { color: '#aa3333' };
+		const directionalLightHelper = new THREE.Mesh(
+			new THREE.PlaneGeometry(),
+			new THREE.MeshBasicMaterial()
+		);
+		directionalLightHelper.material.color.setRGB(0.1, 0.1, 1);
+		directionalLightHelper.material.side = THREE.DoubleSide;
+		directionalLightHelper.position.set(0, 0, 3);
+		scene.add(directionalLightHelper);
+		const materialParameters = { color: '#ffffff' };
 		gui.addColor(materialParameters, 'color').onChange(() => {
 			material.uniforms.uColor.value = new THREE.Color(materialParameters.color);
 		});
 		const material = new THREE.ShaderMaterial({
-			// vertexShader,
+			vertexShader,
 			fragmentShader,
 			uniforms: {
 				// 	uTime: { value: 0 },
@@ -100,7 +108,7 @@
 		bulbLight.position.set(0, 0.7, 0);
 		// Scene
 		scene.add(
-			new THREE.AmbientLight('#ffffff', 4),
+			// new THREE.AmbientLight('#ffffff', 4),
 			bulbLight,
 			torusKnot,
 			sphere
