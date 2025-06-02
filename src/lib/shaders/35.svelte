@@ -48,7 +48,7 @@
 		// gui.hide();
 		// Scene
 		const scene = new THREE.Scene();
-		// Material
+		// Light helpers
 		const directionalLightHelper = new THREE.Mesh(
 			new THREE.PlaneGeometry(),
 			new THREE.MeshBasicMaterial()
@@ -56,7 +56,14 @@
 		directionalLightHelper.material.color.setRGB(0.1, 0.1, 1);
 		directionalLightHelper.material.side = THREE.DoubleSide;
 		directionalLightHelper.position.set(0, 0, 3);
-		scene.add(directionalLightHelper);
+		const pointLightHelper = new THREE.Mesh(
+			new THREE.IcosahedronGeometry(0.1, 2),
+			new THREE.MeshBasicMaterial()
+		);
+		pointLightHelper.material.color.setRGB(1, 0.1, 0.1);
+		pointLightHelper.position.set(0, 2.5, 0);
+		scene.add(directionalLightHelper, pointLightHelper);
+		// Material
 		const materialParameters = { color: '#ffffff' };
 		gui.addColor(materialParameters, 'color').onChange(() => {
 			material.uniforms.uColor.value = new THREE.Color(materialParameters.color);
@@ -89,7 +96,6 @@
 		let suzanne: THREE.Object3D;
 		gtlfLoader.load('/assets/shaders/33/suzanne.glb', (gltf) => {
 			suzanne = gltf.scene;
-			console.log(suzanne);
 
 			suzanne.traverse((child) => {
 				if (child instanceof THREE.Mesh) child.material = material;
@@ -103,24 +109,16 @@
 		const sphere = new THREE.Mesh(new THREE.SphereGeometry(), material);
 		sphere.position.x = -3;
 		// Lights
-		const bulbLight = new THREE.PointLight('#3399ff', 9);
-		bulbLight.scale.set(0.5, 0.5, 0.5);
-		bulbLight.position.set(0, 0.7, 0);
 		// Scene
 		scene.add(
-			// new THREE.AmbientLight('#ffffff', 4),
-			bulbLight,
 			torusKnot,
 			sphere
-			// new THREE.PointLightHelper(bulbLight)
 			// new THREE.Mesh(new THREE.BoxGeometry(2, 2), new THREE.MeshStandardMaterial())
 		);
 
-		// gui.add(sphere, 'hide');
-		// gui.add(torusKnot, 'hide');
 		// Cam
 		const camera = new THREE.PerspectiveCamera(75, ASPECT_RATIO);
-		camera.position.set(0, 3, 6);
+		camera.position.set(7, 7, 7);
 		const control = new OrbitControls(camera, canvas);
 		// Renderer
 		const renderer = new THREE.WebGLRenderer({ canvas });
@@ -129,8 +127,6 @@
 		// Gui
 		renderer.setClearColor(rendererParameters.clearColor);
 
-		// gui.addColor(rendererParameters, 'clearColor').onChange(() => {
-		// 	renderer.setClearColor(rendererParameters.clearColor);
 		// });
 		// Play
 		const clock = new THREE.Clock();
@@ -138,27 +134,17 @@
 		function tick() {
 			// Update material
 			const elapsedTime = clock.getElapsedTime();
-			// material.uniforms.uTime.value = elapsedTime;
-			// material.uniforms.drawCallIterationId.value++;
 
 			if (suzanne) {
 				suzanne.rotation.y = elapsedTime * 0.2;
-				// suzanne.rotation.set(-elapsedTime * 0.1, elapsedTime * 0.2, elapsedTime * 0.3);
 			}
-			// sphere.rotation.set(-elapsedTime * 0.1, elapsedTime * 0.2, elapsedTime * 0.3);
-			// torusKnot.rotation.set(-elapsedTime * 0.1, elapsedTime * 0.2, elapsedTime * 0.3);
 			sphere.rotation.y = elapsedTime * 0.2;
 			torusKnot.rotation.y = elapsedTime * 0.2;
-			// Update time uniform for pulsing effect
-			// Update controls
 			control.update();
 			renderer.render(scene, camera);
 			tickId = requestAnimationFrame(tick);
 		}
 		tick();
-		// addEventListener('click', () => {
-		// 	tickId = requestAnimationFrame(tick);
-		// });
 
 		// Resources Management
 		function disposeScene() {
